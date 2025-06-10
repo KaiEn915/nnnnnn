@@ -1,5 +1,6 @@
-import "package:flutter/material.dart";
-class AppButton extends StatelessWidget {
+import 'package:flutter/material.dart';
+
+class AppButton extends StatefulWidget {
   final String text;
   final double width;
   final VoidCallback onPressed;
@@ -12,11 +13,16 @@ class AppButton extends StatelessWidget {
   });
 
   @override
+  State<AppButton> createState() => _AppButtonState();
+}
+
+class _AppButtonState extends State<AppButton> {
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap: widget.onPressed, // Fix: Correct reference to the onPressed property
       child: Container(
-        width: width,
+        width: widget.width,
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: ShapeDecoration(
@@ -24,15 +30,15 @@ class AppButton extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           shadows: [
             BoxShadow(
-              color: Color(0x3F000000),
+              color: const Color(0x3F000000),
               blurRadius: 8,
-              offset: Offset(4, 8),
+              offset: const Offset(4, 8),
             ),
           ],
         ),
         child: Center(
           child: Text(
-            text,
+            widget.text, // Fix: Correct reference to the text property
             style: const TextStyle(
               color: Colors.white,
               fontSize: 14,
