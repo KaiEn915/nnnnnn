@@ -13,9 +13,10 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: scopes,
 );
 
-Future<void> _handleSignIn() async {
+Future<void> SignInAsGoogle() async {
   try {
     await _googleSignIn.signIn();
+    print("Login success!");
   } catch (error) {
     print(error);
   }
@@ -33,8 +34,8 @@ Future<void> signInUsingEmail(String email, String password) async {
 
 class Login extends StatefulWidget {
   const Login({super.key});
-
-  _LoginState createState() => _LoginState();
+  @override
+  State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
@@ -73,22 +74,24 @@ class _LoginState extends State<Login> {
                               Align(
                                 child: Text(
                                   'LOGIN',
-                                  style: TextStyle(
+                                  style: GoogleFonts.ibmPlexSans(
                                     decoration: TextDecoration.none,
                                     fontSize: 60,
+                                    fontWeight: FontWeight.bold,
                                     letterSpacing: 7,
                                     foreground: Paint()
                                       ..style = PaintingStyle.stroke
-                                      ..strokeWidth = 2
-                                      ..color = const Color(0xFF305B7E),
+                                      ..strokeWidth = 4
+                                      ..color = const Color(0xC0305B7E),
                                   ),
                                 ),
                               ),
                               Align(
                                 child: Text(
                                   'LOGIN',
-                                  style: TextStyle(
+                                  style: GoogleFonts.ibmPlexSans(
                                     letterSpacing: 7,
+                                    fontWeight: FontWeight.bold,
                                     decoration: TextDecoration.none,
                                     fontSize: 60,
                                     color: Colors.white,
@@ -124,7 +127,7 @@ class _LoginState extends State<Login> {
                           text: "Login",
                           width: 320,
                           onPressed: () {
-                            _handleSignIn();
+                            SignInAsGoogle();
                           },
                         ),
                         AppButton(
@@ -183,32 +186,37 @@ class _LoginState extends State<Login> {
                               Positioned(
                                 left: 77.50,
                                 top: 10,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  spacing: 8,
-                                  children: [
-                                    Container(
-                                      width: 20,
-                                      height: 20,
-                                      clipBehavior: Clip.antiAlias,
-                                      decoration: BoxDecoration(),
-                                      child: Image.asset(
-                                        "assets/images/googleLogo.png",
+                                child: GestureDetector(
+                                  onTap: SignInAsGoogle,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    spacing: 8,
+                                    children: [
+
+                                      Container(
+                                        width: 20,
+                                        height: 20,
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: BoxDecoration(),
+                                        child: Image.asset(
+                                          "assets/images/googleLogo.png",
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      'Continue with Google',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.w500,
+                                      Text(
+                                        'Continue with Google',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                )
+
                               ),
                             ],
                           ),

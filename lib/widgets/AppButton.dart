@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 class AppButton extends StatefulWidget {
   final String text;
   final double width;
@@ -47,7 +47,7 @@ class _AppButtonState extends State<AppButton> {
             style: TextStyle(
               color: widget.textColor,
               fontSize: 14,
-              fontFamily: 'Inter',
+              fontFamily: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap',
               fontWeight: FontWeight.w500,
               height: 1.4,
             ),
