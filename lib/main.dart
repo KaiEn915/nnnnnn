@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gan/pages/groupChat.dart';
+import 'package:gan/pages/Login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const GroupChat(),
+      home: const Login(),
     );
   }
 }
