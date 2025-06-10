@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 class AppButton extends StatefulWidget {
   final String text;
   final double width;
+  final Color textColor;
+  final Color backgroundColor;
   final VoidCallback onPressed;
 
   const AppButton({
     super.key,
     required this.text,
+    this.textColor=Colors.white,
+    this.backgroundColor=const Color(0xFF485266),
     required this.width,
     required this.onPressed,
   });
@@ -26,7 +30,7 @@ class _AppButtonState extends State<AppButton> {
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: ShapeDecoration(
-          color: const Color(0xFF485266),
+          color: widget.backgroundColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           shadows: [
             BoxShadow(
@@ -38,9 +42,10 @@ class _AppButtonState extends State<AppButton> {
         ),
         child: Center(
           child: Text(
+            textAlign: TextAlign.center,
             widget.text, // Fix: Correct reference to the text property
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: widget.textColor,
               fontSize: 14,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w500,

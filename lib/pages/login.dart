@@ -3,15 +3,13 @@ import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 const List<String> scopes = <String>[
   'email',
   'https://www.googleapis.com/auth/contacts.readonly',
 ];
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
-  // Optional clientId
-  // clientId: 'your-client_id.apps.googleusercontent.com',
   scopes: scopes,
 );
 
@@ -60,61 +58,54 @@ class _LoginState extends State<Login> {
             ),
             child: Stack(
               children: [
-                Positioned(
-                  top: 100,
-                  child: SizedBox(
-                    width: MediaQuery.sizeOf(context).width,
-                    height: 200,
-                    child: Stack(
-                      children: [
-                        Align(
-                          child: Text(
-                            'LOGIN',
-                            style: TextStyle(
-                              decoration: TextDecoration.none,
-                              fontSize: 60,
-                              letterSpacing: 7,
-                              fontFamily: 'Inter',
-                              foreground: Paint()
-                                ..style = PaintingStyle.stroke
-                                ..strokeWidth = 2
-                                ..color = const Color(0xFF305B7E),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          child: Text(
-                            'LOGIN',
-                            style: TextStyle(
-                              letterSpacing: 7,
-                              decoration: TextDecoration.none,
-                              fontSize: 60,
-                              fontFamily: 'Inter',
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  offset: Offset(0, 8),
-                                  blurRadius: 16,
-                                  color: Colors.black.withAlpha(64),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // Fill
-                      ],
-                    ),
-                  ),
-                ),
                 Center(
                   child: Container(
-                    margin: EdgeInsets.only(top: 100),
-                    width: 400,
-                    height: 500,
+                    height: 700,
                     child: Wrap(
                       alignment: WrapAlignment.spaceEvenly,
                       runAlignment: WrapAlignment.spaceBetween,
                       children: [
+                        Container(
+                          margin: EdgeInsetsGeometry.directional(top: 50),
+                          width: MediaQuery.sizeOf(context).width,
+                          child: Stack(
+                            children: [
+                              Align(
+                                child: Text(
+                                  'LOGIN',
+                                  style: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontSize: 60,
+                                    letterSpacing: 7,
+                                    foreground: Paint()
+                                      ..style = PaintingStyle.stroke
+                                      ..strokeWidth = 2
+                                      ..color = const Color(0xFF305B7E),
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                child: Text(
+                                  'LOGIN',
+                                  style: TextStyle(
+                                    letterSpacing: 7,
+                                    decoration: TextDecoration.none,
+                                    fontSize: 60,
+                                    color: Colors.white,
+                                    shadows: [
+                                      Shadow(
+                                        offset: Offset(0, 8),
+                                        blurRadius: 16,
+                                        color: Colors.black.withAlpha(64),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              // Fill
+                            ],
+                          ),
+                        ),
                         LabeledInputBox(
                           label: 'Username or Email',
                           placeholder: 'email@domain.com',
@@ -133,10 +124,7 @@ class _LoginState extends State<Login> {
                           text: "Login",
                           width: 320,
                           onPressed: () {
-                            signInUsingEmail(
-                              emailController.text,
-                              passwordController.text,
-                            );
+                            _handleSignIn();
                           },
                         ),
                         AppButton(
@@ -207,7 +195,7 @@ class _LoginState extends State<Login> {
                                       clipBehavior: Clip.antiAlias,
                                       decoration: BoxDecoration(),
                                       child: Image.asset(
-                                        "assets/images/cat.png",
+                                        "assets/images/googleLogo.png",
                                       ),
                                     ),
                                     Text(
