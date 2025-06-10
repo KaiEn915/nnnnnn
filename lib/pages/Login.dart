@@ -20,29 +20,46 @@ class Login extends StatelessWidget {
             children: [
               Positioned(
                 top: 100,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.red
-                  ),
+                child: SizedBox(
                   width: MediaQuery.sizeOf(context).width,
                   height:200,
                   child: Stack(
                     children: [
                       Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'LOGIN',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 60,
-                              fontFamily: 'IBM Plex Sans',
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 6,
-                              shadows: [Shadow(offset: Offset(0, 4), blurRadius: 4, color: Color(0xFF000000).withAlpha(64))],
-                            ),
+                        child: Text(
+                          'LOGIN',
+                          style: TextStyle(
+                            decoration: TextDecoration.none,
+                            fontSize: 60,
+                            letterSpacing: 7,
+                            fontFamily: 'Inter',
+                            foreground: Paint()
+                              ..style = PaintingStyle.stroke
+                              ..strokeWidth = 2
+                              ..color = const Color(0xFF305B7E),
                           ),
+                        )
                       ),
+                      Align(
+                        child:  Text(
+                          'LOGIN',
+                          style: TextStyle(
+                            letterSpacing: 7,
+                            decoration: TextDecoration.none,
+                            fontSize: 60,
+                            fontFamily: 'Inter',
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(0, 8),
+                                blurRadius: 16,
+                                color: Colors.black.withAlpha(64),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                      // Fill
                     ],
                   ),
                 ),
@@ -52,9 +69,6 @@ class Login extends StatelessWidget {
                   margin: EdgeInsets.only(top:200),
                   width: 375,
                   height: 500,
-                  decoration: BoxDecoration(
-                    color: Colors.purple
-                  ),
                   child: Wrap(
                     alignment: WrapAlignment.center,
                     runAlignment: WrapAlignment.spaceBetween,
@@ -63,10 +77,12 @@ class Login extends StatelessWidget {
                       LabeledInputBox(
                         label: 'Username or Email',
                         placeholder: 'email@domain.com',
+                        hasBackground: false
                       ),
                       LabeledInputBox(
                         label: 'Password',
                         placeholder: '*******',
+                        hasBackground: false
                       ),
                       Container(
                         width: 327,

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 class LabeledInputBox extends StatelessWidget {
   final String label;
   final String placeholder;
+  final bool hasBackground;
 
   const LabeledInputBox({
     super.key,
     required this.label,
     required this.placeholder,
+    required this.hasBackground
   });
 
   @override
@@ -15,9 +17,12 @@ class LabeledInputBox extends StatelessWidget {
       width: 327,
       height: 75,
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
+
+      decoration: hasBackground
+          ? const BoxDecoration(
         color: Colors.blue,
-      ),
+      )
+          : const BoxDecoration(),
       child: Stack(
         children: [
           Positioned(
@@ -27,6 +32,7 @@ class LabeledInputBox extends StatelessWidget {
               label,
               style: const TextStyle(
                 color: Colors.black,
+                decoration: TextDecoration.none,
                 fontSize: 14,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w400,
@@ -62,6 +68,7 @@ class LabeledInputBox extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontWeight: FontWeight.w400,
                       height: 1.40,
+                      decoration: TextDecoration.none,
                     ),
                   ),
                 ),
@@ -73,8 +80,7 @@ class LabeledInputBox extends StatelessWidget {
             top: -3,
             child: Image.asset(
               'assets/images/cat.png',
-              width: 64.69,
-              height: 48,
+              width: 50,
             ),
           ),
         ],
