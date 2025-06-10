@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
+
 class Login extends StatelessWidget {
   const Login({super.key});
   @override
@@ -66,165 +68,76 @@ class Login extends StatelessWidget {
               ),
               Center(
                 child: Container(
-                  margin: EdgeInsets.only(top:200),
-                  width: 375,
+                  decoration: BoxDecoration(
+                    color: Colors.red
+                  ),
+                  margin: EdgeInsets.only(top:100),
+                  width:400,
                   height: 500,
                   child: Wrap(
-                    alignment: WrapAlignment.center,
+                    alignment: WrapAlignment.spaceEvenly,
                     runAlignment: WrapAlignment.spaceBetween,
-                    spacing: 15,
                     children: [
                       LabeledInputBox(
                         label: 'Username or Email',
                         placeholder: 'email@domain.com',
+                        width: 320,
                         hasBackground: false
                       ),
                       LabeledInputBox(
                         label: 'Password',
                         placeholder: '*******',
+                        width: 320,
                         hasBackground: false
                       ),
-                      Container(
-                        width: 327,
-                        height: 40,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: ShapeDecoration(
-                          color: const Color(0xFF485266),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x3F000000),
-                              blurRadius: 8,
-                              offset: Offset(4, 8),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 8,
-                          children: [
-                            Text(
-                              'Login',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w500,
-                                height: 1.40,
-                              ),
+                      AppButton(
+                          text: "Login",
+                          width: 320,
+                          onPressed: (){
+                          }
+                      ),
+                      AppButton(
+                          text: "Forgot Password",
+                          width: 140,
+                          onPressed: (){
+                          }
+                      ),
+                      AppButton(
+                          text: "Sign Up",
+                          width: 140,
+                          onPressed: (){
+                          }
+                      ),
+                      Row(
+                        spacing: 8,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 1,
+                              decoration: BoxDecoration(color: const Color(0xFFE6E6E6)),
                             ),
-                          ],
-                        ),
+                          ),
+                          Text(
+                            'or',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: const Color(0xFF828282),
+                              fontSize: 14,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              decoration: TextDecoration.none
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 1,
+                              decoration: BoxDecoration(color: const Color(0xFFE6E6E6)),
+                            ),
+                          ),
+                        ],
                       ),
                       Container(
-                        width: 145,
-                        height: 40,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: ShapeDecoration(
-                          color: const Color(0xFF485266),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x3F000000),
-                              blurRadius: 8,
-                              offset: Offset(4, 8),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 8,
-                          children: [
-                            Text(
-                              'Forgot Password',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w500,
-                                height: 1.40,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: 145,
-                        height: 40,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: ShapeDecoration(
-                          color: const Color(0xFF485266),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x3F000000),
-                              blurRadius: 8,
-                              offset: Offset(4, 8),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 8,
-                          children: [
-                            Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w500,
-                                height: 1.40,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: 327,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 8,
-                          children: [
-                            Expanded(
-                              child: Container(
-                                height: 1,
-                                decoration: BoxDecoration(color: const Color(0xFFE6E6E6)),
-                              ),
-                            ),
-                            Text(
-                              'or',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: const Color(0xFF828282),
-                                fontSize: 14,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w400,
-                                height: 1.40,
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                height: 1,
-                                decoration: BoxDecoration(color: const Color(0xFFE6E6E6)),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: 327,
+                        width: 320,
                         height: 40,
                         decoration: ShapeDecoration(
                           color: const Color(0xFFEEEEEE),
@@ -246,7 +159,9 @@ class Login extends StatelessWidget {
                                     height: 20,
                                     clipBehavior: Clip.antiAlias,
                                     decoration: BoxDecoration(),
-                                    child: Stack(),
+                                    child: Image.asset(
+                                        "assets/images/cat.png"
+                                    )
                                   ),
                                   Text(
                                     'Continue with Google',
@@ -255,7 +170,6 @@ class Login extends StatelessWidget {
                                       fontSize: 14,
                                       fontFamily: 'Inter',
                                       fontWeight: FontWeight.w500,
-                                      height: 1.40,
                                     ),
                                   ),
                                 ],
@@ -279,7 +193,6 @@ class Login extends StatelessWidget {
                     fontSize: 24,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w600,
-                    height: 1.50,
                     letterSpacing: -0.24,
                   ),
                 ),

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 class LabeledInputBox extends StatelessWidget {
   final String label;
   final String placeholder;
+  final double width;
   final bool hasBackground;
 
   const LabeledInputBox({
     super.key,
     required this.label,
     required this.placeholder,
+    required this.width,
     required this.hasBackground
   });
 
@@ -44,7 +46,7 @@ class LabeledInputBox extends StatelessWidget {
             left: 0,
             top: 35,
             child: Container(
-              width: 327,
+              width: width,
               height: 40,
               decoration: ShapeDecoration(
                 color: Colors.white,
