@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "164660568702",
+    "project_id": "petfinder-ba6f8",
+    "storage_bucket": "petfinder-ba6f8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164660568702:android:2006ea45e7a925679b6e2f",
+        "android_client_info": {
+          "package_name": "com.example.gan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "164660568702-ekqqqk2lvo6ejg094f74nj2pjaktansj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gan",
+            "certificate_hash": "eede07cdda63d45f2a37e3d41b1af5f96a6980b5"
+          }
+        },
+        {
+          "client_id": "164660568702-21br9tubhfm0np05gnlltmh1i13kamja.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTXc2pEqO1sJXzwuHKyvtL4s1TKonGw5w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "164660568702-21br9tubhfm0np05gnlltmh1i13kamja.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "164660568702-c7hoe40q9agdfnnvejjfas1thqdeof9d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gan"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
