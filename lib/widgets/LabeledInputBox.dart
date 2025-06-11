@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class LabeledInputBox extends StatelessWidget {
+class LabeledInputBox extends StatefulWidget {
   final String label;
   final String placeholder;
   final double width;
@@ -19,11 +20,16 @@ class LabeledInputBox extends StatelessWidget {
   });
 
   @override
+  State<LabeledInputBox> createState() => _LabeledInputBox();
+}
+
+class _LabeledInputBox extends State<LabeledInputBox> {
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
-          width: width,
+          width: widget.width,
           height: 75,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(),
@@ -33,7 +39,7 @@ class LabeledInputBox extends StatelessWidget {
                 left: 0,
                 top: 13,
                 child: Text(
-                  label,
+                  widget.label,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 14,
@@ -46,8 +52,10 @@ class LabeledInputBox extends StatelessWidget {
                 left: 0,
                 top: 35,
                 child: Container(
-                  width: width,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  width: widget.width,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
@@ -58,24 +66,18 @@ class LabeledInputBox extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 16,
-                    children: [
-                      SizedBox(
-                        child: Text(
-                          placeholder,
-                          style: TextStyle(
-                            color: const Color(0xFF828282),
-                            fontSize: 14,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
+                  child: SizedBox(
+                    child: TextField(
+                      controller: widget.controller,
+                      decoration: InputDecoration(
+                        hintText: widget.placeholder,
                       ),
-                    ],
+                      style: GoogleFonts.ibmPlexSans(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                   ),
                 ),
               ),

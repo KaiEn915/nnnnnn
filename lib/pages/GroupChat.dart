@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GroupChat extends StatelessWidget {
+  const GroupChat({super.key}); //每个都要加这个哦~~
+
   @override
   Widget build(BuildContext context) {
     return Column(

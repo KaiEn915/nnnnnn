@@ -359,7 +359,6 @@ class Home extends StatelessWidget {
                   ),
                 ),
               ),
-
               Positioned(
                 //里面的边框
                 left: 0,

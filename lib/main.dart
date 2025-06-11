@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gan/pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gan/pages/signUp.dart';
 import 'firebase_options.dart';
 Future<void> main() async {
 
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const Login(),
+      home: const SignUp(),
     );
   }
 }

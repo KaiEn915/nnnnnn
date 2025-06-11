@@ -1,52 +1,91 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gan/pages/home.dart';
+import 'package:gan/pages/login.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
-import 'package:gan/pages/home.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-const List<String> scopes = <String>[
-  'email',
-  'https://www.googleapis.com/auth/contacts.readonly',
-];
-GoogleSignIn _googleSignIn = GoogleSignIn(
-  scopes: scopes,
-);
-Future<void> SignInUsingGoogle() async {
-  try {
-    await _googleSignIn.signIn();
 
-    print("Login success!");
-  } catch (error) {
-    print(error);
-  }
-}
-class Login extends StatefulWidget {
-  const Login({super.key});
+
+
+
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
   @override
-  State<Login> createState() => _Login();
+  State<SignUp> createState() => _SignUp();
 }
 
-class _Login extends State<Login> {
+class _SignUp extends State<SignUp> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
+  Future<void> createAccountWithEmailAndPassword() async{
+    final email=emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
 
+    if (password != confirmPassword) {
+      Fluttertoast.showToast(
+          msg: "Passwords do not match!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+      return;
+    }
 
-  Future<void> SignInUsingEmailAndPassword(String email, String password) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      print('Login Successful: ${userCredential.user?.email}');
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // create success
+      Fluttertoast.showToast(
+          msg: "Account created successfully!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>const Home()));
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        Fluttertoast.showToast(
+            msg: "Passwords too easy!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      } else if (e.code == 'email-already-in-use') {
+        Fluttertoast.showToast(
+            msg: "The account already exists for that email.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      }
     } catch (e) {
-      print('Error: $e');
+      print(e);
     }
   }
+
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Column(
+    return Scaffold(
+      body: Column(
         children: [
           Container(
             width: MediaQuery.sizeOf(context).width,
@@ -74,7 +113,7 @@ class _Login extends State<Login> {
                             children: [
                               Align(
                                 child: Text(
-                                  'LOGIN',
+                                  'SIGN UP',
                                   style: GoogleFonts.ibmPlexSans(
                                     decoration: TextDecoration.none,
                                     fontSize: 60,
@@ -89,7 +128,7 @@ class _Login extends State<Login> {
                               ),
                               Align(
                                 child: Text(
-                                  'LOGIN',
+                                  'SIGN UP',
                                   style: GoogleFonts.ibmPlexSans(
                                     letterSpacing: 7,
                                     fontWeight: FontWeight.bold,
@@ -124,22 +163,19 @@ class _Login extends State<Login> {
                           hasBackground: false,
                           controller: passwordController,
                         ),
-                        AppButton(
-                          text: "Login",
+                        LabeledInputBox(
+                          label: 'Confirm Password',
+                          placeholder: '*******',
                           width: 320,
-                          onPressed: () {
-                            SignInUsingEmailAndPassword(emailController.text, passwordController.text);
-                          },
-                        ),
-                        AppButton(
-                          text: "Forgot Password",
-                          width: 140,
-                          onPressed: () {},
+                          hasBackground: false,
+                          controller: confirmPasswordController,
                         ),
                         AppButton(
                           text: "Sign Up",
                           width: 140,
-                          onPressed: () {},
+                          onPressed: () {
+                            createAccountWithEmailAndPassword();
+                          },
                         ),
                         Row(
                           spacing: 8,
