@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:gan/pages/home.dart';
@@ -15,8 +16,14 @@ GoogleSignIn _googleSignIn = GoogleSignIn(scopes: scopes);
 Future<void> SignInUsingGoogle() async {
   try {
     await _googleSignIn.signIn();
-
-    print("Login success!");
+    Fluttertoast.showToast(
+        msg: "Login success!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
   } catch (error) {
     print(error);
   }
