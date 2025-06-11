@@ -38,12 +38,6 @@ class Home extends StatelessWidget {
                     children: [
                       NavigationButton(
                         label: 'Home',
-                        iconImage: AssetImage("assets/images/cat.png"),
-                        overlayImage: AssetImage("assets/images/home.png"),
-                        leftOffset: -0.5,
-                        topOffset: 25,
-                        iconSize: Size(39, 38),
-                        labelWidth: 41,
                         onTap: () {
                           Navigator.push(
                             context,
@@ -53,12 +47,6 @@ class Home extends StatelessWidget {
                       ),
                       NavigationButton(
                         label: 'Chats',
-                        iconImage: AssetImage("assets/images/cat.png"),
-                        overlayImage: AssetImage("assets/images/home.png"),
-                        leftOffset: -0.5,
-                        topOffset: 25,
-                        iconSize: Size(39, 38),
-                        labelWidth: 41,
                         onTap: () {
                           Navigator.push(
                               context,
@@ -68,24 +56,12 @@ class Home extends StatelessWidget {
                       ),
                       NavigationButton(
                         label: 'Profile',
-                        iconImage: AssetImage("assets/images/cat.png"),
-                        overlayImage: AssetImage("assets/images/home.png"),
-                        leftOffset: 0.5,
-                        topOffset: 25,
-                        iconSize: Size(39, 38),
-                        labelWidth: 41,
                         onTap: () {
                           // 跳转到 Profile 页面
                         },
                       ),
                       NavigationButton(
                         label: 'Scan',
-                        iconImage: AssetImage("assets/images/cat.png"),
-                        overlayImage: AssetImage("assets/images/home.png"),
-                        leftOffset: -0.5,
-                        topOffset: 25,
-                        iconSize: Size(39, 38),
-                        labelWidth: 41,
                         onTap: () {
                           // 跳转到 Scan 页面
                         },

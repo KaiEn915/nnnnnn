@@ -2,23 +2,11 @@ import 'package:flutter/material.dart';
 
 class NavigationButton extends StatelessWidget {
   final String label;
-  final ImageProvider iconImage;
-  final ImageProvider overlayImage;
-  final double leftOffset;
-  final double topOffset;
-  final Size iconSize;
-  final double labelWidth;
   final VoidCallback? onTap; // 新增
 
   const NavigationButton({
     super.key,
     required this.label,
-    required this.iconImage,
-    required this.overlayImage,
-    required this.leftOffset,
-    required this.topOffset,
-    required this.iconSize,
-    required this.labelWidth,
     this.onTap,
   });
 
@@ -34,8 +22,7 @@ class NavigationButton extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              left: leftOffset,
-              top: topOffset,
+              top: 25,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: ShapeDecoration(
@@ -49,13 +36,13 @@ class NavigationButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image(
-                      image: overlayImage,
+                      image: AssetImage("assets/images/home.png"),
                       width: 18,
                       height: 17,
                       fit: BoxFit.contain,
                     ),
                     SizedBox(
-                      width: labelWidth,
+                      width: 41,
                       child: Text(
                         label,
                         textAlign: TextAlign.center,
@@ -76,9 +63,9 @@ class NavigationButton extends StatelessWidget {
               top: 0,
               left: 22,
               child: Image(
-                image: iconImage,
-                width: iconSize.width,
-                height: iconSize.height,
+                image: AssetImage("assets/images/cat.png"),
+                width: 39,
+                height: 38,
                 fit: BoxFit.contain,
               ),
             ),
