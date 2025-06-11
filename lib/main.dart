@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/pages/Home.dart';
 import 'package:gan/pages/Login.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/SignUp': (context) => const SignUp(),
         '/Home': (context) => const Home(),
+        '/GroupChat':(context) => const GroupChat(),
       },
     );
   }

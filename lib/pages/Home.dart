@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/widgets/HomePost.dart';
+import 'package:gan/widgets/MyNavigationBar.dart';
 import 'package:gan/widgets/NavigationButton.dart';
 
 class Home extends StatelessWidget {
@@ -22,58 +23,7 @@ class Home extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              Positioned(
-                bottom: 0,
-                child: Container(
-                  width: MediaQuery.sizeOf(context).width,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFE0FBFF),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      NavigationButton(
-                        label: 'Home',
-                        overlayImage: AssetImage("assets/images/home.png"),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const Home()),
-                          );
-                        },
-                      ),
-                      NavigationButton(
-                        label: 'Chats',
-                        overlayImage: AssetImage("assets/images/Chat.png"),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const GroupChat()),
-                          );// 跳转到 Chats 页面
-                        },
-                      ),
-                      NavigationButton(
-                        label: 'Profile',
-                        overlayImage: AssetImage("assets/images/Profile.png"),
-                        onTap: () {
-                          // 跳转到 Profile 页面
-                        },
-                      ),
-                      NavigationButton(
-                        label: 'Scan',
-                        overlayImage: AssetImage("assets/images/Scan.png"),
-                        onTap: () {
-                          // 跳转到 Scan 页面
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              MyNavigationBar(),
 
               Positioned(
                 //里面的边框
