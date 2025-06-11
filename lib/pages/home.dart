@@ -38,6 +38,7 @@ class Home extends StatelessWidget {
                     children: [
                       NavigationButton(
                         label: 'Home',
+                        overlayImage: AssetImage("assets/images/home.png"),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -47,6 +48,7 @@ class Home extends StatelessWidget {
                       ),
                       NavigationButton(
                         label: 'Chats',
+                        overlayImage: AssetImage("assets/images/Chat.png"),
                         onTap: () {
                           Navigator.push(
                               context,
@@ -56,12 +58,14 @@ class Home extends StatelessWidget {
                       ),
                       NavigationButton(
                         label: 'Profile',
+                        overlayImage: AssetImage("assets/images/Profile.png"),
                         onTap: () {
                           // 跳转到 Profile 页面
                         },
                       ),
                       NavigationButton(
                         label: 'Scan',
+                        overlayImage: AssetImage("assets/images/Scan.png"),
                         onTap: () {
                           // 跳转到 Scan 页面
                         },

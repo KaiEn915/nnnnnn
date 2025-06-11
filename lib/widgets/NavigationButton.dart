@@ -3,26 +3,30 @@ import 'package:flutter/material.dart';
 class NavigationButton extends StatelessWidget {
   final String label;
   final VoidCallback? onTap; // 新增
+  final ImageProvider overlayImage;
 
   const NavigationButton({
     super.key,
     required this.label,
     this.onTap,
+    required this.overlayImage,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap, // 支持点击
+      onTap: onTap,
       child: Container(
         width: 83,
-        height: 58,
+        height: 70,
         clipBehavior: Clip.antiAlias,
         decoration: const BoxDecoration(),
         child: Stack(
           children: [
             Positioned(
               top: 25,
+              left: 0,
+              right: 0,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: ShapeDecoration(
@@ -34,18 +38,21 @@ class NavigationButton extends StatelessWidget {
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image(
-                      image: AssetImage("assets/images/home.png"),
-                      width: 18,
+                      image: overlayImage,
+                      width: 15,
                       height: 17,
                       fit: BoxFit.contain,
                     ),
+                    const SizedBox(width: 4),
                     SizedBox(
                       width: 41,
                       child: Text(
                         label,
                         textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: Color(0xFF828282),
                           fontSize: 10,
@@ -60,7 +67,7 @@ class NavigationButton extends StatelessWidget {
               ),
             ),
             Positioned(
-              top: 0,
+              top: 5,
               left: 22,
               child: Image(
                 image: AssetImage("assets/images/cat.png"),
