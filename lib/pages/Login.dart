@@ -1,38 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gan/pages/signUp.dart';
+import 'package:gan/pages/SignUp.dart';
+import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
-import 'package:gan/pages/home.dart';
+import 'package:gan/pages/Home.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-const List<String> scopes = <String>[
-  'email',
-  'https://www.googleapis.com/auth/contacts.readonly',
-];
-GoogleSignIn _googleSignIn = GoogleSignIn(scopes: scopes);
-
-Future<void> SignInUsingGoogle() async {
-  try {
-    await _googleSignIn.signIn();
-    Fluttertoast.showToast(
-        msg: "Login success!",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0
-    );
-  } catch (error) {
-    print(error);
-  }
-}
 
 class Login extends StatefulWidget {
   const Login({super.key,this.email});
   final String? email;
+
 
   @override
   State<Login> createState() => _LoginState();
@@ -41,25 +22,12 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
     emailController = TextEditingController(text: widget.email ?? '');
   }
 
-  Future<void> SignInUsingEmailAndPassword(
-    String email,
-    String password,
-  ) async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      print('Login Successful: ${userCredential.user?.email}');
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,16 +115,12 @@ class _LoginState extends State<Login> {
                           text: "Login",
                           width: 320,
                           onPressed: () {
-                            SignInUsingEmailAndPassword(
+                            AuthService.loginWithEmailAndPassword(
                               emailController.text,
                               passwordController.text,
+                              context
                             );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Home(),
-                              ),
-                            );
+
                           },
                         ),
                         AppButton(
@@ -223,7 +187,7 @@ class _LoginState extends State<Login> {
                                 left: 77.50,
                                 top: 10,
                                 child: GestureDetector(
-                                  onTap: SignInUsingGoogle,
+                                  onTap: ()=>{AuthService.loginWithGoogle(context)},
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.start,

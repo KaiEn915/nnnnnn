@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gan/pages/login.dart';
+import 'package:gan/pages/Home.dart';
+import 'package:gan/pages/Login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gan/pages/signUp.dart';
+import 'package:gan/pages/SignUp.dart';
 import 'firebase_options.dart';
 Future<void> main() async {
 
@@ -35,7 +36,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const Login(),
+
+      initialRoute: '/',
+      routes: {
+        // When navigating to the "/" route, build the FirstScreen widget.
+        '/': (context) => const Login(),
+        '/Login': (context) => const Login(),
+        // When navigating to the "/second" route, build the SecondScreen widget.
+        '/SignUp': (context) => const SignUp(),
+        '/Home': (context) => const Home(),
+      },
     );
   }
 }
