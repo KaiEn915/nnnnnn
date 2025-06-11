@@ -1,8 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gan/pages/home.dart';
-import 'package:gan/pages/login.dart';
+import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,67 +17,6 @@ class _SignUp extends State<SignUp> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-
-  Future<void> createAccountWithEmailAndPassword() async {
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
-    final confirmPassword = confirmPasswordController.text.trim();
-
-    if (password != confirmPassword) {
-      Fluttertoast.showToast(
-        msg: "Passwords do not match!",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      return;
-    }
-
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      // create success
-      Fluttertoast.showToast(
-        msg: "Account created successfully!",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Login(email: email)),
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        Fluttertoast.showToast(
-          msg: "Passwords too easy!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-      } else if (e.code == 'email-already-in-use') {
-        Fluttertoast.showToast(
-          msg: "The account already exists for that email.",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +110,12 @@ class _SignUp extends State<SignUp> {
                           text: "Sign Up",
                           width: 140,
                           onPressed: () {
-                            createAccountWithEmailAndPassword();
+                            AuthService.createAccountWithEmailAndPassword(
+                              emailController.text,
+                              passwordController.text,
+                              confirmPasswordController.text,
+                              context,
+                            );
                           },
                         ),
                         Row(
@@ -223,7 +165,7 @@ class _SignUp extends State<SignUp> {
                                 left: 77.50,
                                 top: 10,
                                 child: GestureDetector(
-                                  onTap: SignInUsingGoogle,
+                                  onTap: ()=>{AuthService.loginWithGoogle(context)},
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.start,
