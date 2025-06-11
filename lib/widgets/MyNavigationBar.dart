@@ -29,7 +29,7 @@ class MyNavigationBar extends StatelessWidget {
           children: [
             NavigationButton(
               label: 'Home',
-              overlayImage: AssetImage("assets/images/home.png"),
+              icon: Icons.home,
               onTap: () {
                 Navigator.pushReplacementNamed(
                   context,
@@ -39,7 +39,7 @@ class MyNavigationBar extends StatelessWidget {
             ),
             NavigationButton(
               label: 'Chats',
-              overlayImage: AssetImage("assets/images/Chat.png"),
+              icon: Icons.chat,
               onTap: () {
                 Navigator.pushReplacementNamed(
                   context,
@@ -49,14 +49,14 @@ class MyNavigationBar extends StatelessWidget {
             ),
             NavigationButton(
               label: 'Profile',
-              overlayImage: AssetImage("assets/images/Profile.png"),
+              icon: Icons.account_circle,
               onTap: () {
                 // 跳转到 Profile 页面
               },
             ),
             NavigationButton(
               label: 'Scan',
-              overlayImage: AssetImage("assets/images/Scan.png"),
+              icon: Icons.camera_alt,
               onTap: () {
                 // 跳转到 Scan 页面
               },

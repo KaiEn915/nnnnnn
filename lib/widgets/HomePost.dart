@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HomePost extends StatelessWidget {
-
-  const HomePost({
-    super.key,
-  });
+  const HomePost({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +43,7 @@ class HomePost extends StatelessWidget {
                       width: 21,
                       height: 26,
                       decoration: BoxDecoration(),
-                      child: Icon(
-                        Icons.history,
-                        size: 20,
-                      ),
+                      child: Icon(Icons.history, size: 20),
                     ),
                     SizedBox(
                       width: 286,
@@ -70,9 +64,7 @@ class HomePost extends StatelessWidget {
                       height: 26,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(
-                            "https://placehold.co/20x26",
-                          ),
+                          image: NetworkImage("https://placehold.co/20x26"),
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -85,9 +77,7 @@ class HomePost extends StatelessWidget {
                 height: 196,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(
-                      "https://placehold.co/350x196",
-                    ),
+                    image: NetworkImage("https://placehold.co/350x196"),
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -105,11 +95,7 @@ class HomePost extends StatelessWidget {
                       width: 21,
                       height: 23,
                       //地标
-                      child: Icon(
-                        Icons.pin_drop,
-                        color: Colors.red,
-                        size: 20,
-                      ),
+                      child: Icon(Icons.pin_drop, color: Colors.red, size: 20),
                     ),
                     Text(
                       'Near Southern University College\n',
@@ -132,18 +118,7 @@ class HomePost extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   spacing: 5,
                   children: [
-                    Container(
-                      width: 21,
-                      height: 23,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            "https://placehold.co/21x23",
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
+                    Icon(Icons.account_circle, size: 30),
                     Text(
                       '  Posted by Goh Kiat Meng',
                       style: TextStyle(

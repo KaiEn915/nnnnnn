@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class NavigationButton extends StatelessWidget {
   final String label;
   final VoidCallback? onTap; // 新增
-  final ImageProvider overlayImage;
+  final IconData icon;
 
   const NavigationButton({
     super.key,
     required this.label,
     this.onTap,
-    required this.overlayImage,
+    required this.icon,
   });
 
   @override
@@ -40,13 +40,7 @@ class NavigationButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image(
-                      image: overlayImage,
-                      width: 15,
-                      height: 17,
-                      fit: BoxFit.contain,
-                    ),
-                    const SizedBox(width: 4),
+                    Icon(icon,size:15),
                     SizedBox(
                       width: 41,
                       child: Text(
