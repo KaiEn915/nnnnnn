@@ -6,7 +6,7 @@ class LabeledInputBox extends StatefulWidget {
   final String placeholder;
   final double width;
   final bool hasBackground;
-  final bool isPassword;
+  final bool isObscure;
   final TextEditingController controller;
 
   const LabeledInputBox({
@@ -16,7 +16,7 @@ class LabeledInputBox extends StatefulWidget {
     required this.width,
     required this.hasBackground,
     required this.controller,
-    this.isPassword = false, // Flag to toggle password visibility
+    this.isObscure = false, // Flag to toggle password visibility
   });
 
   @override
@@ -77,6 +77,7 @@ class _LabeledInputBox extends State<LabeledInputBox> {
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                       ),
+                      obscureText: widget.isObscure,
                     ),
                   ),
                 ),

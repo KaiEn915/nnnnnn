@@ -109,6 +109,7 @@ class _LoginState extends State<Login> {
                           placeholder: '*******',
                           width: 320,
                           hasBackground: false,
+                          isObscure: true,
                           controller: passwordController,
                         ),
                         AppButton(

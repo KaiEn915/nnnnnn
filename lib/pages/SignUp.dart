@@ -97,6 +97,7 @@ class _SignUp extends State<SignUp> {
                           placeholder: '*******',
                           width: 320,
                           hasBackground: false,
+                          isObscure: true,
                           controller: passwordController,
                         ),
                         LabeledInputBox(
@@ -104,6 +105,7 @@ class _SignUp extends State<SignUp> {
                           placeholder: '*******',
                           width: 320,
                           hasBackground: false,
+                          isObscure: true,
                           controller: confirmPasswordController,
                         ),
                         AppButton(
