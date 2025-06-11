@@ -10,9 +10,8 @@ const List<String> scopes = <String>[
   'email',
   'https://www.googleapis.com/auth/contacts.readonly',
 ];
-GoogleSignIn _googleSignIn = GoogleSignIn(
-  scopes: scopes,
-);
+GoogleSignIn _googleSignIn = GoogleSignIn(scopes: scopes);
+
 Future<void> SignInUsingGoogle() async {
   try {
     await _googleSignIn.signIn();
@@ -22,8 +21,10 @@ Future<void> SignInUsingGoogle() async {
     print(error);
   }
 }
+
 class Login extends StatefulWidget {
   const Login({super.key});
+
   @override
   State<Login> createState() => _Login();
 }
@@ -32,9 +33,10 @@ class _Login extends State<Login> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-
-
-  Future<void> SignInUsingEmailAndPassword(String email, String password) async {
+  Future<void> SignInUsingEmailAndPassword(
+    String email,
+    String password,
+  ) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
@@ -43,6 +45,7 @@ class _Login extends State<Login> {
       print('Error: $e');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -128,7 +131,16 @@ class _Login extends State<Login> {
                           text: "Login",
                           width: 320,
                           onPressed: () {
-                            SignInUsingEmailAndPassword(emailController.text, passwordController.text);
+                            SignInUsingEmailAndPassword(
+                              emailController.text,
+                              passwordController.text,
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Home(),
+                              ),
+                            );
                           },
                         ),
                         AppButton(
@@ -185,39 +197,38 @@ class _Login extends State<Login> {
                           child: Stack(
                             children: [
                               Positioned(
-                                  left: 77.50,
-                                  top: 10,
-                                  child: GestureDetector(
-                                    onTap: SignInUsingGoogle,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      spacing: 8,
-                                      children: [
-
-                                        Container(
-                                          width: 20,
-                                          height: 20,
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: BoxDecoration(),
-                                          child: Image.asset(
-                                            "assets/images/googleLogo.png",
-                                          ),
+                                left: 77.50,
+                                top: 10,
+                                child: GestureDetector(
+                                  onTap: SignInUsingGoogle,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    spacing: 8,
+                                    children: [
+                                      Container(
+                                        width: 20,
+                                        height: 20,
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: BoxDecoration(),
+                                        child: Image.asset(
+                                          "assets/images/googleLogo.png",
                                         ),
-                                        Text(
-                                          'Continue with Google',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 14,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w500,
-                                          ),
+                                      ),
+                                      Text(
+                                        'Continue with Google',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w500,
                                         ),
-                                      ],
-                                    ),
-                                  )
-
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ],
                           ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/widgets/HomePost.dart';
+import 'package:gan/widgets/BottomButton.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -20,345 +22,79 @@ class Home extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              Container(
-                child:
-                Positioned(
-                  //button
-                  bottom: 0,
-                  child: Container(
-                    width: MediaQuery.sizeOf(context).width,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFFE0FBFF),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+              Positioned(
+                bottom: 0,
+                child: Container(
+                  width: MediaQuery.sizeOf(context).width,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: const Color(0xFFE0FBFF),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      BottomButton(
+                        label: 'Home',
+                        iconImage: AssetImage("assets/images/cat.png"),
+                        overlayImage: AssetImage("assets/images/home.png"),
+                        leftOffset: -0.5,
+                        topOffset: 25,
+                        iconSize: Size(39, 38),
+                        labelWidth: 41,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const Home()),
+                          );
+                        },
                       ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: 10,
-                      children: [
-                        Container(
-                          width: 82,
-                          height: 58,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: -0.50,
-                                top: 25,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 5,
-                                  ),
-                                  decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        color: const Color(0xFFDFDFDF),
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 18,
-                                        height: 17,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                              "https://placehold.co/18x17",
-                                            ),
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 41,
-                                        child: Text(
-                                          'Home',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: const Color(0xFF828282),
-                                            fontSize: 10,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.40,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 22,
-                                top: 0,
-                                child: Container(
-                                  width: 20,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage("assets/images/home.png"),
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: 82,
-                          height: 58,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: -0.50,
-                                top: 25,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 5,
-                                  ),
-                                  decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        color: const Color(0xFFDFDFDF),
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 18,
-                                        height: 17,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                              "https://placehold.co/18x17",
-                                            ),
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 41,
-                                        child: Text(
-                                          'Chats',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: const Color(0xFF828282),
-                                            fontSize: 10,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.40,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 22,
-                                top: 0,
-                                child: Container(
-                                  width: 39,
-                                  height: 38,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                        "https://placehold.co/39x38",
-                                      ),
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: 83,
-                          height: 58,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0.50,
-                                top: 25,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 5,
-                                  ),
-                                  decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        color: const Color(0xFFDFDFDF),
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 18,
-                                        height: 17,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                              "https://placehold.co/18x17",
-                                            ),
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 41,
-                                        child: Text(
-                                          'Profile',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: const Color(0xFF828282),
-                                            fontSize: 10,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.40,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 23,
-                                top: 0,
-                                child: Container(
-                                  width: 39,
-                                  height: 38,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                        "https://placehold.co/39x38",
-                                      ),
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: 82,
-                          height: 58,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: -0.50,
-                                top: 25,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 5,
-                                  ),
-                                  decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        color: const Color(0xFFDFDFDF),
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 18,
-                                        height: 17,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                              "https://placehold.co/18x17",
-                                            ),
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 41,
-                                        child: Text(
-                                          'Scan',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: const Color(0xFF828282),
-                                            fontSize: 10,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.40,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 22,
-                                top: 0,
-                                child: Container(
-                                  width: 39,
-                                  height: 38,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                        "https://placehold.co/39x38",
-                                      ),
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      BottomButton(
+                        label: 'Chats',
+                        iconImage: AssetImage("assets/images/cat.png"),
+                        overlayImage: AssetImage("assets/images/home.png"),
+                        leftOffset: -0.5,
+                        topOffset: 25,
+                        iconSize: Size(39, 38),
+                        labelWidth: 41,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const GroupChat()),
+                          );// 跳转到 Chats 页面
+                        },
+                      ),
+                      BottomButton(
+                        label: 'Profile',
+                        iconImage: AssetImage("assets/images/cat.png"),
+                        overlayImage: AssetImage("assets/images/home.png"),
+                        leftOffset: 0.5,
+                        topOffset: 25,
+                        iconSize: Size(39, 38),
+                        labelWidth: 41,
+                        onTap: () {
+                          // 跳转到 Profile 页面
+                        },
+                      ),
+                      BottomButton(
+                        label: 'Scan',
+                        iconImage: AssetImage("assets/images/cat.png"),
+                        overlayImage: AssetImage("assets/images/home.png"),
+                        leftOffset: -0.5,
+                        topOffset: 25,
+                        iconSize: Size(39, 38),
+                        labelWidth: 41,
+                        onTap: () {
+                          // 跳转到 Scan 页面
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
+
               Positioned(
                 //里面的边框
                 left: 0,
