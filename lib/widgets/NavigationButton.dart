@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class BottomButton extends StatelessWidget {
+class NavigationButton extends StatelessWidget {
   final String label;
   final ImageProvider iconImage;
   final ImageProvider overlayImage;
@@ -10,7 +10,7 @@ class BottomButton extends StatelessWidget {
   final double labelWidth;
   final VoidCallback? onTap; // 新增
 
-  const BottomButton({
+  const NavigationButton({
     super.key,
     required this.label,
     required this.iconImage,

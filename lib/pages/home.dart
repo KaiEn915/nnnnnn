@@ -36,7 +36,7 @@ class Home extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      BottomButton(
+                      NavigationButton(
                         label: 'Home',
                         iconImage: AssetImage("assets/images/cat.png"),
                         overlayImage: AssetImage("assets/images/home.png"),
@@ -51,7 +51,7 @@ class Home extends StatelessWidget {
                           );
                         },
                       ),
-                      BottomButton(
+                      NavigationButton(
                         label: 'Chats',
                         iconImage: AssetImage("assets/images/cat.png"),
                         overlayImage: AssetImage("assets/images/home.png"),
@@ -66,7 +66,7 @@ class Home extends StatelessWidget {
                           );// 跳转到 Chats 页面
                         },
                       ),
-                      BottomButton(
+                      NavigationButton(
                         label: 'Profile',
                         iconImage: AssetImage("assets/images/cat.png"),
                         overlayImage: AssetImage("assets/images/home.png"),
@@ -78,7 +78,7 @@ class Home extends StatelessWidget {
                           // 跳转到 Profile 页面
                         },
                       ),
-                      BottomButton(
+                      NavigationButton(
                         label: 'Scan',
                         iconImage: AssetImage("assets/images/cat.png"),
                         overlayImage: AssetImage("assets/images/home.png"),
