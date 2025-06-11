@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gan/pages/signUp.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:gan/pages/home.dart';
@@ -30,15 +31,22 @@ Future<void> SignInUsingGoogle() async {
 }
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  const Login({super.key,this.email});
+  final String? email;
 
   @override
-  State<Login> createState() => _Login();
+  State<Login> createState() => _LoginState();
 }
 
-class _Login extends State<Login> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class _LoginState extends State<Login> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController(text: widget.email ?? '');
+  }
 
   Future<void> SignInUsingEmailAndPassword(
     String email,
@@ -126,6 +134,7 @@ class _Login extends State<Login> {
                           width: 320,
                           hasBackground: false,
                           controller: emailController,
+
                         ),
                         LabeledInputBox(
                           label: 'Password',
@@ -158,7 +167,14 @@ class _Login extends State<Login> {
                         AppButton(
                           text: "Sign Up",
                           width: 140,
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SignUp(),
+                              ),
+                            );
+                          },
                         ),
                         Row(
                           spacing: 8,

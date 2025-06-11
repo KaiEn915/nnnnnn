@@ -54,7 +54,7 @@ class _SignUp extends State<SignUp> {
       );
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const Home()),
+        MaterialPageRoute(builder: (context) => Login(email: email)),
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -174,12 +174,6 @@ class _SignUp extends State<SignUp> {
                           width: 140,
                           onPressed: () {
                             createAccountWithEmailAndPassword();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Login(),
-                              ),
-                            );
                           },
                         ),
                         Row(

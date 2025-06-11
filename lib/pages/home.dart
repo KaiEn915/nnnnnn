@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/widgets/HomePost.dart';
-import 'package:gan/widgets/BottomButton.dart';
+import 'package:gan/widgets/NavigationButton.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
