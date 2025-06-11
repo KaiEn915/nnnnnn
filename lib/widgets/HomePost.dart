@@ -45,13 +45,10 @@ class HomePost extends StatelessWidget {
                     Container(
                       width: 21,
                       height: 26,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            "https://placehold.co/21x26",
-                          ),
-                          fit: BoxFit.cover,
-                        ),
+                      decoration: BoxDecoration(),
+                      child: Icon(
+                        Icons.history,
+                        size: 20,
                       ),
                     ),
                     SizedBox(
@@ -108,17 +105,14 @@ class HomePost extends StatelessWidget {
                       width: 21,
                       height: 23,
                       //地标
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(
-                            "assets/images/cat.png",
-                          ),
-                          fit: BoxFit.cover,
-                        ),
+                      child: Icon(
+                        Icons.pin_drop,
+                        color: Colors.red,
+                        size: 20,
                       ),
                     ),
                     Text(
-                      '  Near Southern University College\n',
+                      'Near Southern University College\n',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 10,

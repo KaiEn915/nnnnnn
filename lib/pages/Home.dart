@@ -80,7 +80,7 @@ class Home extends StatelessWidget {
                   height: 760,
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(color: Colors.red),
+                  decoration: BoxDecoration(),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/Login.dart';
@@ -9,12 +10,37 @@ class AuthService {
     scopes: ['email', 'https://www.googleapis.com/auth/contacts.readonly'],
   );
 
-  static Future<void> loginWithGoogle(BuildContext context) async {
+  static Future<UserCredential?> loginWithGoogle(BuildContext context) async {
     try {
-      await _googleSignIn.signIn();
+      // Trigger the Google Sign-In authentication flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
+      if (googleUser == null) {
+        // User canceled the sign-in flow
+        Fluttertoast.showToast(
+          msg: "Google Sign-In cancelled.",
+          backgroundColor: Colors.orange,
+          textColor: Colors.white,
+          gravity: ToastGravity.CENTER,
+        );
+        return null;
+      }
+
+      // Obtain the auth details from the Google sign-in
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // Create a new Firebase credential using the Google tokens
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase with the credential
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Show success toast
       Fluttertoast.showToast(
-        msg: "Login success!",
+        msg: "Google Login success as ${FirebaseAuth.instance.currentUser?.email}!",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         backgroundColor: Colors.green,
@@ -22,11 +48,22 @@ class AuthService {
         fontSize: 16.0,
       );
 
+      // Navigate to Home screen
       Navigator.pushReplacementNamed(context, '/Home');
+
+      return userCredential;
     } catch (error) {
       print("Google Sign-In Error: $error");
+      Fluttertoast.showToast(
+        msg: "Google Sign-In failed. Please try again.",
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        gravity: ToastGravity.CENTER,
+      );
+      return null;
     }
   }
+
 
   static Future<void> loginWithEmailAndPassword(
     String email,
