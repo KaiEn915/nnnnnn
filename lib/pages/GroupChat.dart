@@ -8,8 +8,8 @@ class GroupChat extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: 375,
-          height: 684,
+          width: MediaQuery.sizeOf(context).width,
+          height: MediaQuery.sizeOf(context).height,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(color: Colors.white),
           child: Stack(
