@@ -51,7 +51,10 @@ class MyNavigationBar extends StatelessWidget {
               label: 'Profile',
               icon: Icons.account_circle,
               onTap: () {
-                // 跳转到 Profile 页面
+                Navigator.pushReplacementNamed(
+                    context,
+                    '/UserProfile',
+                );
               },
             ),
             NavigationButton(

@@ -5,6 +5,7 @@ import 'package:gan/pages/Login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gan/pages/SignUp.dart';
+import 'package:gan/pages/UserProfile.dart';
 import 'firebase_options.dart';
 Future<void> main() async {
 
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         '/SignUp': (context) => const SignUp(),
         '/Home': (context) => const Home(),
         '/GroupChat':(context) => const GroupChat(),
+        '/UserProfile':(context)=> const UserProfile(),
       },
     );
   }

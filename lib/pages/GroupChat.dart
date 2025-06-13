@@ -10,15 +10,15 @@ class GroupChat extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: MediaQuery.sizeOf(context).width,
-          height: MediaQuery.sizeOf(context).height,
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/background2.png"),
+            width: MediaQuery.sizeOf(context).width,
+            height: MediaQuery.sizeOf(context).height,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/background2.png"),
                 fit: BoxFit.cover,
-          ),
-          ),
+              ),
+            ),
           child: Stack(
             children: [
               MyNavigationBar(),
@@ -28,7 +28,7 @@ class GroupChat extends StatelessWidget {
                   width: MediaQuery.sizeOf(context).width,
                   height: 530,
                   clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(border: Border.all(width: 1)),
+                  decoration: BoxDecoration(border: Border.all(width: 0)),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
