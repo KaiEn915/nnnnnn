@@ -25,7 +25,7 @@ class UserProfile extends StatelessWidget {
                 top: 110,
                 child: Container(
                   width: 370,
-                  height: 331,
+                  height: 450,
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
@@ -46,10 +46,10 @@ class UserProfile extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 10,
+                    spacing: 40,
                     children: [
                       Container(
-                        width: 207,
+                        width: 255,
                         height: 30,
                         padding: const EdgeInsets.symmetric(horizontal: 45),
                         clipBehavior: Clip.antiAlias,
@@ -60,24 +60,21 @@ class UserProfile extends StatelessWidget {
                           ),
                         ),
                         child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 10,
                           children: [
                             SizedBox(
-                              width: 201,
-                              height: 20,
+                              width: 160,
+                              child:Center(
                               child: Text(
                                 '@kiatmeng0101',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: const Color(0xFF828282),
-                                  fontSize: 14,
+                                  fontSize: 17,
                                   fontFamily: 'Inter',
                                   fontWeight: FontWeight.w400,
                                   height: 1.40,
                                 ),
+                              ),
                               ),
                             ),
                           ],
@@ -87,7 +84,7 @@ class UserProfile extends StatelessWidget {
                         padding: const EdgeInsets.all(8),
                         clipBehavior: Clip.antiAlias,
                         decoration: ShapeDecoration(
-                          color: Colors.white.withValues(alpha: 128),
+                          color: Colors.white.withAlpha(100),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25),
                           ),
@@ -96,52 +93,43 @@ class UserProfile extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 10,
                           children: [
                             Container(
                               width: 117,
                               height: 118,
                               decoration: ShapeDecoration(
                                 image: DecorationImage(
-                                  image: NetworkImage("https://placehold.co/117x118"),
+                                  image: AssetImage("assets/images/cat.png"),
                                   fit: BoxFit.contain,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100),
                                 ),
-                                shadows: [
-                                  BoxShadow(
-                                    color: Color(0x3F000000),
-                                    blurRadius: 4,
-                                    offset: Offset(0, 4),
-                                    spreadRadius: 0,
-                                  )
-                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
                       Container(
-                        width: 234,
+                        width: 270,
                         height: 67,
                         clipBehavior: Clip.antiAlias,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage("https://placehold.co/234x67"),
+                            image: AssetImage("assets/images/Cloud.png"),
                             fit: BoxFit.cover,
                           ),
                         ),
                         child: Stack(
                           children: [
                             Positioned(
-                              left: -0.50,
-                              top: 0,
+                              left: 20,
+                              top: 5,
                               child: SizedBox(
                                 width: 235,
                                 height: 67,
                                 child: Text(
-                                  'KIAT MENG',
+                                  'user name',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.black,
@@ -158,14 +146,12 @@ class UserProfile extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 333,
-                        height: 46,
                         child: Text(
                           'Hello guys i love pet',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 15,
+                            fontSize: 25,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w600,
                             height: 1.50,
@@ -180,10 +166,10 @@ class UserProfile extends StatelessWidget {
               MyNavigationBar(),
               Positioned(
                 left: 21,
-                top: 464,
+                top: 600,
                 child: Container(
-                  width: 333,
-                  height: 113,
+                  width: 370,
+                  height: 150,
                   decoration: ShapeDecoration(
                     color: const Color(0xBFECFFFA),
                     shape: RoundedRectangleBorder(
@@ -196,12 +182,15 @@ class UserProfile extends StatelessWidget {
                         left: 10,
                         top: 17,
                         child: Container(
-                          width: 315,
-                          height: 80,
+                          width: 350,
+                          height: 115,
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           clipBehavior: Clip.antiAlias,
                           decoration: ShapeDecoration(
-                            color: Colors.white.withValues(alpha: 191),
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/PutButton.png"),
+                              fit: BoxFit.cover,
+                            ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25),
                             ),
