@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gan/pages/MyMap.dart';
+import 'package:gan/widgets/HomePostAttribute.dart';
+import 'package:gan/services/GeoLocator.dart';
+import 'package:geolocator/geolocator.dart';
 
 class HomePost extends StatelessWidget {
   const HomePost({super.key});
@@ -30,107 +34,33 @@ class HomePost extends StatelessWidget {
             runAlignment: WrapAlignment.center,
             runSpacing: 10,
             children: [
-              Container(
-                width: 326,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 21,
-                      height: 26,
-                      decoration: BoxDecoration(),
-                      child: Icon(Icons.history, size: 20),
-                    ),
-                    SizedBox(
-                      width: 286,
-                      height: 26,
-                      child: Text(
-                        '  Since 7 hours ago',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 10,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w600,
-                          height: 0,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 20,
-                      height: 26,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage("https://placehold.co/20x26"),
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              HomePostAttribute(
+                title: "Since 7 hours ago",
+                icon: Icon(Icons.history, size: 20),
               ),
               Container(
                 width: 350,
                 height: 196,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage("https://placehold.co/350x196"),
-                    fit: BoxFit.contain,
-                  ),
-                ),
+                child: Image.asset("assets/images/cat.png"),
               ),
-              Container(
-                //里面的write
-                width: 327,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  spacing: 5,
-                  children: [
-                    Container(
-                      width: 21,
-                      height: 23,
-                      //地标
-                      child: Icon(Icons.pin_drop, color: Colors.red, size: 20),
+              HomePostAttribute(
+                title: "Near Southern University College",
+                icon: Icon(Icons.pin_drop, color: Colors.red, size: 20),
+                onTap: () async
+                {
+                  Position pos = await determinePosition();
+                  print(pos);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyMap(initialPosition: pos),
                     ),
-                    Text(
-                      'Near Southern University College\n',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 10,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
-                        height: 0,
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
-              Container(
-                width: 327,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  spacing: 5,
-                  children: [
-                    Icon(Icons.account_circle, size: 30),
-                    Text(
-                      '  Posted by Goh Kiat Meng',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 10,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
-                        height: 0,
-                      ),
-                    ),
-                  ],
-                ),
+              HomePostAttribute(
+                title: "Posted by Goh Kiat Meng",
+                icon: Icon(Icons.account_circle, size: 20),
               ),
             ],
           ),

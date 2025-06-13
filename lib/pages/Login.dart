@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/SignUp.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
-import 'package:gan/pages/Home.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
@@ -46,6 +42,7 @@ class _LoginState extends State<Login> {
             ),
             child: Stack(
               children: [
+
                 Center(
                   child: Container(
                     height: 700,
@@ -96,6 +93,7 @@ class _LoginState extends State<Login> {
                             ],
                           ),
                         ),
+
                         LabeledInputBox(
                           label: 'Username or Email',
                           placeholder: 'email@domain.com',
@@ -222,21 +220,6 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 187,
-                  top: 90,
-                  child: Text(
-                    '\n',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 24,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: -0.24,
                     ),
                   ),
                 ),
