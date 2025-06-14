@@ -28,7 +28,7 @@ class GroupChatPost extends StatelessWidget {
             children: [
               Container(
                 width: 370,
-                height: 102,
+                height: 120,
                 decoration: BoxDecoration(
                   color: Colors.white.withAlpha(0),
                   image: DecorationImage(

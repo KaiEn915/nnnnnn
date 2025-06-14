@@ -39,7 +39,7 @@ class UserProfile extends StatelessWidget {
                         blurRadius: 4,
                         offset: Offset(0, 4),
                         spreadRadius: 0,
-                      )
+                      ),
                     ],
                   ),
                   child: Column(
@@ -63,18 +63,18 @@ class UserProfile extends StatelessWidget {
                           children: [
                             SizedBox(
                               width: 160,
-                              child:Center(
-                              child: Text(
-                                '@kiatmeng0101',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: const Color(0xFF828282),
-                                  fontSize: 17,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.40,
+                              child: Center(
+                                child: Text(
+                                  '@kiatmeng0101',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: const Color(0xFF828282),
+                                    fontSize: 17,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.40,
+                                  ),
                                 ),
-                              ),
                               ),
                             ),
                           ],
@@ -199,7 +199,7 @@ class UserProfile extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 40,
+                            spacing: 80,
                             children: [
                               Container(
                                 padding: const EdgeInsets.all(5),
@@ -211,23 +211,24 @@ class UserProfile extends StatelessWidget {
                                   ),
                                 ),
                                 child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  spacing: 10,
                                   children: [
                                     Container(
                                       width: 40,
                                       height: 40,
                                       decoration: BoxDecoration(
-                                        color: Colors.white.withValues(alpha: 51),
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                            "assets/images/ticket.png",
+                                          ),
+                                          fit: BoxFit.contain,
+                                        ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Color(0x3FFFFFFF),
+                                            color: Color(0xBFFFFFFF),
                                             blurRadius: 4,
                                             offset: Offset(0, 4),
                                             spreadRadius: 0,
-                                          )
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -244,29 +245,11 @@ class UserProfile extends StatelessWidget {
                                   ),
                                 ),
                                 child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  spacing: 10,
                                   children: [
                                     Container(
                                       width: 40,
                                       height: 40,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage("https://placehold.co/40x40"),
-                                          fit: BoxFit.contain,
-                                        ),
-                                        border: Border.all(width: 1),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Color(0xBFFFFFFF),
-                                            blurRadius: 4,
-                                            offset: Offset(0, 4),
-                                            spreadRadius: 0,
-                                          )
-                                        ],
-                                      ),
+                                      child: Icon(Icons.bookmark, size: 40),
                                     ),
                                   ],
                                 ),
@@ -275,34 +258,34 @@ class UserProfile extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Positioned(
-                        left: 138,
-                        top: -26,
-                        child: Container(
-                          width: 58,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage("https://placehold.co/58x44"),
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
               ),
               Positioned(
-                left: 7.50,
-                top: 16,
+                left: 175,
+                top: 574,
                 child: Container(
-                  width: 360,
+                  width: 58,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/cat2.png"),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 19,
+                top: 20,
+                child: Container(
+                  width: 371,
                   height: 65,
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
-                    color: Colors.white.withValues(alpha: 191),
+                    color: Colors.white.withAlpha(191),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -314,29 +297,11 @@ class UserProfile extends StatelessWidget {
                     spacing: 10,
                     children: [
                       Container(
-                        width: 37,
-                        height: 37,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x3F000000),
-                              blurRadius: 4,
-                              offset: Offset(0, 4),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ),
-                        child: Stack(),
-                      ),
-                      Container(
                         width: 244,
+                        margin: EdgeInsets.only(left:50),
                         clipBehavior: Clip.antiAlias,
                         decoration: ShapeDecoration(
-                          color: Colors.white.withValues(alpha: 128),
+                          color: Colors.white.withAlpha(191),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -346,23 +311,18 @@ class UserProfile extends StatelessWidget {
                               blurRadius: 4,
                               offset: Offset(0, 4),
                               spreadRadius: 0,
-                            )
+                            ),
                           ],
                         ),
                         child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 10,
                           children: [
                             Container(
-                              width: double.infinity,
                               height: 48,
                               child: Stack(
                                 children: [
                                   Positioned(
                                     left: 0,
-                                    top: 0,
+                                    top: 14,
                                     child: SizedBox(
                                       width: 244,
                                       height: 48,
@@ -376,7 +336,15 @@ class UserProfile extends StatelessWidget {
                                           fontWeight: FontWeight.w700,
                                           height: 1,
                                           letterSpacing: 3.60,
-                                          shadows: [Shadow(offset: Offset(0, 4), blurRadius: 4, color: Color(0xFF000000).withOpacity(0.25))],
+                                          shadows: [
+                                            Shadow(
+                                              offset: Offset(0, 4),
+                                              blurRadius: 4,
+                                              color: Color(
+                                                0xFF000000,
+                                              ).withOpacity(0.25),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -392,7 +360,7 @@ class UserProfile extends StatelessWidget {
                         height: 37,
                         clipBehavior: Clip.antiAlias,
                         decoration: ShapeDecoration(
-                          color: Colors.white.withValues(alpha: 128),
+                          color: Colors.white.withAlpha(191),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -402,7 +370,7 @@ class UserProfile extends StatelessWidget {
                               blurRadius: 4,
                               offset: Offset(0, 4),
                               spreadRadius: 0,
-                            )
+                            ),
                           ],
                         ),
                         child: Stack(
@@ -413,12 +381,7 @@ class UserProfile extends StatelessWidget {
                               child: Container(
                                 width: 24,
                                 height: 24,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage("https://placehold.co/24x24"),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
+                                child: Icon(Icons.settings_outlined),
                               ),
                             ),
                           ],
