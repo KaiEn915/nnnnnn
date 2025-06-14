@@ -61,7 +61,10 @@ class MyNavigationBar extends StatelessWidget {
               label: 'Scan',
               icon: Icons.camera_alt,
               onTap: () {
-                // 跳转到 Scan 页面
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/Scan',
+                );
               },
             ),
           ],
