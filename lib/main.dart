@@ -1,32 +1,21 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:gan/firebase_options.dart';
 import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/pages/Home.dart';
 import 'package:gan/pages/Login.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gan/pages/MyMap.dart';
 import 'package:gan/pages/Scan.dart';
 import 'package:gan/pages/Setting.dart';
 import 'package:gan/pages/SignUp.dart';
 import 'package:gan/pages/UserProfile.dart';
-import 'firebase_options.dart';
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  await Firebase.initializeApp();
 
-  FirebaseAuth.instance
-      .authStateChanges()
-      .listen((User? user) {
-    if (user != null) {
-      print(user.uid);
-    }
-    else{
-      print("not signed in");
-    }
-  });
   runApp(const MyApp());
 }
 
@@ -51,7 +40,7 @@ class MyApp extends StatelessWidget {
         '/SignUp': (context) => const SignUp(),
         '/Home': (context) => const Home(),
         '/GroupChat':(context) => const GroupChat(),
-        '/UserProfile':(context)=> const UserProfile(),
+        '/UserProfile':(context)=> UserProfile(),
         '/Scan':(context)=> const Scan(),
         '/Setting':(context)=> const Setting(),
       },

@@ -186,7 +186,7 @@ class _LoginState extends State<Login> {
                                 left: 77.50,
                                 top: 10,
                                 child: GestureDetector(
-                                  onTap: ()=>{AuthService.loginWithGoogle(context)},
+                                  onTap: ()=>{AuthService.loginOrSignUpWithGoogle(context)},
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.start,

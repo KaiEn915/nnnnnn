@@ -30,14 +30,10 @@ class _LabeledInputBox extends State<LabeledInputBox> {
       children: [
         Container(
           width: widget.width,
-          height: 75,
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(),
+          height: 85,
           child: Stack(
             children: [
               Positioned(
-                left: 0,
-                top: 13,
                 child: Text(
                   widget.label,
                   style: TextStyle(
@@ -50,7 +46,7 @@ class _LabeledInputBox extends State<LabeledInputBox> {
               ),
               Positioned(
                 left: 0,
-                top: 35,
+                top: 20,
                 child: Container(
                   width: widget.width,
                   padding: const EdgeInsets.symmetric(
@@ -61,16 +57,17 @@ class _LabeledInputBox extends State<LabeledInputBox> {
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
                         width: 1,
-                        color: const Color(0xFFDFDFDF),
+                        color: const Color(0xFFE0E0E0),
                       ),
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: SizedBox(
+                  child: Container(
                     child: TextField(
                       controller: widget.controller,
                       decoration: InputDecoration(
                         hintText: widget.placeholder,
+                        border: InputBorder.none
                       ),
                       style: GoogleFonts.ibmPlexSans(
                         color: Colors.black,

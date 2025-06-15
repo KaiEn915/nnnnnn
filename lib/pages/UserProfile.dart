@@ -1,11 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
 
 class UserProfile extends StatelessWidget {
-  const UserProfile({super.key});
+  UserProfile({super.key});
+
+  final Future<Map<String, dynamic>?> userInfo = AuthService.getUserInfo();
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    late DatabaseReference userDbRef;
+    if (user != null) {
+      userDbRef = AuthService.dbRef.child("users/${user.uid}");
+    }
+
     return Column(
       children: [
         Container(
@@ -120,16 +132,30 @@ class UserProfile extends StatelessWidget {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: 20,
-                              top: 5,
-                              child: SizedBox(
-                                width: 235,
-                                height: 67,
-                                child: Text(
-                                  'user name',
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 50,vertical: 5),
+                          child: FutureBuilder<String>(
+                            future: () async {
+                              final snapshot = await userDbRef
+                                  .child("username")
+                                  .get();
+                              return snapshot.exists &&
+                                  snapshot.value != null
+                                  ? snapshot.value.toString()
+                                  : "Unknown User";
+                            }(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return const Text(
+                                  "Error loading username",
+                                );
+                              } else {
+                                final username = snapshot.data!;
+                                return Text(
+                                  username,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.black,
@@ -138,11 +164,12 @@ class UserProfile extends StatelessWidget {
                                     fontWeight: FontWeight.w400,
                                     height: 1.50,
                                     letterSpacing: -0.32,
+                                    decoration: TextDecoration.none,
                                   ),
-                                ),
-                              ),
-                            ),
-                          ],
+                                );
+                              }
+                            },
+                          ),
                         ),
                       ),
                       SizedBox(
