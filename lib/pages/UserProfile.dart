@@ -298,7 +298,7 @@ class UserProfile extends StatelessWidget {
                     children: [
                       Container(
                         width: 244,
-                        margin: EdgeInsets.only(left:50),
+                        margin: EdgeInsets.only(left: 50),
                         clipBehavior: Clip.antiAlias,
                         decoration: ShapeDecoration(
                           color: Colors.white.withAlpha(191),
@@ -378,10 +378,18 @@ class UserProfile extends StatelessWidget {
                             Positioned(
                               left: 7,
                               top: 7,
-                              child: Container(
-                                width: 24,
-                                height: 24,
-                                child: Icon(Icons.settings_outlined),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushReplacementNamed(
+                                    context,
+                                    '/Setting',
+                                  );
+                                },
+                                child: Container(
+                                  width: 24,
+                                  height: 24,
+                                  child: Icon(Icons.settings_outlined),
+                                ),
                               ),
                             ),
                           ],

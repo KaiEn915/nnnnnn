@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gan/pages/MyMap.dart';
 import 'package:gan/pages/Scan.dart';
+import 'package:gan/pages/Setting.dart';
 import 'package:gan/pages/SignUp.dart';
 import 'package:gan/pages/UserProfile.dart';
 import 'firebase_options.dart';
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
         '/GroupChat':(context) => const GroupChat(),
         '/UserProfile':(context)=> const UserProfile(),
         '/Scan':(context)=> const Scan(),
+        '/Setting':(context)=> const Setting(),
       },
     );
   }
