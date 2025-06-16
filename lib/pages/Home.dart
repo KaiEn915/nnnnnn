@@ -1,7 +1,11 @@
 import 'dart:async';
-
+import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/pages/GroupChat.dart';
+import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/HomePostManager.dart';
 import 'package:gan/widgets/HomePost.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
 import 'package:gan/widgets/NavigationButton.dart';
@@ -15,14 +19,48 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final ScrollController _scrollController = ScrollController();
   final TextEditingController searchBarController = TextEditingController();
+  List<HomePost> _postWidgets = [];
   Timer? _debounce;
 
   @override
   void initState() {
+    loadPosts();
     super.initState();
 
     searchBarController.addListener(_onSearchChanged);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        loadPosts();
+      }
+    });
+  }
+
+  void loadPosts() async {
+    final ref = AuthService.dbRef.child("posts");
+    final snapshot = await ref.get();
+
+    if (!snapshot.exists) {
+      print("No posts found");
+      return;
+    }
+
+    final postMap = Map<String, dynamic>.from(snapshot.value as Map);
+    final postList = postMap.entries.map((e) {
+      return Map<String, dynamic>.from(e.value);
+    }).toList();
+
+    // Shuffle the list
+    postList.shuffle(Random());
+
+    // Choose 5 random posts (or however many you want)
+    final randomPosts = postList.take(5).toList();
+
+    setState(() {
+      _postWidgets.addAll(randomPosts.map((p) => HomePost(postData: p)));
+    });
   }
 
   void _onSearchChanged() {
@@ -61,31 +99,24 @@ class _HomeState extends State<Home> {
               ),
               child: Stack(
                 children: [
-                  MyNavigationBar(),
-
-                  Positioned(
-                    //里面的边框
-                    left: 0,
-                    top: 96,
+                  Scrollbar(
                     child: Container(
                       width: MediaQuery.sizeOf(context).width,
-                      height: 760,
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 100,
+                      ),
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 20,
-                        children: [
-                          //post里面的东西
-                          HomePost(),
-                          HomePost(),
-                        ],
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: _postWidgets,
+                        ),
                       ),
                     ),
                   ),
+                  MyNavigationBar(),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 15,
@@ -180,25 +211,42 @@ class _HomeState extends State<Home> {
                                 ],
                               ),
                             ),
-                            Container(
-                              width: 37,
-                              height: 37,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: ShapeDecoration(
-                                color: Colors.white.withAlpha(192),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                shadows: [
-                                  BoxShadow(
-                                    color: Color(0x3F000000),
-                                    blurRadius: 4,
-                                    offset: Offset(0, 4),
-                                    spreadRadius: 0,
+                            GestureDetector(
+                              onTap: (){
+                                print('yo');
+                                User? user = FirebaseAuth.instance.currentUser;
+                                if (user!=null){
+                                  print("creatingpost");
+                                  HomePostManager.createPost(
+                                    description: "test",
+                                    userId: user.uid,
+                                    username: AuthService.userData['username'],
+                                    imageUrl: "",
+                                    location: "Sutera Mall",
+                                  );
+                                }
+
+                              },
+                              child: Container(
+                                width: 37,
+                                height: 37,
+                                clipBehavior: Clip.antiAlias,
+                                decoration: ShapeDecoration(
+                                  color: Colors.white.withAlpha(192),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
-                                ],
+                                  shadows: [
+                                    BoxShadow(
+                                      color: Color(0x3F000000),
+                                      blurRadius: 4,
+                                      offset: Offset(0, 4),
+                                      spreadRadius: 0,
+                                    ),
+                                  ],
+                                ),
+                                child: Icon(Icons.post_add),
                               ),
-                              child: Icon(Icons.post_add),
                             ),
                           ],
                         ),

@@ -8,8 +8,6 @@ import 'package:gan/widgets/MyNavigationBar.dart';
 class UserProfile extends StatelessWidget {
   UserProfile({super.key});
 
-  final Future<Map<String, dynamic>?> userInfo = AuthService.getUserInfo();
-
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -17,6 +15,7 @@ class UserProfile extends StatelessWidget {
     if (user != null) {
       userDbRef = AuthService.dbRef.child("users/${user.uid}");
     }
+
 
     return Column(
       children: [

@@ -12,7 +12,7 @@ class AuthService {
   );
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final DatabaseReference  dbRef = FirebaseDatabase.instanceFor(app: Firebase.app(),databaseURL: "https://petfinder-ba6f8-default-rtdb.asia-southeast1.firebasedatabase.app").ref();
-
+  static Map<String,dynamic> userData= {};
 
   // login methods
   static Future<UserCredential?> loginOrSignUpWithGoogle(BuildContext context) async {
@@ -58,6 +58,8 @@ class AuthService {
         fontSize: 16.0,
       );
 
+      userData=await getUserData()??{};
+
       // Navigate to Home screen
       Navigator.pushReplacementNamed(context, '/Home');
 
@@ -95,6 +97,8 @@ class AuthService {
         textColor: Colors.white,
         gravity: ToastGravity.CENTER,
       );
+
+      userData=await getUserData()??{};
       Navigator.pushReplacementNamed(context, '/Home');
     } on FirebaseAuthException catch (e) {
       if (e.code=="invalid-credential"){
@@ -245,7 +249,7 @@ class AuthService {
     );
   }
 
-  static Future<Map<String, dynamic>?> getUserInfo() async {
+  static Future<Map<String, dynamic>?> getUserData() async {
     User? user = _auth.currentUser;
     if (user == null) return null;
 
@@ -256,4 +260,6 @@ class AuthService {
       return null;
     }
   }
+
+
 }

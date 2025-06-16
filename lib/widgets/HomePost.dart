@@ -4,8 +4,21 @@ import 'package:gan/widgets/HomePostAttribute.dart';
 import 'package:gan/services/GeoLocator.dart';
 import 'package:geolocator/geolocator.dart';
 
-class HomePost extends StatelessWidget {
-  const HomePost({super.key});
+class HomePost extends StatefulWidget{
+  const HomePost(
+      {
+        super.key,
+        required this.postData
+      });
+  final Map<String, dynamic> postData;
+
+  @override
+  State<StatefulWidget> createState() =>_HomePostState();
+}
+
+class _HomePostState extends State<HomePost> {
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +57,7 @@ class HomePost extends StatelessWidget {
                 child: Image.asset("assets/images/cat.png"),
               ),
               HomePostAttribute(
-                title: "Near Southern University College",
+                title: "Near ${widget.postData['location']}",
                 icon: Icon(Icons.pin_drop, color: Colors.red, size: 20),
                 onTap: () async
                 {
@@ -59,12 +72,13 @@ class HomePost extends StatelessWidget {
                 },
               ),
               HomePostAttribute(
-                title: "Posted by Goh Kiat Meng",
+                title: "Posted by ${widget.postData['username']}",
                 icon: Icon(Icons.account_circle, size: 20),
               ),
             ],
           ),
         ),
+        const SizedBox(height: 20)
       ],
     );
   }
