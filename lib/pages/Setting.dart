@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:gan/widgets/LabeledInputBox.dart';
+import 'package:gan/widgets/LabeledInputBox.dart';
 
 class Setting extends StatelessWidget {
   const Setting({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Material(
+    child: Column(
       children: [
         Container(
           width: MediaQuery.sizeOf(context).width,
@@ -28,7 +31,9 @@ class Setting extends StatelessWidget {
                   height: 60,
                   decoration: ShapeDecoration(
                     color: Colors.black,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -53,265 +58,26 @@ class Setting extends StatelessWidget {
                 left: 20,
                 top: 350,
                 child: Container(
-                  width: 332,
+                  width: 300,
+                  height: 200,
                   clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(
-                  ),
+                  decoration: BoxDecoration(color: Colors.blue),
                   child: Wrap(
                     alignment: WrapAlignment.start,
-                    runAlignment: WrapAlignment.end,
+                    runAlignment: WrapAlignment.start,
                     spacing: 9,
                     runSpacing: 8,
                     children: [
-                      Text(
-                        'First Name:',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
-                          height: 1.40,
-                        ),
-                      ),
                       Container(
-                        width: 320,
-                        height: 30,
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1,
-                              color: const Color(0xFFDFDFDF),
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 10,
-                          children: [
-                            SizedBox(
-                              width: 262,
-                              child: Text(
-                                'Goh',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: const Color(0xFF828282),
-                                  fontSize: 20,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.40,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 16,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage("https://placehold.co/16x16"),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        'Last Name:',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
-                          height: 1.40,
-                        ),
-                      ),
-                      Container(
-                        width: 320,
-                        height: 30,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1,
-                              color: const Color(0xFFDFDFDF),
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 10,
-                          children: [
-                            SizedBox(
-                              width: 262,
-                              child: Text(
-                                'Kiat Meng',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: const Color(0xFF828282),
-                                  fontSize: 20,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.40,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 16,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage("https://placehold.co/16x16"),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        'Bio:',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
-                          height: 1.40,
-                        ),
-                      ),
-                      Container(
-                        width: 320,
-                        height: 53,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1,
-                              color: const Color(0xFFDFDFDF),
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 10,
-                          children: [
-                            SizedBox(
-                              width: 262,
-                              child: Text(
-                                'Hello guys welcome to my YouTube channel!',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: const Color(0xFF828282),
-                                  fontSize: 10,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.40,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 16,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage("https://placehold.co/16x16"),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: 68,
-                        height: 30,
-                        child: Text(
-                          'Location: ',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
-                            height: 1.40,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 184,
-                        height: 30,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1,
-                              color: const Color(0xFFDFDFDF),
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 10,
-                          children: [
-                            SizedBox(
-                              width: 126,
-                              child: Text(
-                                'Johor Bahru',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: const Color(0xFF828282),
-                                  fontSize: 20,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.40,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 16,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage("https://placehold.co/16x16"),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: 320,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        decoration: BoxDecoration(color: Colors.red),
+                        child: Wrap(
+                          alignment: WrapAlignment.start,
+                          runAlignment: WrapAlignment.start,
                           spacing: 9,
                           children: [
-                            SizedBox(
-                              width: 266,
+                            Container(
                               child: Text(
-                                'Enable post notifications',
+                                'First Name:',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.black,
@@ -323,92 +89,364 @@ class Setting extends StatelessWidget {
                               ),
                             ),
                             Container(
-                              width: 28,
-                              height: 19,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage("https://placehold.co/28x19"),
-                                  fit: BoxFit.contain,
+                              child: Container(
+                                width: 320,
+                                height: 30,
+                                decoration: ShapeDecoration(
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1,
+                                      color: const Color(0xFFDFDFDF),
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  spacing: 10,
+                                  children: [
+                                    Container(
+                                      height: 150,
+                                      width: 150,
+                                      child: TextField(
+                                        decoration: InputDecoration(
+                                          labelText: '用户名',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 16,
+                                      height: 16,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                            "assets/images/pencil.png",
+                                          ),
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Container(
-                        width: 320,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 9,
-                          children: [
-                            SizedBox(
-                              width: 266,
-                              child: Text(
-                                'Enable nearby missing pet notifications',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.40,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 28,
-                              height: 19,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage("https://placehold.co/28x19"),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: 320,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 9,
-                          children: [
-                            SizedBox(
-                              width: 266,
-                              child: Text(
-                                'Enable group chat messages',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.40,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 28,
-                              height: 19,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage("https://placehold.co/28x19"),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // Text(
+                      //   'Last Name:',
+                      //   textAlign: TextAlign.center,
+                      //   style: TextStyle(
+                      //     color: Colors.black,
+                      //     fontSize: 20,
+                      //     fontFamily: 'Inter',
+                      //     fontWeight: FontWeight.w400,
+                      //     height: 1.40,
+                      //   ),
+                      // ),
+                      // Container(
+                      //   width: 320,
+                      //   height: 30,
+                      //   padding: const EdgeInsets.symmetric(
+                      //     horizontal: 16,
+                      //     vertical: 10,
+                      //   ),
+                      //   decoration: ShapeDecoration(
+                      //     color: Colors.white,
+                      //     shape: RoundedRectangleBorder(
+                      //       side: BorderSide(
+                      //         width: 1,
+                      //         color: const Color(0xFFDFDFDF),
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(8),
+                      //     ),
+                      //   ),
+                      //   child: Row(
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     crossAxisAlignment: CrossAxisAlignment.center,
+                      //     spacing: 10,
+                      //     children: [
+                      //       SizedBox(
+                      //         width: 262,
+                      //         child: Text(
+                      //           'Kiat Meng',
+                      //           textAlign: TextAlign.center,
+                      //           style: TextStyle(
+                      //             color: const Color(0xFF828282),
+                      //             fontSize: 20,
+                      //             fontFamily: 'Inter',
+                      //             fontWeight: FontWeight.w400,
+                      //             height: 1.40,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       Container(
+                      //         width: 16,
+                      //         height: 16,
+                      //         decoration: BoxDecoration(
+                      //           image: DecorationImage(
+                      //             image: AssetImage(
+                      //               "https://placehold.co/16x16",
+                      //             ),
+                      //             fit: BoxFit.contain,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // Text(
+                      //   'Bio:',
+                      //   textAlign: TextAlign.center,
+                      //   style: TextStyle(
+                      //     color: Colors.black,
+                      //     fontSize: 20,
+                      //     fontFamily: 'Inter',
+                      //     fontWeight: FontWeight.w400,
+                      //     height: 1.40,
+                      //   ),
+                      // ),
+                      // Container(
+                      //   width: 320,
+                      //   height: 53,
+                      //   padding: const EdgeInsets.symmetric(
+                      //     horizontal: 16,
+                      //     vertical: 10,
+                      //   ),
+                      //   decoration: ShapeDecoration(
+                      //     color: Colors.white,
+                      //     shape: RoundedRectangleBorder(
+                      //       side: BorderSide(
+                      //         width: 1,
+                      //         color: const Color(0xFFDFDFDF),
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(8),
+                      //     ),
+                      //   ),
+                      //   child: Row(
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     crossAxisAlignment: CrossAxisAlignment.center,
+                      //     spacing: 10,
+                      //     children: [
+                      //       SizedBox(
+                      //         width: 262,
+                      //         child: Text(
+                      //           'Hello guys welcome to my YouTube channel!',
+                      //           textAlign: TextAlign.center,
+                      //           style: TextStyle(
+                      //             color: const Color(0xFF828282),
+                      //             fontSize: 10,
+                      //             fontFamily: 'Inter',
+                      //             fontWeight: FontWeight.w400,
+                      //             height: 1.40,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       Container(
+                      //         width: 16,
+                      //         height: 16,
+                      //         decoration: BoxDecoration(
+                      //           image: DecorationImage(
+                      //             image: AssetImage(
+                      //               "https://placehold.co/16x16",
+                      //             ),
+                      //             fit: BoxFit.contain,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // SizedBox(
+                      //   width: 68,
+                      //   height: 30,
+                      //   child: Text(
+                      //     'Location: ',
+                      //     textAlign: TextAlign.center,
+                      //     style: TextStyle(
+                      //       color: Colors.black,
+                      //       fontSize: 20,
+                      //       fontFamily: 'Inter',
+                      //       fontWeight: FontWeight.w400,
+                      //       height: 1.40,
+                      //     ),
+                      //   ),
+                      // ),
+                      // Container(
+                      //   width: 184,
+                      //   height: 30,
+                      //   padding: const EdgeInsets.symmetric(
+                      //     horizontal: 16,
+                      //     vertical: 10,
+                      //   ),
+                      //   decoration: ShapeDecoration(
+                      //     color: Colors.white,
+                      //     shape: RoundedRectangleBorder(
+                      //       side: BorderSide(
+                      //         width: 1,
+                      //         color: const Color(0xFFDFDFDF),
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(8),
+                      //     ),
+                      //   ),
+                      //   child: Row(
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     crossAxisAlignment: CrossAxisAlignment.center,
+                      //     spacing: 10,
+                      //     children: [
+                      //       SizedBox(
+                      //         width: 126,
+                      //         child: Text(
+                      //           'Johor Bahru',
+                      //           textAlign: TextAlign.center,
+                      //           style: TextStyle(
+                      //             color: const Color(0xFF828282),
+                      //             fontSize: 20,
+                      //             fontFamily: 'Inter',
+                      //             fontWeight: FontWeight.w400,
+                      //             height: 1.40,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       Container(
+                      //         width: 16,
+                      //         height: 16,
+                      //         decoration: BoxDecoration(
+                      //           image: DecorationImage(
+                      //             image: AssetImage(
+                      //               "https://placehold.co/16x16",
+                      //             ),
+                      //             fit: BoxFit.contain,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // Container(
+                      //   width: 320,
+                      //   clipBehavior: Clip.antiAlias,
+                      //   decoration: BoxDecoration(),
+                      //   child: Row(
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     spacing: 9,
+                      //     children: [
+                      //       SizedBox(
+                      //         width: 266,
+                      //         child: Text(
+                      //           'Enable post notifications',
+                      //           textAlign: TextAlign.center,
+                      //           style: TextStyle(
+                      //             color: Colors.black,
+                      //             fontSize: 20,
+                      //             fontFamily: 'Inter',
+                      //             fontWeight: FontWeight.w400,
+                      //             height: 1.40,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       Container(
+                      //         width: 28,
+                      //         height: 19,
+                      //         decoration: BoxDecoration(
+                      //           image: DecorationImage(
+                      //             image: AssetImage(
+                      //               "https://placehold.co/28x19",
+                      //             ),
+                      //             fit: BoxFit.contain,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // Container(
+                      //   width: 320,
+                      //   clipBehavior: Clip.antiAlias,
+                      //   decoration: BoxDecoration(),
+                      //   child: Row(
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     spacing: 9,
+                      //     children: [
+                      //       SizedBox(
+                      //         width: 266,
+                      //         child: Text(
+                      //           'Enable nearby missing pet notifications',
+                      //           textAlign: TextAlign.center,
+                      //           style: TextStyle(
+                      //             color: Colors.black,
+                      //             fontSize: 20,
+                      //             fontFamily: 'Inter',
+                      //             fontWeight: FontWeight.w400,
+                      //             height: 1.40,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       Container(
+                      //         width: 28,
+                      //         height: 19,
+                      //         decoration: BoxDecoration(
+                      //           image: DecorationImage(
+                      //             image: AssetImage(
+                      //               "https://placehold.co/28x19",
+                      //             ),
+                      //             fit: BoxFit.contain,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // Container(
+                      //   width: 320,
+                      //   clipBehavior: Clip.antiAlias,
+                      //   decoration: BoxDecoration(),
+                      //   child: Row(
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     spacing: 9,
+                      //     children: [
+                      //       SizedBox(
+                      //         width: 266,
+                      //         child: Text(
+                      //           'Enable group chat messages',
+                      //           textAlign: TextAlign.center,
+                      //           style: TextStyle(
+                      //             color: Colors.black,
+                      //             fontSize: 20,
+                      //             fontFamily: 'Inter',
+                      //             fontWeight: FontWeight.w400,
+                      //             height: 1.40,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       Container(
+                      //         width: 28,
+                      //         height: 19,
+                      //         decoration: BoxDecoration(
+                      //           image: DecorationImage(
+                      //             image: AssetImage(
+                      //               "https://placehold.co/28x19",
+                      //             ),
+                      //             fit: BoxFit.contain,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -417,7 +455,10 @@ class Setting extends StatelessWidget {
                 left: 114.50,
                 top: 93,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 13),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 13,
+                  ),
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
                     color: const Color(0xFFE6FCFF),
@@ -430,7 +471,7 @@ class Setting extends StatelessWidget {
                         blurRadius: 4,
                         offset: Offset(0, 4),
                         spreadRadius: 0,
-                      )
+                      ),
                     ],
                   ),
                   child: Row(
@@ -455,7 +496,7 @@ class Setting extends StatelessWidget {
                               blurRadius: 4,
                               offset: Offset(0, 4),
                               spreadRadius: 0,
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -508,7 +549,7 @@ class Setting extends StatelessWidget {
                               blurRadius: 4,
                               offset: Offset(0, 4),
                               spreadRadius: 0,
-                            )
+                            ),
                           ],
                         ),
                         child: Stack(
@@ -523,10 +564,7 @@ class Setting extends StatelessWidget {
                                     '/UserProfile',
                                   );
                                 },
-                                child: Icon(
-                                  Icons.arrow_back,
-                                  size: 30,
-                                ),
+                                child: Icon(Icons.arrow_back, size: 30),
                               ),
                             ),
                           ],
@@ -546,7 +584,7 @@ class Setting extends StatelessWidget {
                               blurRadius: 4,
                               offset: Offset(0, 4),
                               spreadRadius: 0,
-                            )
+                            ),
                           ],
                         ),
                         child: Column(
@@ -576,7 +614,15 @@ class Setting extends StatelessWidget {
                                           fontWeight: FontWeight.w700,
                                           height: 1,
                                           letterSpacing: 3,
-                                          shadows: [Shadow(offset: Offset(0, 4), blurRadius: 4, color: Color(0xFF000000).withOpacity(0.25))],
+                                          shadows: [
+                                            Shadow(
+                                              offset: Offset(0, 4),
+                                              blurRadius: 4,
+                                              color: Color(
+                                                0xFF000000,
+                                              ).withOpacity(0.25),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -595,6 +641,7 @@ class Setting extends StatelessWidget {
           ),
         ),
       ],
+    ),
     );
   }
 }
