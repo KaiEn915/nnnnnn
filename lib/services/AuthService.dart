@@ -74,7 +74,7 @@ class AuthService {
     }
 
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
 
       Fluttertoast.showToast(
         msg: "Login success as ${_auth.currentUser?.email}!",
@@ -191,14 +191,17 @@ class AuthService {
   }
 
   static Future<Map<String, dynamic>?> getUserData() async {
+    print('getting user data');
     User? user = _auth.currentUser;
     if (user == null) return null;
 
     try {
       DocumentSnapshot<Map<String, dynamic>> doc = await db.collection("users").doc(user.uid).get();
       if (doc.exists) {
+        print(doc);
         return doc.data();
       } else {
+        print('not exists');
         return null;
       }
     } catch (e) {

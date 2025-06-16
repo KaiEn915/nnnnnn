@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class HomePostAttribute extends StatelessWidget{
   final String title;
-  final Icon icon;
+  final Icon? icon;
   final VoidCallback? onTap;
-  const HomePostAttribute({super.key,required this.title,required this.icon,this.onTap});
+  const HomePostAttribute({super.key,required this.title,this.icon,this.onTap});
 
 
   @override

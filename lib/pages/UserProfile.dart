@@ -5,7 +5,7 @@ import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
 
 class UserProfile extends StatelessWidget {
-  UserProfile({super.key});
+  const UserProfile({super.key});
 
   @override
   Widget build(BuildContext context) {

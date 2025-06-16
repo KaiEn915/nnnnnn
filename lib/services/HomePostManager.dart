@@ -5,6 +5,7 @@ class HomePostManager {
 
   /// Creates a new post with the given data.
   static Future<void> createPost({
+    required String title,
     required String description,
     required String userId,
     required String username,
@@ -13,6 +14,7 @@ class HomePostManager {
   }) async {
 
     final postData = {
+      "title": title,
       "description": description,
       "userId": userId,
       "username": username,
