@@ -51,6 +51,9 @@ class _HomePostState extends State<HomePost> {
                 title: "Since 7 hours ago",
                 icon: Icon(Icons.history, size: 20),
               ),
+              HomePostAttribute(
+                title: widget.postData['title']??" ",
+              ),
               Container(
                 width: 350,
                 height: 196,

@@ -69,14 +69,27 @@ class _HomeState extends State<Home> {
     });
   }
 
-  void search() {
+  void search() async {
+
     String query = searchBarController.text.trim();
     if (query.isNotEmpty) {
       print("Searching for: $query");
-      // You can add your search logic here
+      final ref = AuthService.db.collection("posts");
+      final snapshot = await ref
+          .where("title", isGreaterThanOrEqualTo: query)
+          .where("title", isLessThan: query + 'z') // crude way to capture prefix match
+          .get();
+
+      final postList = snapshot.docs.map((doc) => doc.data()).toList();
+
+      setState(() {
+        _postWidgets=postList.map((p)=>HomePost(postData: p)).toList();
+      });
+
     } else {
       print("Search bar is empty.");
     }
+
   }
 
   @override
@@ -211,11 +224,10 @@ class _HomeState extends State<Home> {
                             ),
                             GestureDetector(
                               onTap: (){
-                                print('yo');
                                 User? user = FirebaseAuth.instance.currentUser;
                                 if (user!=null){
-                                  print("creatingpost");
                                   HomePostManager.createPost(
+                                    title:"test title",
                                     description: "test",
                                     userId: user.uid,
                                     username: AuthService.userData['username'],
