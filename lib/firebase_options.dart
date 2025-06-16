@@ -51,7 +51,6 @@ class DefaultFirebaseOptions {
     authDomain: 'petfinder-ba6f8.firebaseapp.com',
     storageBucket: 'petfinder-ba6f8.firebasestorage.app',
     measurementId: 'G-NJK3DG7KQF',
-    databaseURL: 'https://petfinder-ba6f8-default-rtdb.asia-southeast1.firebasedatabase.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -60,7 +59,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '164660568702',
     projectId: 'petfinder-ba6f8',
     storageBucket: 'petfinder-ba6f8.firebasestorage.app',
-    databaseURL: 'https://petfinder-ba6f8-default-rtdb.asia-southeast1.firebasedatabase.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -70,7 +68,6 @@ class DefaultFirebaseOptions {
     projectId: 'petfinder-ba6f8',
     storageBucket: 'petfinder-ba6f8.firebasestorage.app',
     iosBundleId: 'com.example.gan',
-    databaseURL: 'https://petfinder-ba6f8-default-rtdb.asia-southeast1.firebasedatabase.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -80,7 +77,6 @@ class DefaultFirebaseOptions {
     projectId: 'petfinder-ba6f8',
     storageBucket: 'petfinder-ba6f8.firebasestorage.app',
     iosBundleId: 'com.example.gan',
-    databaseURL: 'https://petfinder-ba6f8-default-rtdb.asia-southeast1.firebasedatabase.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
@@ -91,6 +87,5 @@ class DefaultFirebaseOptions {
     authDomain: 'petfinder-ba6f8.firebaseapp.com',
     storageBucket: 'petfinder-ba6f8.firebasestorage.app',
     measurementId: 'G-5GJYLM9CDF',
-    databaseURL: 'https://petfinder-ba6f8-default-rtdb.asia-southeast1.firebasedatabase.app',
   );
 }

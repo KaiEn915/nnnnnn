@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+
 import 'package:gan/services/AuthService.dart';
 
 class HomePostManager {
@@ -11,8 +11,6 @@ class HomePostManager {
     required String imageUrl,
     required String location,
   }) async {
-    final newPostRef = AuthService.dbRef.child('posts').push(); // Generates a unique key for the post
-
 
     final postData = {
       "description": description,
@@ -23,6 +21,6 @@ class HomePostManager {
       "timestamp": DateTime.now().millisecondsSinceEpoch,
     };
     print(postData );
-    await newPostRef.set(postData);
+    await AuthService.db.collection("posts").add(postData);
   }
 }

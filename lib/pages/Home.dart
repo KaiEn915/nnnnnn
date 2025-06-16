@@ -1,14 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/HomePostManager.dart';
 import 'package:gan/widgets/HomePost.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
-import 'package:gan/widgets/NavigationButton.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
@@ -39,28 +36,29 @@ class _HomeState extends State<Home> {
   }
 
   void loadPosts() async {
-    final ref = AuthService.dbRef.child("posts");
-    final snapshot = await ref.get();
+    try {
+      final ref = AuthService.db.collection("posts");
+      final snapshot = await ref.get();
 
-    if (!snapshot.exists) {
-      print("No posts found");
-      return;
+      if (snapshot.docs.isEmpty) {
+        print("No posts found");
+        return;
+      }
+
+      final postList = snapshot.docs.map((doc) => doc.data()).toList();
+
+      // Shuffle the list
+      postList.shuffle(Random());
+
+      // Choose 5 random posts
+      final randomPosts = postList.take(5).toList();
+
+      setState(() {
+        _postWidgets.addAll(randomPosts.map((p) => HomePost(postData: p)));
+      });
+    } catch (e) {
+      print("Error loading posts: $e");
     }
-
-    final postMap = Map<String, dynamic>.from(snapshot.value as Map);
-    final postList = postMap.entries.map((e) {
-      return Map<String, dynamic>.from(e.value);
-    }).toList();
-
-    // Shuffle the list
-    postList.shuffle(Random());
-
-    // Choose 5 random posts (or however many you want)
-    final randomPosts = postList.take(5).toList();
-
-    setState(() {
-      _postWidgets.addAll(randomPosts.map((p) => HomePost(postData: p)));
-    });
   }
 
   void _onSearchChanged() {
