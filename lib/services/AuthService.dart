@@ -11,6 +11,7 @@ class AuthService {
   );
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore db = FirebaseFirestore.instance;
+  static var uid;
   static Map<String, dynamic> userData = {};
 
   static Future<UserCredential?> loginOrSignUpWithGoogle(BuildContext context) async {

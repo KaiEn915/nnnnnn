@@ -95,20 +95,20 @@ class _LoginState extends State<Login> {
                         ),
 
                         LabeledInputBox(
+                          isInputLocation: false,
                           label: 'Username or Email',
                           placeholder: 'email@domain.com',
                           width: 320,
-                          hasBackground: false,
-                          controller: emailController,
+                          textController: emailController,
 
                         ),
                         LabeledInputBox(
+                          isInputLocation: false,
                           label: 'Password',
                           placeholder: '*******',
                           width: 320,
-                          hasBackground: false,
                           isObscure: true,
-                          controller: passwordController,
+                          textController: passwordController,
                         ),
                         AppButton(
                           text: "Login",

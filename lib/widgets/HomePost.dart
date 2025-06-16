@@ -69,7 +69,7 @@ class _HomePostState extends State<HomePost> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MyMap(initialPosition: pos),
+                      builder: (context) => MyMap(isPromptingLocation: false,initialPosition: pos),
                     ),
                   );
                 },

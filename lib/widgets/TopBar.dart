@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class TopBar extends StatelessWidget {
   const TopBar({
     super.key,
     required this.isMiddleSearchBar,
-    this.header="",
+    this.header = "",
     this.leftIcon,
     this.leftIcon_onTap,
     this.rightIcon,
@@ -50,33 +49,34 @@ class TopBar extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20),
           height: 50,
           child: Row(
-
             mainAxisAlignment: MainAxisAlignment.end,
             spacing: 10,
             children: [
-              leftIcon!=null? GestureDetector(
-                onTap: leftIcon_onTap,
-                child: Container(
-                  width: 37,
-                  height: 37,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: Colors.white.withAlpha(192),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x3F000000),
-                        blurRadius: 4,
-                        offset: Offset(0, 4),
-                        spreadRadius: 0,
+              leftIcon != null
+                  ? GestureDetector(
+                      onTap: leftIcon_onTap,
+                      child: Container(
+                        width: 37,
+                        height: 37,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: ShapeDecoration(
+                          color: Colors.white.withAlpha(192),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          shadows: [
+                            BoxShadow(
+                              color: Color(0x3F000000),
+                              blurRadius: 4,
+                              offset: Offset(0, 4),
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Icon(leftIcon),
                       ),
-                    ],
-                  ),
-                  child: Icon(leftIcon),
-                ),
-              ):SizedBox(width: 37,height: 37),
+                    )
+                  : SizedBox(width: 37, height: 37),
               isMiddleSearchBar
                   ? Container(
                       width: 244,
@@ -103,7 +103,6 @@ class TopBar extends StatelessWidget {
                         children: [
                           Container(
                             width: 180,
-                            height: 31,
                             decoration: ShapeDecoration(
                               color: Colors.white,
                               shape: RoundedRectangleBorder(
@@ -121,7 +120,7 @@ class TopBar extends StatelessWidget {
                               ),
 
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.inter(
+                              style: TextStyle(
                                 decoration: TextDecoration.none,
                                 color: const Color(0xFF828282),
                                 fontSize: 14,
@@ -130,7 +129,6 @@ class TopBar extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            height: 31,
                             width: 31,
                             child: Icon(Icons.search),
                           ),
@@ -138,30 +136,24 @@ class TopBar extends StatelessWidget {
                       ),
                     )
                   : Container(
-                width: 244,
-                height: 48,
-                decoration: ShapeDecoration(
-                  color: Colors.white.withAlpha(191),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  shadows: [
-                    BoxShadow(
-                      color: Color(0x3F000000),
-                      blurRadius: 4,
-                      offset: Offset(0, 4),
-                      spreadRadius: 0,
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 0,
-                      top: 15,
-                      child: SizedBox(
-                        width: 244,
-                        height: 48,
+                      width: 244,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      clipBehavior: Clip.antiAlias,
+                      decoration: ShapeDecoration(
+                        color: Colors.white.withAlpha(192),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        shadows: [
+                          BoxShadow(
+                            color: Color(0x3F000000),
+                            blurRadius: 4,
+                            offset: Offset(0, 4),
+                            spreadRadius: 0,
+                          ),
+                        ],
+                      ),
+                      child: Container(
                         child: Text(
                           header,
                           textAlign: TextAlign.center,
@@ -171,39 +163,43 @@ class TopBar extends StatelessWidget {
                             fontFamily: 'IBM Plex Sans',
                             decoration: TextDecoration.none,
                             fontWeight: FontWeight.w700,
-                            height: 1,
                             letterSpacing: 3.30,
-                            shadows: [Shadow(offset: Offset(0, 4), blurRadius: 4, color: Color(0xFF000000).withOpacity(0.25))],
+                            shadows: [
+                              Shadow(
+                                offset: Offset(0, 4),
+                                blurRadius: 4,
+                                color: Color(0xFF000000).withAlpha(64),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              rightIcon!=null? GestureDetector(
-                onTap: rightIcon_onTap,
-                child: Container(
-                  width: 37,
-                  height: 37,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: Colors.white.withAlpha(192),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x3F000000),
-                        blurRadius: 4,
-                        offset: Offset(0, 4),
-                        spreadRadius: 0,
+              rightIcon != null
+                  ? GestureDetector(
+                      onTap: rightIcon_onTap,
+                      child: Container(
+                        width: 37,
+                        height: 37,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: ShapeDecoration(
+                          color: Colors.white.withAlpha(192),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          shadows: [
+                            BoxShadow(
+                              color: Color(0x3F000000),
+                              blurRadius: 4,
+                              offset: Offset(0, 4),
+                              spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Icon(rightIcon),
                       ),
-                    ],
-                  ),
-                  child: Icon(rightIcon),
-                ),
-              ):SizedBox(width: 37,height: 37),
+                    )
+                  : SizedBox(width: 37, height: 37),
             ],
           ),
         ),

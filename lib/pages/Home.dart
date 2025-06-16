@@ -132,7 +132,7 @@ class _HomeState extends State<Home> {
                   TopBar(
                     isMiddleSearchBar: true,
                     rightIcon: Icons.post_add,
-                    rightIcon_onTap: () => {print('s')},
+                    rightIcon_onTap: () => {Navigator.pushNamed(context, "/CreatePost")},
                   ),
                 ],
               ),
