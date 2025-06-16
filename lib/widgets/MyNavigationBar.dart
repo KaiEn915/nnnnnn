@@ -61,7 +61,7 @@ class MyNavigationBar extends StatelessWidget {
               label: 'Scan',
               icon: Icons.camera_alt,
               onTap: () {
-                Navigator.pushReplacementNamed(
+                Navigator.pushNamed(
                   context,
                   '/Scan',
                 );
