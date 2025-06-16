@@ -6,6 +6,7 @@ import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/HomePostManager.dart';
 import 'package:gan/widgets/HomePost.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
+import 'package:gan/widgets/TopBar.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
@@ -70,26 +71,26 @@ class _HomeState extends State<Home> {
   }
 
   void search() async {
-
     String query = searchBarController.text.trim();
     if (query.isNotEmpty) {
       print("Searching for: $query");
       final ref = AuthService.db.collection("posts");
       final snapshot = await ref
           .where("title", isGreaterThanOrEqualTo: query)
-          .where("title", isLessThan: query + 'z') // crude way to capture prefix match
+          .where(
+            "title",
+            isLessThan: query + 'z',
+          ) // crude way to capture prefix match
           .get();
 
       final postList = snapshot.docs.map((doc) => doc.data()).toList();
 
       setState(() {
-        _postWidgets=postList.map((p)=>HomePost(postData: p)).toList();
+        _postWidgets = postList.map((p) => HomePost(postData: p)).toList();
       });
-
     } else {
       print("Search bar is empty.");
     }
-
   }
 
   @override
@@ -128,140 +129,10 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   MyNavigationBar(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 15,
-                    ),
-                    child: Container(
-                      //search box table
-                      width: MediaQuery.sizeOf(context).width,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      // margin: const EdgeInsets.symmetric(horizontal: 15),
-                      clipBehavior: Clip.antiAlias,
-                      decoration: ShapeDecoration(
-                        color: Colors.white.withAlpha(192),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        shadows: [
-                          BoxShadow(
-                            color: Color(0x3F000000),
-                            blurRadius: 4,
-                            offset: Offset(0, 0),
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          spacing: 10,
-                          children: [
-                            Container(
-                              width: 244,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 15,
-                                vertical: 9,
-                              ),
-                              clipBehavior: Clip.antiAlias,
-                              decoration: ShapeDecoration(
-                                color: Colors.white.withAlpha(192),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                shadows: [
-                                  BoxShadow(
-                                    color: Color(0x3F000000),
-                                    blurRadius: 4,
-                                    offset: Offset(0, 4),
-                                    spreadRadius: 0,
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    width: 180,
-                                    height: 31,
-                                    decoration: ShapeDecoration(
-                                      color: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 1,
-                                          color: const Color(0xFFDFDFDF),
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                    child: TextField(
-                                      controller: searchBarController,
-                                      decoration: InputDecoration(
-                                        hintText: 'Search post...',
-                                      ),
-
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.inter(
-                                        decoration: TextDecoration.none,
-                                        color: const Color(0xFF828282),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 31,
-                                    width: 31,
-                                    child: Icon(Icons.search),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: (){
-                                User? user = FirebaseAuth.instance.currentUser;
-                                if (user!=null){
-                                  HomePostManager.createPost(
-                                    title:"test title",
-                                    description: "test",
-                                    userId: user.uid,
-                                    username: AuthService.userData['username'],
-                                    imageUrl: "",
-                                    location: "Sutera Mall",
-                                  );
-                                }
-
-                              },
-                              child: Container(
-                                width: 37,
-                                height: 37,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: ShapeDecoration(
-                                  color: Colors.white.withAlpha(192),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  shadows: [
-                                    BoxShadow(
-                                      color: Color(0x3F000000),
-                                      blurRadius: 4,
-                                      offset: Offset(0, 4),
-                                      spreadRadius: 0,
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(Icons.post_add),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  TopBar(
+                    isMiddleSearchBar: true,
+                    rightIcon: Icons.post_add,
+                    rightIcon_onTap: () => {print('s')},
                   ),
                 ],
               ),

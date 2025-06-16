@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gan/firebase_options.dart';
+import 'package:gan/pages/CreatePost.dart';
 import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/pages/Home.dart';
 import 'package:gan/pages/Login.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/UserProfile':(context)=> UserProfile(),
         '/Scan':(context)=> const Scan(),
         '/Setting':(context)=> const Setting(),
+        '/CreatePost':(context)=> const CreatePost(),
       },
     );
   }
