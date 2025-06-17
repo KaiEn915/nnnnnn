@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
+import 'package:gan/widgets/TopBar.dart';
 
 class UserProfile extends StatelessWidget {
   const UserProfile({super.key});
@@ -274,129 +275,12 @@ class UserProfile extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
-                left: 19,
-                top: 20,
-                child: Container(
-                  width: 371,
-                  height: 65,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: Colors.white.withAlpha(191),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 10,
-                    children: [
-                      Container(
-                        width: 244,
-                        margin: EdgeInsets.only(left: 50),
-                        clipBehavior: Clip.antiAlias,
-                        decoration: ShapeDecoration(
-                          color: Colors.white.withAlpha(191),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x3F000000),
-                              blurRadius: 4,
-                              offset: Offset(0, 4),
-                              spreadRadius: 0,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 48,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    left: 0,
-                                    top: 14,
-                                    child: SizedBox(
-                                      width: 244,
-                                      height: 48,
-                                      child: Text(
-                                        'PROFILE',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 24,
-                                          fontFamily: 'IBM Plex Sans',
-                                          fontWeight: FontWeight.w700,
-                                          height: 1,
-                                          letterSpacing: 3.60,
-                                          shadows: [
-                                            Shadow(
-                                              offset: Offset(0, 4),
-                                              blurRadius: 4,
-                                              color: Color(
-                                                0xFF000000,
-                                              ).withOpacity(0.25),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: 37,
-                        height: 37,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: ShapeDecoration(
-                          color: Colors.white.withAlpha(191),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x3F000000),
-                              blurRadius: 4,
-                              offset: Offset(0, 4),
-                              spreadRadius: 0,
-                            ),
-                          ],
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: 7,
-                              top: 7,
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pushReplacementNamed(
-                                    context,
-                                    '/Setting',
-                                  );
-                                },
-                                child: Container(
-                                  width: 24,
-                                  height: 24,
-                                  child: Icon(Icons.settings_outlined),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+             TopBar(
+               isMiddleSearchBar: false,
+               header: "PROFILE",
+               rightIcon: Icons.settings_outlined,
+               rightIcon_onTap: ()=> {Navigator.pushNamed(context, "/Setting")},
+             ),
             ],
           ),
         ),

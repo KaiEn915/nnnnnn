@@ -11,7 +11,7 @@ class AppButton extends StatefulWidget {
     required this.text,
     this.textColor=Colors.white,
     this.backgroundColor=const Color(0xFF485266),
-    required this.width,
+    this.width = 200,
     required this.onPressed,
   });
 

@@ -14,6 +14,9 @@ class LabeledInputBox extends StatefulWidget {
   final double height;
   final bool isObscure;
   final TextEditingController? textController;
+  final bool showCatIcon;
+  final bool showPencilIcon;
+  final int maxLines;
 
   const LabeledInputBox({
     super.key,
@@ -22,8 +25,11 @@ class LabeledInputBox extends StatefulWidget {
     this.placeholder = "No placeholder...",
     required this.width,
     this.height = 70,
-    this.textController,
+    required this.textController,
     this.isObscure = false, // Flag to toggle password visibility
+    this.showCatIcon =true,
+    this.showPencilIcon = false,
+    this.maxLines = 1,
   });
   @override
   State<LabeledInputBox> createState() => _LabeledInputBox();
@@ -74,7 +80,6 @@ class _LabeledInputBox extends State<LabeledInputBox> {
                               LatLng? location = await MyMap.pickLocationFromMap(
                                 context,
                               );
-
                               print("location: $location");
                               widget.textController?.text=location.toString();
                               print(widget.textController?.text);
@@ -90,7 +95,12 @@ class _LabeledInputBox extends State<LabeledInputBox> {
                           )
                         : TextField(
                             controller: widget.textController,
+                            maxLines: widget.maxLines,
                             decoration: InputDecoration(
+                        suffixIcon: widget.showPencilIcon?Image.asset(
+                                'assets/images/pencil.png',
+                                width: 24,
+                              ):null,
                               hintText: widget.placeholder,
                               border: InputBorder.none,
                             ),
@@ -106,6 +116,7 @@ class _LabeledInputBox extends State<LabeledInputBox> {
               ),
             ],
           ),
+          widget.showCatIcon?
           Positioned(
             right: 0,
             top: -10,
@@ -119,7 +130,7 @@ class _LabeledInputBox extends State<LabeledInputBox> {
                 ),
               ),
             ),
-          ),
+          ):SizedBox(),
         ],
       ),
     );
