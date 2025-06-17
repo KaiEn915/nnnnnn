@@ -33,9 +33,11 @@ class _SettingWidgetState extends State<Setting> {
       "uid": AuthService.uid,
     };
     print(SettingData);
-    await AuthService.db.collection("settings").add(SettingData);
+    await AuthService.db
+        .collection("settings")
+        .doc(AuthService.uid)
+        .set(SettingData);
   }
-
   late TextEditingController _UserNamecontroller = TextEditingController();
   late TextEditingController _bioController = TextEditingController();
   late TextEditingController _locationController = TextEditingController();
@@ -55,12 +57,25 @@ class _SettingWidgetState extends State<Setting> {
 
   Future<void> _loadUserBio() async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> doc = await AuthService.db.collection("users").doc(AuthService.uid).get();
+      DocumentSnapshot<Map<String, dynamic>> doc = await AuthService.db
+          .collection("settings")
+          .doc(AuthService.uid)
+          .get();
+
       if (doc.exists) {
-        print(doc);
-        _bioController.text=doc.data()?['bio'];
+        final data = doc.data();
+        if (data != null) {
+          setState(() {
+            _bioController.text = data['bio'] ?? "";
+            _locationController.text = data['location'] ?? "";
+            EnablePostNotifications = data['enablePostNotifications'] ?? false;
+            EnableNearbyMissingPetNotifications = data['enableNearbyNotifications'] ?? false;
+            EnableGroupChatMessages = data['enableGroupChatMessages'] ?? false;
+
+          });
+        }
       } else {
-        print('not exists');
+        print('User settings not found.');
       }
     } catch (e) {
       print("Error fetching user data: $e");
