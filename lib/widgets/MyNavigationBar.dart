@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gan/pages/GroupChat.dart';
-import 'package:gan/pages/Home.dart';
 import 'package:gan/widgets/NavigationButton.dart';
 
 class MyNavigationBar extends StatelessWidget {

@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/services/AuthService.dart';
-import 'package:gan/services/HomePostManager.dart';
 import 'package:gan/widgets/HomePost.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
 import 'package:gan/widgets/TopBar.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -24,8 +21,15 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    //load user data
+    AuthService.updateUserData();
+    print('init');
+
+
     loadPosts();
     super.initState();
+
+
 
     searchBarController.addListener(_onSearchChanged);
     _scrollController.addListener(() {

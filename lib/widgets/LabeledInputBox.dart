@@ -1,8 +1,7 @@
-import 'dart:io';
-import 'package:latlong2/latlong.dart';
 
+import 'package:geocoding/geocoding.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:gan/pages/MyMap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -75,42 +74,68 @@ class _LabeledInputBox extends State<LabeledInputBox> {
                   ),
                   child: Center(
                     child: widget.isInputLocation
-                        ? GestureDetector(
-                            onTap: () async {
-                              LatLng? location = await MyMap.pickLocationFromMap(
-                                context,
-                              );
-                              print("location: $location");
-                              widget.textController?.text=location.toString();
-                              print(widget.textController?.text);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              spacing: 25,
-                              children: [
-                                Text(widget.placeholder),
-                                Icon(Icons.pin_drop, color: Colors.red),
-                              ],
-                            ),
-                          )
-                        : TextField(
-                            controller: widget.textController,
-                            maxLines: widget.maxLines,
-                            decoration: InputDecoration(
-                        suffixIcon: widget.showPencilIcon?Image.asset(
-                                'assets/images/pencil.png',
-                                width: 24,
-                              ):null,
-                              hintText: widget.placeholder,
-                              border: InputBorder.none,
-                            ),
-                            style: GoogleFonts.ibmPlexSans(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            obscureText: widget.isObscure,
+                        ? Stack(
+                      alignment: Alignment.centerLeft,
+                      children: [
+                        TextField(
+                          enabled: false,
+                          controller: widget.textController,
+                          maxLines: widget.maxLines,
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(Icons.pin_drop, size: 20,color: Colors.red),
+                            hintText: widget.placeholder,
+                            border: InputBorder.none,
                           ),
+                          style: GoogleFonts.ibmPlexSans(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          obscureText: widget.isObscure,
+                        ),
+                        Positioned.fill(
+                          child: GestureDetector(
+                            onTap: () async {
+                              LatLng? location = await MyMap.pickLocationFromMap(context);
+                              if (location != null) {
+                                List<Placemark> placemarks = await placemarkFromCoordinates(location.latitude,location.longitude);
+                                if (placemarks.isNotEmpty) {
+                                  Placemark place = placemarks.first;
+
+                                  String address =
+                                      '${place.name}, ${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
+
+                                  widget.textController?.text = address;
+                                }
+                              }
+                            },
+                            behavior: HitTestBehavior.translucent,
+                          ),
+
+                        ),
+                      ],
+                    )
+                        : TextField(
+                      controller: widget.textController,
+                      maxLines: widget.maxLines,
+                      decoration: InputDecoration(
+                        suffixIcon: widget.showPencilIcon
+                            ? Image.asset(
+                          'assets/images/pencil.png',
+                          width: 24,
+                        )
+                            : null,
+                        hintText: widget.placeholder,
+                        border: InputBorder.none,
+                      ),
+                      style: GoogleFonts.ibmPlexSans(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      obscureText: widget.isObscure,
+                    ),
+
                   ),
                 ),
               ),

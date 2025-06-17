@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gan/firebase_options.dart';
 import 'package:gan/pages/CreatePost.dart';
 import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/pages/Home.dart';

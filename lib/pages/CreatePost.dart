@@ -1,12 +1,11 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/HomePostManager.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:gan/widgets/TopBar.dart';
-import 'package:latlong2/latlong.dart';
+
 class CreatePost extends StatefulWidget {
   const CreatePost({super.key});
 
@@ -88,7 +87,7 @@ class _CreatePost extends State<CreatePost> {
                           title: titleController.text,
                           description: descriptionController.text,
                           userId: AuthService.uid,
-                          username: AuthService.userData['username'],
+                          username: AuthService.userData?['username'],
                           imageUrl: "",
                           location: locationController.text,
                         ),

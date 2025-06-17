@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
@@ -130,7 +128,7 @@ class UserProfile extends StatelessWidget {
                             vertical: 5,
                           ),
                           child: Text(
-                            AuthService.userData['username'],
+                            AuthService.userData?['username'],
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.black,

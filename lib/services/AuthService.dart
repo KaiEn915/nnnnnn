@@ -11,8 +11,10 @@ class AuthService {
   );
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore db = FirebaseFirestore.instance;
+  static Map<String,dynamic>? userData= {};
+
   static var uid;
-  static Map<String, dynamic> userData = {};
+
 
   static Future<UserCredential?> loginOrSignUpWithGoogle(BuildContext context) async {
     try {
@@ -45,8 +47,6 @@ class AuthService {
         textColor: Colors.white,
         gravity: ToastGravity.CENTER,
       );
-
-      userData = await getUserData() ?? {};
 
       Navigator.pushReplacementNamed(context, '/Home');
 
@@ -84,7 +84,6 @@ class AuthService {
         gravity: ToastGravity.CENTER,
       );
 
-      userData = await getUserData() ?? {};
       Navigator.pushReplacementNamed(context, '/Home');
     } on FirebaseAuthException catch (e) {
       if (e.code == "invalid-credential") {
@@ -208,6 +207,23 @@ class AuthService {
     } catch (e) {
       print("Error fetching user data: $e");
       return null;
+    }
+  }
+
+  static Future<void> updateUserData() async {
+    print('getting user data');
+    User? user = _auth.currentUser;
+    if (user == null) return null;
+
+    try {
+      DocumentSnapshot<Map<String, dynamic>> doc = await db.collection("users").doc(user.uid).get();
+      if (doc.exists) {
+        userData=doc.data();
+      } else {
+        print('not exists');
+      }
+    } catch (e) {
+      print("Error fetching user data: $e");
     }
   }
 

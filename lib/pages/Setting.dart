@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
-import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:flutter/services.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/TopBar.dart';
@@ -19,72 +18,61 @@ class _SettingWidgetState extends State<Setting> {
     required String username,
     required String bio,
     required String location,
-    required bool EnablePostNotifications,
-    required bool EnableNearbyMissingPetNotifications,
-    required bool EnableGroupChatMessages,
+    required bool enablePostNotifications,
+    required bool enableNearbyMissingPetNotifications,
+    required bool enableGroupChatMessages,
   }) async {
-    final SettingData = {
+    final settingData = {
       "username": username,
       "bio": bio,
       "location": location,
-      "enablePostNotifications": EnablePostNotifications,
-      "enableNearbyNotifications": EnableNearbyMissingPetNotifications,
-      "enableGroupChatMessages": EnableGroupChatMessages,
+      "enablePostNotifications": enablePostNotifications,
+      "enableNearbyMissingPetNotifications": enableNearbyMissingPetNotifications,
+      "enableGroupChatMessages": enableGroupChatMessages,
       "uid": AuthService.uid,
     };
-    print(SettingData);
+
     await AuthService.db
-        .collection("settings")
+        .collection("users")
         .doc(AuthService.uid)
-        .set(SettingData);
+        .update(settingData);
   }
-  late TextEditingController _UserNamecontroller = TextEditingController();
-  late TextEditingController _bioController = TextEditingController();
-  late TextEditingController _locationController = TextEditingController();
-  bool EnablePostNotifications = false;
-  bool EnableNearbyMissingPetNotifications = false;
-  bool EnableGroupChatMessages = false;
+  late TextEditingController usernameController = TextEditingController();
+  late TextEditingController bioController = TextEditingController();
+  late TextEditingController locationController = TextEditingController();
+  bool enablePostNotifications = true;
+  bool enableNearbyMissingPetNotifications = false;
+  bool enableGroupChatMessages = false;
 
   @override
   void initState() {
+    loadUserSettings();
     super.initState();
-    _UserNamecontroller = TextEditingController(
-      text: AuthService.userData['username'], // 假设从用户数据获取
-    );
-    _bioController = TextEditingController(); // 先初始化
-    _loadUserBio(); // 异步加载
+
+
+    
   }
 
-  Future<void> _loadUserBio() async {
-    try {
-      DocumentSnapshot<Map<String, dynamic>> doc = await AuthService.db
-          .collection("settings")
-          .doc(AuthService.uid)
-          .get();
+  Future<void> loadUserSettings() async{
+    await AuthService.updateUserData();
+    Map<String,dynamic>? data=AuthService.userData;
 
-      if (doc.exists) {
-        final data = doc.data();
-        if (data != null) {
-          setState(() {
-            _bioController.text = data['bio'] ?? "";
-            _locationController.text = data['location'] ?? "";
-            EnablePostNotifications = data['enablePostNotifications'] ?? false;
-            EnableNearbyMissingPetNotifications = data['enableNearbyNotifications'] ?? false;
-            EnableGroupChatMessages = data['enableGroupChatMessages'] ?? false;
+    setState(() {
+      usernameController.text=data?['username'];
+      bioController.text=data?['bio'];
+      locationController.text=data?['location'];
+      enableGroupChatMessages=data?['enableGroupChatMessages'];
+      enableNearbyMissingPetNotifications=data?['enableNearbyMissingPetNotifications'];
+      enablePostNotifications=data?['enablePostNotifications'];
+    });
 
-          });
-        }
-      } else {
-        print('User settings not found.');
-      }
-    } catch (e) {
-      print("Error fetching user data: $e");
-    }
+
+
   }
 
   @override
   void dispose() {
-    _UserNamecontroller.dispose();
+    usernameController.dispose();
     super.dispose();
   }
 
@@ -118,13 +106,13 @@ class _SettingWidgetState extends State<Setting> {
                           backgroundColor: Colors.black,
                           onPressed: () => {
                             saveSetting(
-                              username: _UserNamecontroller.text,
-                              bio: _bioController.text,
-                              location: _locationController.text,
-                              EnablePostNotifications: EnablePostNotifications,
-                              EnableNearbyMissingPetNotifications:
-                              EnableNearbyMissingPetNotifications,
-                              EnableGroupChatMessages: EnableGroupChatMessages,
+                              username: usernameController.text,
+                              bio: bioController.text,
+                              location: locationController.text,
+                              enablePostNotifications: enablePostNotifications,
+                              enableNearbyMissingPetNotifications:
+                              enableNearbyMissingPetNotifications,
+                              enableGroupChatMessages: enableGroupChatMessages,
                             ),
                           },
                         ),
@@ -147,7 +135,7 @@ class _SettingWidgetState extends State<Setting> {
                       children: [
                         LabeledInputBox(
                           label: "username",
-                          textController: _UserNamecontroller,
+                          textController: usernameController,
                           isInputLocation: false,
                           width: 370,
                           showCatIcon: false,
@@ -157,7 +145,7 @@ class _SettingWidgetState extends State<Setting> {
                           label: "Bio",
                           placeholder:
                               "Add a short bio to let others know who you are",
-                          textController: _bioController,
+                          textController: bioController,
                           isInputLocation: false,
                           width: 370,
                           height: 80,
@@ -167,7 +155,7 @@ class _SettingWidgetState extends State<Setting> {
                         ),
                         LabeledInputBox(
                           label: "Location",
-                          textController: _locationController,
+                          textController: locationController,
                           placeholder: "Your Location",
                           isInputLocation: true,
                           width: 370,
@@ -208,10 +196,10 @@ class _SettingWidgetState extends State<Setting> {
                                       MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 child: Checkbox(
-                                  value: EnablePostNotifications,
+                                  value: enablePostNotifications,
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      EnablePostNotifications = value ?? false;
+                                      enablePostNotifications = value ?? false;
                                     });
                                   },
                                 ),
@@ -253,10 +241,10 @@ class _SettingWidgetState extends State<Setting> {
                                       MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 child: Checkbox(
-                                  value: EnableNearbyMissingPetNotifications,
+                                  value: enableNearbyMissingPetNotifications,
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      EnableNearbyMissingPetNotifications =
+                                      enableNearbyMissingPetNotifications =
                                           value ?? false;
                                     });
                                   },
@@ -299,10 +287,10 @@ class _SettingWidgetState extends State<Setting> {
                                       MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 child: Checkbox(
-                                  value: EnableGroupChatMessages,
+                                  value: enableGroupChatMessages,
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      EnableGroupChatMessages = value ?? false;
+                                      enableGroupChatMessages = value ?? false;
                                     });
                                   },
                                 ),
