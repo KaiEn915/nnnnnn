@@ -1,11 +1,12 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/services/AuthService.dart';
-import 'package:gan/services/HomePostManager.dart';
+import 'package:gan/services/MapService.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:gan/widgets/TopBar.dart';
-
+import 'package:latlong2/latlong.dart';
 class CreatePost extends StatefulWidget {
   const CreatePost({super.key});
 
@@ -18,6 +19,49 @@ class _CreatePost extends State<CreatePost> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    initializePost();
+
+  }
+
+  void initializePost() async{
+    await AuthService.updateUserData();
+
+    String address= await MapService.getAddressFromCoordinates(AuthService.userData?['locationCoordinates']);
+
+    setState(() {
+      locationController.text=address;
+    });
+
+  }
+
+
+  static Future<void> createPost({
+    required BuildContext context,
+    required String title,
+    required String description,
+    required String userId,
+    required String username,
+    required String imageUrl,
+    required GeoPoint? locationCoordinates,
+  }) async {
+
+    final postData = {
+      "title": title,
+      "description": description,
+      "userId": userId,
+      "username": username,
+      "imageUrl": imageUrl,
+      "locationCoordinates": locationCoordinates,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+    };
+
+    await AuthService.db.collection("posts").add(postData);
+
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,14 +126,15 @@ class _CreatePost extends State<CreatePost> {
                     AppButton(
                       text: "Post",
                       width: 150,
-                      onPressed: ()  => {
-                        HomePostManager.createPost(
+                      onPressed: ()  async => {
+                        createPost(
+                          context: context,
                           title: titleController.text,
                           description: descriptionController.text,
                           userId: AuthService.uid,
                           username: AuthService.userData?['username'],
                           imageUrl: "",
-                          location: locationController.text,
+                          locationCoordinates:await MapService.getCoordinatesFromAddress(locationController.text),
                         ),
                       },
                     ),

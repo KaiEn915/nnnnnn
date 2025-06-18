@@ -1,9 +1,13 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/MyMap.dart';
 import 'package:gan/widgets/HomePostAttribute.dart';
-import 'package:gan/services/GeoLocator.dart';
+import 'package:gan/services/MapService.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-
+import 'package:latlong2/latlong.dart';
 class HomePost extends StatefulWidget{
   const HomePost(
       {
@@ -17,6 +21,19 @@ class HomePost extends StatefulWidget{
 }
 
 class _HomePostState extends State<HomePost> {
+  String address="";
+  @override
+  void initState() {
+    super.initState();
+    loadAddress();
+  }
+
+  void loadAddress() async {
+    final address = await MapService.getAddressFromCoordinates(widget.postData['locationCoordinates']);
+    setState(() {
+      this.address = "Near $address";
+    });
+  }
 
 
 
@@ -60,19 +77,31 @@ class _HomePostState extends State<HomePost> {
                 child: Image.asset("assets/images/cat.png"),
               ),
               HomePostAttribute(
-                title: "Near ${widget.postData['location']}",
+                title: "Near $address",
                 icon: Icon(Icons.pin_drop, color: Colors.red, size: 20),
-                onTap: () async
-                {
-                  Position pos = await determinePosition();
-                  print(pos);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MyMap(isPromptingLocation: false,initialPosition: pos),
-                    ),
-                  );
-                },
+                  onTap: () async {
+                    try {
+                      final coordinates = widget.postData['locationCoordinates'];
+
+
+                      // Navigate to the map without picking mode
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyMap(
+                            isPickingLocation: false,
+                            initialCoordinates: LatLng(coordinates.latitude, coordinates.longitude),
+                          ),
+                        ),
+                      );
+                    } catch (e) {
+                      Fluttertoast.showToast(
+                        msg: "Failed to open map: $e",
+                        backgroundColor: Colors.red,
+                      );
+                    }
+                  }
+,
               ),
               HomePostAttribute(
                 title: "Posted by ${widget.postData['username']}",

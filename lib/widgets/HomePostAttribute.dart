@@ -15,30 +15,32 @@ class HomePostAttribute extends StatelessWidget{
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
-      ), //里面的write
+      ),
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: GestureDetector(
         onTap: onTap,
         child: Row(
-          spacing: 5,
+          spacing:5,
           children: [
             Container(
-              //地标
-              child: icon
+              child: icon,
             ),
-            Text(
-              title,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 10,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w600,
+            Flexible(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 10,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
         ),
       ),
     );
+
   }
 
 

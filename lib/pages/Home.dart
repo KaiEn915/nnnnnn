@@ -5,7 +5,7 @@ import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/HomePost.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
 import 'package:gan/widgets/TopBar.dart';
-
+import 'package:latlong2/latlong.dart';
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -23,9 +23,6 @@ class _HomeState extends State<Home> {
   void initState() {
     //load user data
     AuthService.updateUserData();
-    print('init');
-
-
     loadPosts();
     super.initState();
 

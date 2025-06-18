@@ -1,5 +1,9 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/MapService.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/pages/MyMap.dart';
@@ -12,7 +16,7 @@ class LabeledInputBox extends StatefulWidget {
   final double width;
   final double height;
   final bool isObscure;
-  final TextEditingController? textController;
+  final TextEditingController textController;
   final bool showCatIcon;
   final bool showPencilIcon;
   final int maxLines;
@@ -26,10 +30,11 @@ class LabeledInputBox extends StatefulWidget {
     this.height = 70,
     required this.textController,
     this.isObscure = false, // Flag to toggle password visibility
-    this.showCatIcon =true,
+    this.showCatIcon = true,
     this.showPencilIcon = false,
     this.maxLines = 1,
   });
+
   @override
   State<LabeledInputBox> createState() => _LabeledInputBox();
 }
@@ -75,87 +80,105 @@ class _LabeledInputBox extends State<LabeledInputBox> {
                   child: Center(
                     child: widget.isInputLocation
                         ? Stack(
-                      alignment: Alignment.centerLeft,
-                      children: [
-                        TextField(
-                          enabled: false,
-                          controller: widget.textController,
-                          maxLines: widget.maxLines,
-                          decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.pin_drop, size: 20,color: Colors.red),
-                            hintText: widget.placeholder,
-                            border: InputBorder.none,
-                          ),
-                          style: GoogleFonts.ibmPlexSans(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          obscureText: widget.isObscure,
-                        ),
-                        Positioned.fill(
-                          child: GestureDetector(
-                            onTap: () async {
-                              LatLng? location = await MyMap.pickLocationFromMap(context);
-                              if (location != null) {
-                                List<Placemark> placemarks = await placemarkFromCoordinates(location.latitude,location.longitude);
-                                if (placemarks.isNotEmpty) {
-                                  Placemark place = placemarks.first;
+                            alignment: Alignment.centerLeft,
+                            children: [
+                              TextField(
+                                enabled: false,
+                                controller: widget.textController,
+                                maxLines: widget.maxLines,
+                                decoration: InputDecoration(
+                                  suffixIcon: Icon(
+                                    Icons.pin_drop,
+                                    size: 20,
+                                    color: Colors.red,
+                                  ),
+                                  hintText: widget.placeholder,
+                                  border: InputBorder.none,
+                                ),
+                                style: GoogleFonts.ibmPlexSans(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                obscureText: widget.isObscure,
+                              ),
+                              Positioned.fill(
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    GeoPoint coordinates = AuthService
+                                        .userData?['locationCoordinates'];
 
-                                  String address =
-                                      '${place.name}, ${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
+                                    final LatLng? selectedLocation =
+                                        await Navigator.push<LatLng>(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => MyMap(
+                                              isPickingLocation: true,
+                                              initialCoordinates:
+                                                  LatLng(coordinates.latitude, coordinates.longitude),
+                                            ),
+                                          ),
+                                        );
 
-                                  widget.textController?.text = address;
-                                }
-                              }
-                            },
-                            behavior: HitTestBehavior.translucent,
-                          ),
-
-                        ),
-                      ],
-                    )
+                                    // If a location was picked, convert it to a readable address
+                                    if (selectedLocation != null) {
+                                      widget.textController.text =
+                                          await MapService.getAddressFromCoordinates(
+                                            GeoPoint(selectedLocation.latitude, selectedLocation.longitude),
+                                          );
+                                    } else {
+                                      Fluttertoast.showToast(
+                                        msg:
+                                            "No address found for selected location.",
+                                      );
+                                    }
+                                  },
+                                  behavior: HitTestBehavior.translucent,
+                                ),
+                              ),
+                            ],
+                          )
                         : TextField(
-                      controller: widget.textController,
-                      maxLines: widget.maxLines,
-                      decoration: InputDecoration(
-                        suffixIcon: widget.showPencilIcon
-                            ? Image.asset(
-                          'assets/images/pencil.png',
-                          width: 24,
-                        )
-                            : null,
-                        hintText: widget.placeholder,
-                        border: InputBorder.none,
-                      ),
-                      style: GoogleFonts.ibmPlexSans(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      obscureText: widget.isObscure,
-                    ),
-
+                            controller: widget.textController,
+                            maxLines: widget.maxLines,
+                            decoration: InputDecoration(
+                              suffixIcon: widget.showPencilIcon
+                                  ? Image.asset(
+                                      'assets/images/pencil.png',
+                                      width: 24,
+                                    )
+                                  : null,
+                              hintText: widget.placeholder,
+                              border: InputBorder.none,
+                            ),
+                            style: GoogleFonts.ibmPlexSans(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            obscureText: widget.isObscure,
+                          ),
                   ),
                 ),
               ),
             ],
           ),
-          widget.showCatIcon?
-          Positioned(
-            right: 0,
-            top: -10,
-            child: Container(
-              width: 64.69,
-              height: 60,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/cat.png"),
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-          ):SizedBox(),
+          widget.showCatIcon
+              ? Positioned(
+                  right: 0,
+                  top: -10,
+                  child: Container(
+                    width: 64.69,
+                    height: 60,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/cat.png"),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                )
+              : SizedBox(),
         ],
       ),
     );

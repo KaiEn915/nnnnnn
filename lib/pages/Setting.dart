@@ -1,23 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gan/services/MapService.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:flutter/services.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/TopBar.dart';
-
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 class Setting extends StatefulWidget {
   const Setting({super.key});
 
   @override
   State<Setting> createState() => _SettingWidgetState();
+
 }
 
 class _SettingWidgetState extends State<Setting> {
   static Future<void> saveSetting({
     required String username,
     required String bio,
-    required String location,
+    required GeoPoint? locationCoordinates,
     required bool enablePostNotifications,
     required bool enableNearbyMissingPetNotifications,
     required bool enableGroupChatMessages,
@@ -25,7 +29,7 @@ class _SettingWidgetState extends State<Setting> {
     final settingData = {
       "username": username,
       "bio": bio,
-      "location": location,
+      "locationCoordinates": locationCoordinates,
       "enablePostNotifications": enablePostNotifications,
       "enableNearbyMissingPetNotifications": enableNearbyMissingPetNotifications,
       "enableGroupChatMessages": enableGroupChatMessages,
@@ -36,6 +40,14 @@ class _SettingWidgetState extends State<Setting> {
         .collection("users")
         .doc(AuthService.uid)
         .update(settingData);
+
+    Fluttertoast.showToast(
+      msg: "Changes saved successfully!",
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      gravity: ToastGravity.CENTER
+    );
+
   }
   late TextEditingController usernameController = TextEditingController();
   late TextEditingController bioController = TextEditingController();
@@ -48,22 +60,22 @@ class _SettingWidgetState extends State<Setting> {
   void initState() {
     loadUserSettings();
     super.initState();
-
-
-    
   }
 
   Future<void> loadUserSettings() async{
     await AuthService.updateUserData();
     Map<String,dynamic>? data=AuthService.userData;
+    String address=await MapService.getAddressFromCoordinates(data?['locationCoordinates']);
+
+
 
     setState(() {
-      usernameController.text=data?['username'];
-      bioController.text=data?['bio'];
-      locationController.text=data?['location'];
-      enableGroupChatMessages=data?['enableGroupChatMessages'];
-      enableNearbyMissingPetNotifications=data?['enableNearbyMissingPetNotifications'];
-      enablePostNotifications=data?['enablePostNotifications'];
+      usernameController.text=data?['username']??"";
+      bioController.text=data?['bio'] ?? "";
+      locationController.text=address;
+      enableGroupChatMessages=data?['enableGroupChatMessages']??true;
+      enableNearbyMissingPetNotifications=data?['enableNearbyMissingPetNotifications']??false;
+      enablePostNotifications=data?['enablePostNotifications']??false;
     });
 
 
@@ -104,18 +116,20 @@ class _SettingWidgetState extends State<Setting> {
                         AppButton(
                           text: "Save Changes",
                           backgroundColor: Colors.black,
-                          onPressed: () => {
+                          onPressed: () async {
+                            GeoPoint? coordinates = await MapService.getCoordinatesFromAddress(locationController.text);
+
                             saveSetting(
                               username: usernameController.text,
                               bio: bioController.text,
-                              location: locationController.text,
+                              locationCoordinates: coordinates,
                               enablePostNotifications: enablePostNotifications,
-                              enableNearbyMissingPetNotifications:
-                              enableNearbyMissingPetNotifications,
+                              enableNearbyMissingPetNotifications: enableNearbyMissingPetNotifications,
                               enableGroupChatMessages: enableGroupChatMessages,
-                            ),
+                            );
                           },
                         ),
+
                       ],
                     ),
                   ),
@@ -160,7 +174,6 @@ class _SettingWidgetState extends State<Setting> {
                           isInputLocation: true,
                           width: 370,
                           showCatIcon: false,
-                          showPencilIcon: true,
                         ),
                         Container(
                           width: 400,
