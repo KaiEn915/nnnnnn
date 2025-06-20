@@ -23,7 +23,8 @@ class UserProfile extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                left: 20,
+                left: 0,
+                right:0,
                 top: 110,
                 child: Container(
                   width: 370,

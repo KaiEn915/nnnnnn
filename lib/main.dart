@@ -6,6 +6,7 @@ import 'package:gan/pages/CreatePost.dart';
 import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/pages/Home.dart';
 import 'package:gan/pages/Login.dart';
+import 'package:gan/pages/PetImageAnalysis.dart';
 import 'package:gan/pages/Scan.dart';
 import 'package:gan/pages/Setting.dart';
 import 'package:gan/pages/SignUp.dart';

@@ -46,11 +46,10 @@ class TopBar extends StatelessWidget {
         ),
 
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
           height: 50,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            spacing: 10,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
             children: [
               leftIcon != null
                   ? GestureDetector(
@@ -128,10 +127,7 @@ class TopBar extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Container(
-                            width: 31,
-                            child: Icon(Icons.search),
-                          ),
+                          Container(width: 31, child: Icon(Icons.search)),
                         ],
                       ),
                     )
@@ -154,24 +150,46 @@ class TopBar extends StatelessWidget {
                         ],
                       ),
                       child: Container(
-                        child: Text(
-                          header,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontFamily: 'IBM Plex Sans',
-                            decoration: TextDecoration.none,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 3.30,
-                            shadows: [
-                              Shadow(
-                                offset: Offset(0, 4),
-                                blurRadius: 4,
-                                color: Color(0xFF000000).withAlpha(64),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Text(
+                              header,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+
+                                decoration: TextDecoration.none,
+                                fontFamily: "IBM Plex Sans",
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 3.30,
+                                foreground: Paint()
+                                  ..style = PaintingStyle.stroke
+                                  ..strokeWidth = 2
+                                  ..color = const Color(0xC0305B7E),
                               ),
-                            ],
-                          ),
+                            ),
+                            Text(
+                              header,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontFamily: 'IBM Plex Sans',
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 3.30,
+                                shadows: [
+                                  Shadow(
+                                    offset: Offset(0, 4),
+                                    blurRadius: 4,
+                                    color: Color(0xFF000000).withAlpha(64),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                          ],
                         ),
                       ),
                     ),
