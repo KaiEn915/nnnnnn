@@ -32,6 +32,7 @@ class UserProfile extends StatefulWidget {
                 left: 0,
                 right:0,
                 top: 110,
+                // 过后再改
                 child: Container(
                   width: 370,
                   height: 450,
