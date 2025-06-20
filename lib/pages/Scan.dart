@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:gan/pages/PetImageAnalysis.dart';
 import 'package:gan/widgets/TopBar.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Scan extends StatefulWidget {
   const Scan({super.key});
@@ -16,8 +17,6 @@ class _ScanState extends State<Scan> {
   CameraController? _controller;
   List<CameraDescription>? _cameras;
   bool _isInitialized = false;
-
-
 
   Future<void> _initializeCamera() async {
     _cameras = await availableCameras();
@@ -32,27 +31,43 @@ class _ScanState extends State<Scan> {
   }
 
   Future<void> _takePicture() async {
-    Fluttertoast.showToast(msg: "Taking picture...");
     if (_controller != null && _controller!.value.isInitialized) {
       final image = await _controller!.takePicture();
-      String path = image.path;
-      GallerySaver.saveImage(path);
-      Fluttertoast.showToast(msg: "Image is saved to ${path}...");
 
-      Navigator.pushReplacement(context,
+      Navigator.pushReplacement(
+        context,
         PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => PetImageAnalysis(image: image),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              PetImageAnalysis(image: image),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
+            return FadeTransition(opacity: animation, child: child);
           },
           transitionDuration: Duration(milliseconds: 500),
         ),
       );
+    }
+  }
 
-
+  Future<void> pickImage(ImageSource source) async {
+    final ImagePicker picker = ImagePicker();
+    try {
+      Fluttertoast.showToast(msg: "Pick an image");
+      final XFile? image = await picker.pickImage(source: source);
+      if (image == null) return;
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              PetImageAnalysis(image: image),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: Duration(milliseconds: 500),
+        ),
+      );
+    } catch (e) {
+      print("Error picking image: $e");
+      return null;
     }
   }
 
@@ -115,17 +130,18 @@ class _ScanState extends State<Scan> {
                       width: 300,
                       height: 300,
                       color: Colors.black,
-                      child: _isInitialized? FittedBox(
-                        fit: BoxFit.cover,
-                        child: SizedBox(
-                          width: _controller!.value.previewSize!.height,
-                          height: _controller!.value.previewSize!.width,
-                          child: CameraPreview(_controller!),
-                        ),
-                      ): Center(child: CircularProgressIndicator(),),
+                      child: _isInitialized
+                          ? FittedBox(
+                              fit: BoxFit.cover,
+                              child: SizedBox(
+                                width: _controller!.value.previewSize!.height,
+                                height: _controller!.value.previewSize!.width,
+                                child: CameraPreview(_controller!),
+                              ),
+                            )
+                          : Center(child: CircularProgressIndicator()),
                     ),
-                  )
-
+                  ),
                 ],
               ),
             ),
@@ -185,18 +201,23 @@ class _ScanState extends State<Scan> {
                                   Positioned(
                                     left: 80,
                                     top: 5,
-                                    child: SizedBox(
-                                      width: 170,
-                                      height: 80,
-                                      child: Text(
-                                        'Upload',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: const Color(0xFF828282),
-                                          fontSize: 35,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w500,
-                                          height: 1.40,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        pickImage(ImageSource.gallery);
+                                      },
+                                      child: SizedBox(
+                                        width: 170,
+                                        height: 80,
+                                        child: Text(
+                                          'Upload',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: const Color(0xFF828282),
+                                            fontSize: 35,
+                                            fontFamily: 'Inter',
+                                            fontWeight: FontWeight.w500,
+                                            height: 1.40,
+                                          ),
                                         ),
                                       ),
                                     ),

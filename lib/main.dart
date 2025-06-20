@@ -15,12 +15,16 @@ import 'package:gan/pages/SignUp.dart';
 import 'package:gan/pages/UserProfile.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/MapService.dart';
+import 'package:tflite_v2/tflite_v2.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   await Firebase.initializeApp();
 
   await MapService.getPermission();
+
+  await loadModel();
 
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
     if (user != null) {
@@ -31,6 +35,14 @@ Future<void> main() async {
   });
 
   runApp(const MyApp());
+}
+
+Future<void> loadModel() async{
+  String? res = await Tflite.loadModel(
+    model: "assets/model.tflite",
+    labels: "assets/labels.txt",
+  );
+  print("Model loaded: $res");
 }
 
 class MyApp extends StatelessWidget {

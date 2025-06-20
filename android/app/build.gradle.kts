@@ -13,7 +13,6 @@ android {
     namespace = "com.example.gan"
     compileSdk = 35
     ndkVersion = "29.0.13113456"
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11

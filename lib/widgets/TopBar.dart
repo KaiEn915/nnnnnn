@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gan/widgets/OurFont.dart';
 
 class TopBar extends StatelessWidget {
   const TopBar({
@@ -153,42 +154,9 @@ class TopBar extends StatelessWidget {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            Text(
-                              header,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-
-                                decoration: TextDecoration.none,
-                                fontFamily: "IBM Plex Sans",
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 3.30,
-                                foreground: Paint()
-                                  ..style = PaintingStyle.stroke
-                                  ..strokeWidth = 2
-                                  ..color = const Color(0xC0305B7E),
-                              ),
-                            ),
-                            Text(
-                              header,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontFamily: 'IBM Plex Sans',
-                                decoration: TextDecoration.none,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 3.30,
-                                shadows: [
-                                  Shadow(
-                                    offset: Offset(0, 4),
-                                    blurRadius: 4,
-                                    color: Color(0xFF000000).withAlpha(64),
-                                  ),
-                                ],
-                              ),
-                            ),
-
+                            OurFont(
+                              text: header,
+                            )
                           ],
                         ),
                       ),

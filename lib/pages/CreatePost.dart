@@ -1,12 +1,15 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/MapService.dart';
+import 'package:gan/services/RecognitionService.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:gan/widgets/TopBar.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
+
 class CreatePost extends StatefulWidget {
   const CreatePost({super.key});
 
@@ -18,25 +21,25 @@ class _CreatePost extends State<CreatePost> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
+  var breed = "Unknown Breed";
 
   @override
   void initState() {
     super.initState();
     initializePost();
-
   }
 
-  void initializePost() async{
+  void initializePost() async {
     await AuthService.updateUserData();
 
-    String address= await MapService.getAddressFromCoordinates(AuthService.userData?['locationCoordinates']);
+    String address = await MapService.getAddressFromCoordinates(
+      AuthService.userData?['locationCoordinates'],
+    );
 
     setState(() {
-      locationController.text=address;
+      locationController.text = address;
     });
-
   }
-
 
   static Future<void> createPost({
     required BuildContext context,
@@ -45,9 +48,9 @@ class _CreatePost extends State<CreatePost> {
     required String userId,
     required String username,
     required String imageUrl,
+    required String breed,
     required GeoPoint? locationCoordinates,
   }) async {
-
     final postData = {
       "title": title,
       "description": description,
@@ -56,9 +59,27 @@ class _CreatePost extends State<CreatePost> {
       "imageUrl": imageUrl,
       "locationCoordinates": locationCoordinates,
       "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "breed": breed,
     };
 
     await AuthService.db.collection("posts").add(postData);
+  }
+
+  Future<void> uploadImageToPost() async {
+    final ImagePicker picker = ImagePicker();
+    try {
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+
+      // detect breed
+      Fluttertoast.showToast(msg: "Detecting breed...");
+      var _recognitions = await RecognitionService.recognizeImage(image.path);
+      breed = _recognitions?[0]['label'];
+      Fluttertoast.showToast(msg: "Detected breed: $breed");
+    } catch (e) {
+      print("Error picking image: $e");
+      return null;
+    }
   }
 
   @override
@@ -83,63 +104,89 @@ class _CreatePost extends State<CreatePost> {
               leftIcon_onTap: () => {Navigator.pop(context)},
             ),
             Center(
-              child: Container(
-                width: MediaQuery.sizeOf(context).width,
-                height: 700,
-                margin: EdgeInsets.only(left: 15, right: 15, top: 0),
-                decoration: ShapeDecoration(
-                  color: Colors.white.withAlpha(128),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 1, color: Colors.black),
-                    borderRadius: BorderRadius.circular(8),
+              child: SingleChildScrollView(
+                child: Container(
+                  width: MediaQuery.sizeOf(context).width,
+                  height: 700,
+                  margin: EdgeInsets.only(left: 15, right: 15, top: 0),
+                  decoration: ShapeDecoration(
+                    color: Colors.white.withAlpha(128),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1, color: Colors.black),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
-                ),
-                child: Column(
-                  spacing: 10,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset("assets/images/cat.png", height: 300),
-                    LabeledInputBox(
-                      isInputLocation: false,
-                      label: "Title: ",
-                      placeholder: "Enter your post title...",
-                      width: 300,
-                      textController: titleController,
-                    ),
-                    LabeledInputBox(
-                      isInputLocation: true,
-                      label: "Location: ",
-                      placeholder: "Select missing location",
-                      width: 250,
-                      textController: locationController,
-                    ),
-                    LabeledInputBox(
-                      isInputLocation: false,
-                      label: "Description: ",
-                      placeholder: "Enter your post description",
-                      width: 300,
-                      height: 170,
-                      textController: descriptionController,
-                    ),
-                    AppButton(
-                      text: "Post",
-                      width: 150,
-                      onPressed: () async {
-                        await createPost(
-                          context: context,
-                          title: titleController.text,
-                          description: descriptionController.text,
-                          userId: AuthService.uid,
-                          username: AuthService.userData?['username'],
-                          imageUrl: "",
-                          locationCoordinates: await MapService.getCoordinatesFromAddress(locationController.text),
-                        );
+                  child: Column(
+                    spacing: 10,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 300,
+                        width: 250,
+                        child: Stack(
+                          children: [
+                            Image.asset("assets/images/cat.png"),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  await uploadImageToPost();
+                                },
+                                child: Icon(Icons.upload, size: 50),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
 
-                        Navigator.pop(context, "postCreated"); // this tells Home to reload posts
-                      },
+                      LabeledInputBox(
+                        isInputLocation: false,
+                        label: "Title: ",
+                        placeholder: "Enter your post title...",
+                        width: 300,
+                        textController: titleController,
+                      ),
+                      LabeledInputBox(
+                        isInputLocation: true,
+                        label: "Location: ",
+                        placeholder: "Select missing location",
+                        width: 250,
+                        textController: locationController,
+                      ),
+                      LabeledInputBox(
+                        isInputLocation: false,
+                        label: "Description: ",
+                        placeholder: "Enter your post description",
+                        width: 300,
+                        height: 170,
+                        textController: descriptionController,
+                      ),
+                      AppButton(
+                        text: "Post",
+                        width: 150,
+                        onPressed: () async {
+                          await createPost(
+                            context: context,
+                            title: titleController.text,
+                            description: descriptionController.text,
+                            breed: breed,
+                            userId: AuthService.uid,
+                            username: AuthService.userData?['username'],
+                            imageUrl: "",
+                            locationCoordinates:
+                                await MapService.getCoordinatesFromAddress(
+                                  locationController.text,
+                                ),
+                          );
 
-                    ),
-                  ],
+                          Navigator.pop(
+                            context,
+                            "postCreated",
+                          ); // this tells Home to reload posts
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
