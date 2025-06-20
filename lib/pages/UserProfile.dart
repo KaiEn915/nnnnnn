@@ -3,8 +3,14 @@ import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
 import 'package:gan/widgets/TopBar.dart';
 
-class UserProfile extends StatelessWidget {
+class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
+
+  @override
+  State<UserProfile> createState() => _UserProfileWidgetState();
+
+}
+  class _UserProfileWidgetState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +135,7 @@ class UserProfile extends StatelessWidget {
                             vertical: 5,
                           ),
                           child: Text(
-                            AuthService.userData?['username'],
+                            AuthService.userData?['username']??"",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.black,
@@ -145,11 +151,11 @@ class UserProfile extends StatelessWidget {
                       ),
                       SizedBox(
                         child: Text(
-                          'Hello guys i love pet',
+                          AuthService.userData?['bio']??"",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 25,
+                            fontSize: 10,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w600,
                             height: 1.50,
@@ -278,7 +284,9 @@ class UserProfile extends StatelessWidget {
                isMiddleSearchBar: false,
                header: "PROFILE",
                rightIcon: Icons.settings_outlined,
-               rightIcon_onTap: ()=> {Navigator.pushNamed(context, "/Setting")},
+               rightIcon_onTap: () async {
+                await Navigator.pushNamed(context, "/Setting");
+               },
              ),
             ],
           ),

@@ -24,7 +24,7 @@ class LabeledInputBox extends StatefulWidget {
   const LabeledInputBox({
     super.key,
     required this.isInputLocation,
-    this.label = "No label",
+    this.label = "",
     this.placeholder = "No placeholder...",
     required this.width,
     this.height = 70,
