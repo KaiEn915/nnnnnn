@@ -5,7 +5,6 @@ import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/HomePost.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
 import 'package:gan/widgets/TopBar.dart';
-import 'package:latlong2/latlong.dart';
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -21,8 +20,8 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    //load user data
     AuthService.updateUserData();
+
     loadPosts();
     super.initState();
 
@@ -39,24 +38,17 @@ class _HomeState extends State<Home> {
 
   void loadPosts() async {
     try {
-      final ref = AuthService.db.collection("posts");
-      final snapshot = await ref.get();
+      final snapshot = await AuthService.db.collection("posts").orderBy('timestamp').get();
 
       if (snapshot.docs.isEmpty) {
         print("No posts found");
         return;
       }
 
-      final postList = snapshot.docs.map((doc) => doc.data()).toList();
-
-      // Shuffle the list
-      postList.shuffle(Random());
-
-      // Choose 5 random posts
-      final randomPosts = postList.take(5).toList();
+      final posts = snapshot.docs.map((doc) => doc.data()).take(5).toList();
 
       setState(() {
-        _postWidgets.addAll(randomPosts.map((p) => HomePost(postData: p)));
+        _postWidgets.addAll(posts.map((p) => HomePost(postData: p)));
       });
     } catch (e) {
       print("Error loading posts: $e");
@@ -133,7 +125,16 @@ class _HomeState extends State<Home> {
                   TopBar(
                     isMiddleSearchBar: true,
                     rightIcon: Icons.post_add,
-                    rightIcon_onTap: () => {Navigator.pushNamed(context, "/CreatePost")},
+                    rightIcon_onTap: () async {
+                      final result = await Navigator.pushNamed(context, "/CreatePost");
+                      if (result == 'postCreated') {
+                        setState(() {
+                          _postWidgets.clear();
+                        });
+                        loadPosts();
+                      }
+                    },
+
                   ),
                 ],
               ),

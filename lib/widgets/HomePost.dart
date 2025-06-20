@@ -1,12 +1,9 @@
-
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/MyMap.dart';
 import 'package:gan/widgets/HomePostAttribute.dart';
 import 'package:gan/services/MapService.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 class HomePost extends StatefulWidget{
   const HomePost(
@@ -65,7 +62,7 @@ class _HomePostState extends State<HomePost> {
             runSpacing: 10,
             children: [
               HomePostAttribute(
-                title: "Since 7 hours ago",
+                title: "Since ${timeago.format(DateTime.fromMillisecondsSinceEpoch(widget.postData['timestamp']))}",
                 icon: Icon(Icons.history, size: 20),
               ),
               HomePostAttribute(

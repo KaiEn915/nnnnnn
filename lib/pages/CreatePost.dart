@@ -59,8 +59,6 @@ class _CreatePost extends State<CreatePost> {
     };
 
     await AuthService.db.collection("posts").add(postData);
-
-    Navigator.pop(context);
   }
 
   @override
@@ -126,17 +124,20 @@ class _CreatePost extends State<CreatePost> {
                     AppButton(
                       text: "Post",
                       width: 150,
-                      onPressed: ()  async => {
-                        createPost(
+                      onPressed: () async {
+                        await createPost(
                           context: context,
                           title: titleController.text,
                           description: descriptionController.text,
                           userId: AuthService.uid,
                           username: AuthService.userData?['username'],
                           imageUrl: "",
-                          locationCoordinates:await MapService.getCoordinatesFromAddress(locationController.text),
-                        ),
+                          locationCoordinates: await MapService.getCoordinatesFromAddress(locationController.text),
+                        );
+
+                        Navigator.pop(context, "postCreated"); // this tells Home to reload posts
                       },
+
                     ),
                   ],
                 ),
