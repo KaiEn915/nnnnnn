@@ -54,7 +54,7 @@ class _SettingWidgetState extends State<Setting> {
   late TextEditingController usernameController = TextEditingController();
   late TextEditingController bioController = TextEditingController();
   late TextEditingController locationController = TextEditingController();
-  bool enablePostNotifications = true;
+  bool enablePostNotifications = false;
   bool enableNearbyMissingPetNotifications = false;
   bool enableGroupChatMessages = false;
 
@@ -75,9 +75,9 @@ class _SettingWidgetState extends State<Setting> {
       usernameController.text=data?['username']??"";
       bioController.text=data?['bio'] ?? "";
       locationController.text=address;
-      enableGroupChatMessages=data?['enableGroupChatMessages']??true;
-      enableNearbyMissingPetNotifications=data?['enableNearbyMissingPetNotifications']??false;
-      enablePostNotifications=data?['enablePostNotifications']??false;
+      enableGroupChatMessages=data?['enableGroupChatMessages']??enableGroupChatMessages;
+      enableNearbyMissingPetNotifications=data?['enableNearbyMissingPetNotifications']??enableNearbyMissingPetNotifications;
+      enablePostNotifications=data?['enablePostNotifications']??enablePostNotifications;
     });
 
 

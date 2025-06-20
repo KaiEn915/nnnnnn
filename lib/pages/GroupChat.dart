@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gan/pages/GroupChatRoom.dart';
 import 'package:gan/widgets/GroupChatPost.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
 import 'package:gan/widgets/TopBar.dart';
@@ -25,6 +26,10 @@ class GroupChat extends StatelessWidget {
               MyNavigationBar(),
               Positioned(
                 top: 96,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/GroupChatRoom');
+                  },
                 child: Container(
                   width: MediaQuery.sizeOf(context).width,
                   height: 530,
@@ -41,6 +46,7 @@ class GroupChat extends StatelessWidget {
                     ],
                   ),
                 ),
+              ),
               ),
               TopBar(isMiddleSearchBar: false,header: "GROUP CHATS")
             ],

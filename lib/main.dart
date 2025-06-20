@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gan/pages/CreatePost.dart';
 import 'package:gan/pages/GroupChat.dart';
+import 'package:gan/pages/GroupChatDetail.dart';
+import 'package:gan/pages/GroupChatRoom.dart';
 import 'package:gan/pages/Home.dart';
 import 'package:gan/pages/Login.dart';
 import 'package:gan/pages/Scan.dart';
@@ -17,7 +19,7 @@ Future<void> main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   await Firebase.initializeApp();
 
-  MapService.getPermission();
+  await MapService.getPermission();
 
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
     if (user != null) {
@@ -55,6 +57,8 @@ class MyApp extends StatelessWidget {
         '/Scan':(context)=> const Scan(),
         '/Setting':(context)=> const Setting(),
         '/CreatePost':(context)=> const CreatePost(),
+        '/GroupChatRoom':(context)=> const GroupChatRoom(),
+        '/GroupChatDetail':(context)=> const GroupChatDetail(),
       },
     );
   }
