@@ -11,10 +11,13 @@ import 'package:gan/pages/Setting.dart';
 import 'package:gan/pages/SignUp.dart';
 import 'package:gan/pages/UserProfile.dart';
 import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/MapService.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   await Firebase.initializeApp();
+
+  MapService.getPermission();
 
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
     if (user != null) {
