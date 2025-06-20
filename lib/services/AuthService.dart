@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/Login.dart';
 import 'package:gan/services/MapService.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
@@ -174,7 +175,14 @@ class AuthService {
         return;
       }
 
-      final position = await MapService.determinePosition();
+      Position? position;
+      try {
+        position = await MapService.determinePosition();
+      } catch (e) {
+        Fluttertoast.showToast(msg: "Location permission required.");
+        return;
+      }
+
       GeoPoint locationCoordinates = GeoPoint(position.latitude, position.longitude);
 
       Map<String, dynamic> userData = {

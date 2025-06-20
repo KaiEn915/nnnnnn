@@ -41,6 +41,8 @@ class _SettingWidgetState extends State<Setting> {
         .doc(AuthService.uid)
         .update(settingData);
 
+    AuthService.updateUserData();
+
     Fluttertoast.showToast(
       msg: "Changes saved successfully!",
       backgroundColor: Colors.green,
@@ -66,7 +68,7 @@ class _SettingWidgetState extends State<Setting> {
     await AuthService.updateUserData();
     Map<String,dynamic>? data=AuthService.userData;
     String address=await MapService.getAddressFromCoordinates(data?['locationCoordinates']);
-
+    print("address: $address");
 
 
     setState(() {
@@ -127,6 +129,8 @@ class _SettingWidgetState extends State<Setting> {
                               enableNearbyMissingPetNotifications: enableNearbyMissingPetNotifications,
                               enableGroupChatMessages: enableGroupChatMessages,
                             );
+
+                            Navigator.pop(context);
                           },
                         ),
 
@@ -347,10 +351,6 @@ class _SettingWidgetState extends State<Setting> {
                           width: 117,
                           height: 118,
                           decoration: ShapeDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("https://placehold.co/117x118"),
-                              fit: BoxFit.contain,
-                            ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100),
                             ),
