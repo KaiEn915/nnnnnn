@@ -70,7 +70,6 @@ class _SettingWidgetState extends State<Setting> {
     String address=await MapService.getAddressFromCoordinates(data?['locationCoordinates']);
     print("address: $address");
 
-
     setState(() {
       usernameController.text=data?['username']??"";
       bioController.text=data?['bio'] ?? "";
@@ -79,9 +78,6 @@ class _SettingWidgetState extends State<Setting> {
       enableNearbyMissingPetNotifications=data?['enableNearbyMissingPetNotifications']??enableNearbyMissingPetNotifications;
       enablePostNotifications=data?['enablePostNotifications']??enablePostNotifications;
     });
-
-
-
   }
 
   @override

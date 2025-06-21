@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gan/widgets/LabeledInputBox.dart';
+import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/TopBar.dart';
 
 class GroupChatRoom extends StatefulWidget {
@@ -10,7 +11,41 @@ class GroupChatRoom extends StatefulWidget {
 }
 
 class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
-  late TextEditingController ChatController = TextEditingController();
+  static Future<void> saveChat({
+    required String chat,
+  }) async {
+
+    final postChat = {
+      "chat": chat,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+    };
+    print(postChat );
+    await AuthService.db.collection("chat").add(postChat);
+  }
+
+  late TextEditingController _chatController;
+
+  @override
+  void initState() {
+    super.initState();
+    _chatController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _chatController.dispose();
+    super.dispose();
+  }
+
+  /// 发送消息并清空输入框
+  void _sendMessage() {
+    String message = _chatController.text.trim();
+    if (message.isNotEmpty) {
+      saveChat(chat: message);
+      print("发送消息: $message");
+      _chatController.clear();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,650 +64,71 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
             ),
             child: Stack(
               children: [
-                // Positioned(
-                //   left: 1,
-                //   top: 81,
-                //   child: Container(
-                //     width: 374,
-                //     height: 536,
-                //     clipBehavior: Clip.antiAlias,
-                //     decoration: BoxDecoration(),
-                //     child: Stack(
-                //       children: [
-                //         Container(
-                //           width: 171,
-                //           height: 46,
-                //           child: Stack(
-                //             children: [
-                //               Positioned(
-                //                 left: 0,
-                //                 top: 0,
-                //                 child: Container(
-                //                   width: 46,
-                //                   height: 46,
-                //                   decoration: ShapeDecoration(
-                //                     image: DecorationImage(
-                //                       image: AssetImage(
-                //                         "https://placehold.co/46x46",
-                //                       ),
-                //                       fit: BoxFit.cover,
-                //                     ),
-                //                     shape: RoundedRectangleBorder(
-                //                       borderRadius: BorderRadius.circular(100),
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //               Positioned(
-                //                 left: 45,
-                //                 top: 20,
-                //                 child: Container(
-                //                   width: 19,
-                //                   height: 26,
-                //                   child: Column(
-                //                     mainAxisSize: MainAxisSize.min,
-                //                     mainAxisAlignment: MainAxisAlignment.start,
-                //                     crossAxisAlignment: CrossAxisAlignment.end,
-                //                     children: [
-                //                       Expanded(
-                //                         child: Container(
-                //                           width: 16,
-                //                           decoration: ShapeDecoration(
-                //                             color: Colors.white,
-                //                             shape: RoundedRectangleBorder(
-                //                               side: BorderSide(
-                //                                 width: 0.50,
-                //                                 color: const Color(0xFF9BA9B0),
-                //                               ),
-                //                               borderRadius: BorderRadius.only(
-                //                                 topLeft: Radius.circular(100),
-                //                               ),
-                //                             ),
-                //                           ),
-                //                         ),
-                //                       ),
-                //                     ],
-                //                   ),
-                //                 ),
-                //               ),
-                //               Positioned(
-                //                 left: 63,
-                //                 top: 20,
-                //                 child: Container(
-                //                   width: 85,
-                //                   height: 26,
-                //                   padding: const EdgeInsets.symmetric(
-                //                     horizontal: 10,
-                //                   ),
-                //                   decoration: ShapeDecoration(
-                //                     color: Colors.white,
-                //                     shape: RoundedRectangleBorder(
-                //                       side: BorderSide(
-                //                         width: 0.50,
-                //                         color: const Color(0xFF9BA9B0),
-                //                       ),
-                //                       borderRadius: BorderRadius.only(
-                //                         topRight: Radius.circular(24),
-                //                         bottomRight: Radius.circular(24),
-                //                       ),
-                //                     ),
-                //                   ),
-                //                   child: Stack(
-                //                     children: [
-                //                       Positioned(
-                //                         left: 50,
-                //                         top: 12,
-                //                         child: Container(
-                //                           width: 22,
-                //                           padding: const EdgeInsets.symmetric(
-                //                             vertical: 1,
-                //                           ),
-                //                           child: Row(
-                //                             mainAxisSize: MainAxisSize.min,
-                //                             mainAxisAlignment:
-                //                                 MainAxisAlignment.center,
-                //                             crossAxisAlignment:
-                //                                 CrossAxisAlignment.center,
-                //                             spacing: 10,
-                //                             children: [
-                //                               Text(
-                //                                 '2:00pm',
-                //                                 textAlign: TextAlign.right,
-                //                                 style: TextStyle(
-                //                                   color: const Color(
-                //                                     0xFF7E909A,
-                //                                   ),
-                //                                   fontSize: 10,
-                //                                   fontFamily: 'ABeeZee',
-                //                                   fontWeight: FontWeight.w400,
-                //                                   letterSpacing: -0.41,
-                //                                 ),
-                //                               ),
-                //                             ],
-                //                           ),
-                //                         ),
-                //                       ),
-                //                       Positioned(
-                //                         left: 0,
-                //                         top: 2,
-                //                         child: Text(
-                //                           'Hello',
-                //                           style: TextStyle(
-                //                             color: const Color(0xFF21272A),
-                //                             fontSize: 17,
-                //                             fontFamily: 'ABeeZee',
-                //                             fontWeight: FontWeight.w400,
-                //                             height: 1.29,
-                //                             letterSpacing: -0.41,
-                //                           ),
-                //                         ),
-                //                       ),
-                //                     ],
-                //                   ),
-                //                 ),
-                //               ),
-                //               Positioned(
-                //                 left: 48,
-                //                 top: 0,
-                //                 child: SizedBox(
-                //                   width: 123,
-                //                   height: 20,
-                //                   child: Text(
-                //                     'Hue Zhi En',
-                //                     style: TextStyle(
-                //                       color: Colors.black,
-                //                       fontSize: 12,
-                //                       fontFamily: 'ABeeZee',
-                //                       fontWeight: FontWeight.w400,
-                //                       height: 1.40,
-                //                       letterSpacing: -0.41,
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //         Container(
-                //           width: 171,
-                //           height: 46,
-                //           child: Stack(
-                //             children: [
-                //               Positioned(
-                //                 left: 0,
-                //                 top: 0,
-                //                 child: Container(
-                //                   width: 46,
-                //                   height: 46,
-                //                   decoration: ShapeDecoration(
-                //                     image: DecorationImage(
-                //                       image: AssetImage(
-                //                         "https://placehold.co/46x46",
-                //                       ),
-                //                       fit: BoxFit.cover,
-                //                     ),
-                //                     shape: RoundedRectangleBorder(
-                //                       borderRadius: BorderRadius.circular(100),
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //               Positioned(
-                //                 left: 45,
-                //                 top: 20,
-                //                 child: Container(
-                //                   width: 19,
-                //                   height: 26,
-                //                   child: Column(
-                //                     mainAxisSize: MainAxisSize.min,
-                //                     mainAxisAlignment: MainAxisAlignment.start,
-                //                     crossAxisAlignment: CrossAxisAlignment.end,
-                //                     children: [
-                //                       Expanded(
-                //                         child: Container(
-                //                           width: 16,
-                //                           decoration: ShapeDecoration(
-                //                             color: Colors.white,
-                //                             shape: RoundedRectangleBorder(
-                //                               side: BorderSide(
-                //                                 width: 0.50,
-                //                                 color: const Color(0xFF9BA9B0),
-                //                               ),
-                //                               borderRadius: BorderRadius.only(
-                //                                 topLeft: Radius.circular(100),
-                //                               ),
-                //                             ),
-                //                           ),
-                //                         ),
-                //                       ),
-                //                     ],
-                //                   ),
-                //                 ),
-                //               ),
-                //               Positioned(
-                //                 left: 63,
-                //                 top: 20,
-                //                 child: Container(
-                //                   width: 85,
-                //                   height: 26,
-                //                   padding: const EdgeInsets.symmetric(
-                //                     horizontal: 10,
-                //                   ),
-                //                   decoration: ShapeDecoration(
-                //                     color: Colors.white,
-                //                     shape: RoundedRectangleBorder(
-                //                       side: BorderSide(
-                //                         width: 0.50,
-                //                         color: const Color(0xFF9BA9B0),
-                //                       ),
-                //                       borderRadius: BorderRadius.only(
-                //                         topRight: Radius.circular(24),
-                //                         bottomRight: Radius.circular(24),
-                //                       ),
-                //                     ),
-                //                   ),
-                //                   child: Stack(
-                //                     children: [
-                //                       Positioned(
-                //                         left: 50,
-                //                         top: 12,
-                //                         child: Container(
-                //                           width: 22,
-                //                           padding: const EdgeInsets.symmetric(
-                //                             vertical: 1,
-                //                           ),
-                //                           child: Row(
-                //                             mainAxisSize: MainAxisSize.min,
-                //                             mainAxisAlignment:
-                //                                 MainAxisAlignment.center,
-                //                             crossAxisAlignment:
-                //                                 CrossAxisAlignment.center,
-                //                             spacing: 10,
-                //                             children: [
-                //                               Text(
-                //                                 '2:01pm',
-                //                                 textAlign: TextAlign.right,
-                //                                 style: TextStyle(
-                //                                   color: const Color(
-                //                                     0xFF7E909A,
-                //                                   ),
-                //                                   fontSize: 10,
-                //                                   fontFamily: 'ABeeZee',
-                //                                   fontWeight: FontWeight.w400,
-                //                                   letterSpacing: -0.41,
-                //                                 ),
-                //                               ),
-                //                             ],
-                //                           ),
-                //                         ),
-                //                       ),
-                //                       Positioned(
-                //                         left: 0,
-                //                         top: 2,
-                //                         child: Text(
-                //                           'Hi',
-                //                           style: TextStyle(
-                //                             color: const Color(0xFF21272A),
-                //                             fontSize: 17,
-                //                             fontFamily: 'ABeeZee',
-                //                             fontWeight: FontWeight.w400,
-                //                             height: 1.29,
-                //                             letterSpacing: -0.41,
-                //                           ),
-                //                         ),
-                //                       ),
-                //                     ],
-                //                   ),
-                //                 ),
-                //               ),
-                //               Positioned(
-                //                 left: 48,
-                //                 top: 0,
-                //                 child: SizedBox(
-                //                   width: 123,
-                //                   height: 20,
-                //                   child: Text(
-                //                     'Hue Zhi En',
-                //                     style: TextStyle(
-                //                       color: Colors.black,
-                //                       fontSize: 12,
-                //                       fontFamily: 'ABeeZee',
-                //                       fontWeight: FontWeight.w400,
-                //                       height: 1.40,
-                //                       letterSpacing: -0.41,
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //         Container(
-                //           width: 171,
-                //           height: 46,
-                //           child: Stack(
-                //             children: [
-                //               Positioned(
-                //                 left: 0,
-                //                 top: 0,
-                //                 child: Container(
-                //                   width: 46,
-                //                   height: 46,
-                //                   decoration: ShapeDecoration(
-                //                     image: DecorationImage(
-                //                       image: AssetImage(
-                //                         "https://placehold.co/46x46",
-                //                       ),
-                //                       fit: BoxFit.cover,
-                //                     ),
-                //                     shape: RoundedRectangleBorder(
-                //                       borderRadius: BorderRadius.circular(100),
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //               Positioned(
-                //                 left: 45,
-                //                 top: 20,
-                //                 child: Container(
-                //                   width: 19,
-                //                   height: 26,
-                //                   child: Column(
-                //                     mainAxisSize: MainAxisSize.min,
-                //                     mainAxisAlignment: MainAxisAlignment.start,
-                //                     crossAxisAlignment: CrossAxisAlignment.end,
-                //                     children: [
-                //                       Expanded(
-                //                         child: Container(
-                //                           width: 16,
-                //                           decoration: ShapeDecoration(
-                //                             color: Colors.white,
-                //                             shape: RoundedRectangleBorder(
-                //                               side: BorderSide(
-                //                                 width: 0.50,
-                //                                 color: const Color(0xFF9BA9B0),
-                //                               ),
-                //                               borderRadius: BorderRadius.only(
-                //                                 topLeft: Radius.circular(100),
-                //                               ),
-                //                             ),
-                //                           ),
-                //                         ),
-                //                       ),
-                //                     ],
-                //                   ),
-                //                 ),
-                //               ),
-                //               Positioned(
-                //                 left: 63,
-                //                 top: 20,
-                //                 child: Container(
-                //                   width: 85,
-                //                   height: 26,
-                //                   padding: const EdgeInsets.symmetric(
-                //                     horizontal: 10,
-                //                   ),
-                //                   decoration: ShapeDecoration(
-                //                     color: Colors.white,
-                //                     shape: RoundedRectangleBorder(
-                //                       side: BorderSide(
-                //                         width: 0.50,
-                //                         color: const Color(0xFF9BA9B0),
-                //                       ),
-                //                       borderRadius: BorderRadius.only(
-                //                         topRight: Radius.circular(24),
-                //                         bottomRight: Radius.circular(24),
-                //                       ),
-                //                     ),
-                //                   ),
-                //                   child: Stack(
-                //                     children: [
-                //                       Positioned(
-                //                         left: 50,
-                //                         top: 12,
-                //                         child: Container(
-                //                           width: 22,
-                //                           padding: const EdgeInsets.symmetric(
-                //                             vertical: 1,
-                //                           ),
-                //                           child: Row(
-                //                             mainAxisSize: MainAxisSize.min,
-                //                             mainAxisAlignment:
-                //                                 MainAxisAlignment.center,
-                //                             crossAxisAlignment:
-                //                                 CrossAxisAlignment.center,
-                //                             spacing: 10,
-                //                             children: [
-                //                               Text(
-                //                                 '2:02pm',
-                //                                 textAlign: TextAlign.right,
-                //                                 style: TextStyle(
-                //                                   color: const Color(
-                //                                     0xFF7E909A,
-                //                                   ),
-                //                                   fontSize: 10,
-                //                                   fontFamily: 'ABeeZee',
-                //                                   fontWeight: FontWeight.w400,
-                //                                   letterSpacing: -0.41,
-                //                                 ),
-                //                               ),
-                //                             ],
-                //                           ),
-                //                         ),
-                //                       ),
-                //                       Positioned(
-                //                         left: 0,
-                //                         top: 2,
-                //                         child: Text(
-                //                           'OO',
-                //                           style: TextStyle(
-                //                             color: const Color(0xFF21272A),
-                //                             fontSize: 17,
-                //                             fontFamily: 'ABeeZee',
-                //                             fontWeight: FontWeight.w400,
-                //                             height: 1.29,
-                //                             letterSpacing: -0.41,
-                //                           ),
-                //                         ),
-                //                       ),
-                //                     ],
-                //                   ),
-                //                 ),
-                //               ),
-                //               Positioned(
-                //                 left: 48,
-                //                 top: 0,
-                //                 child: SizedBox(
-                //                   width: 123,
-                //                   height: 20,
-                //                   child: Text(
-                //                     'Hue Zhi En',
-                //                     style: TextStyle(
-                //                       color: Colors.black,
-                //                       fontSize: 12,
-                //                       fontFamily: 'ABeeZee',
-                //                       fontWeight: FontWeight.w400,
-                //                       height: 1.40,
-                //                       letterSpacing: -0.41,
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //         Positioned(
-                //           left: 93,
-                //           top: 238,
-                //           child: Container(
-                //             width: 279,
-                //             height: 46,
-                //             child: Stack(
-                //               children: [
-                //                 Positioned(
-                //                   left: 233,
-                //                   top: 0,
-                //                   child: Container(
-                //                     width: 46,
-                //                     height: 46,
-                //                     decoration: ShapeDecoration(
-                //                       image: DecorationImage(
-                //                         image: AssetImage(
-                //                           "https://placehold.co/46x46",
-                //                         ),
-                //                         fit: BoxFit.cover,
-                //                       ),
-                //                       shape: RoundedRectangleBorder(
-                //                         borderRadius: BorderRadius.circular(
-                //                           100,
-                //                         ),
-                //                       ),
-                //                     ),
-                //                   ),
-                //                 ),
-                //                 Positioned(
-                //                   left: 233,
-                //                   top: 46,
-                //                   child: Container(
-                //                     transform: Matrix4.identity()
-                //                       ..translate(0.0, 0.0)
-                //                       ..rotateZ(3.14),
-                //                     height: 46,
-                //                     child: Column(
-                //                       mainAxisSize: MainAxisSize.min,
-                //                       mainAxisAlignment:
-                //                           MainAxisAlignment.start,
-                //                       crossAxisAlignment:
-                //                           CrossAxisAlignment.end,
-                //                       children: [
-                //                         Expanded(
-                //                           child: Container(
-                //                             width: 16,
-                //                             decoration: ShapeDecoration(
-                //                               color: const Color(0xFFE7FECC),
-                //                               shape: RoundedRectangleBorder(
-                //                                 side: BorderSide(
-                //                                   width: 0.50,
-                //                                   color: const Color(
-                //                                     0xFF9BA9B0,
-                //                                   ),
-                //                                 ),
-                //                                 borderRadius: BorderRadius.only(
-                //                                   topLeft: Radius.circular(100),
-                //                                 ),
-                //                               ),
-                //                             ),
-                //                           ),
-                //                         ),
-                //                       ],
-                //                     ),
-                //                   ),
-                //                 ),
-                //                 Positioned(
-                //                   left: -73,
-                //                   top: 0,
-                //                   child: Container(
-                //                     width: 288,
-                //                     height: 46,
-                //                     decoration: ShapeDecoration(
-                //                       color: const Color(0xFFE7FECC),
-                //                       shape: RoundedRectangleBorder(
-                //                         side: BorderSide(
-                //                           width: 0.50,
-                //                           color: const Color(0xFF9BA9B0),
-                //                         ),
-                //                         borderRadius: BorderRadius.only(
-                //                           topLeft: Radius.circular(24),
-                //                           bottomLeft: Radius.circular(24),
-                //                         ),
-                //                       ),
-                //                     ),
-                //                     child: Stack(
-                //                       children: [
-                //                         Positioned(
-                //                           left: 19,
-                //                           top: 8,
-                //                           child: SizedBox(
-                //                             width: 207,
-                //                             height: 33,
-                //                             child: Text(
-                //                               'ABCDEFGHIJKLMNOPQRST\nUVWXYZ',
-                //                               style: TextStyle(
-                //                                 color: const Color(0xFF21272A),
-                //                                 fontSize: 17,
-                //                                 fontFamily: 'ABeeZee',
-                //                                 fontWeight: FontWeight.w400,
-                //                                 height: 1.29,
-                //                                 letterSpacing: -0.41,
-                //                               ),
-                //                             ),
-                //                           ),
-                //                         ),
-                //                         Positioned(
-                //                           left: 226,
-                //                           top: 30,
-                //                           child: Row(
-                //                             mainAxisSize: MainAxisSize.min,
-                //                             mainAxisAlignment:
-                //                                 MainAxisAlignment.end,
-                //                             crossAxisAlignment:
-                //                                 CrossAxisAlignment.center,
-                //                             spacing: 4,
-                //                             children: [
-                //                               Text(
-                //                                 '2:05pm',
-                //                                 style: TextStyle(
-                //                                   color: const Color(
-                //                                     0xFF439635,
-                //                                   ),
-                //                                   fontSize: 12,
-                //                                   fontFamily: 'ABeeZee',
-                //                                   fontWeight: FontWeight.w400,
-                //                                   letterSpacing: -0.41,
-                //                                 ),
-                //                               ),
-                //                               Container(
-                //                                 width: 16,
-                //                                 height: 16,
-                //                                 clipBehavior: Clip.antiAlias,
-                //                                 decoration: BoxDecoration(),
-                //                                 child: Stack(),
-                //                               ),
-                //                             ],
-                //                           ),
-                //                         ),
-                //                       ],
-                //                     ),
-                //                   ),
-                //                 ),
-                //                 Positioned(
-                //                   left: 107,
-                //                   top: -20,
-                //                   child: SizedBox(
-                //                     width: 123,
-                //                     height: 20,
-                //                     child: Text(
-                //                       'You',
-                //                       textAlign: TextAlign.right,
-                //                       style: TextStyle(
-                //                         color: Colors.black,
-                //                         fontSize: 12,
-                //                         fontFamily: 'ABeeZee',
-                //                         fontWeight: FontWeight.w400,
-                //                         height: 1.40,
-                //                         letterSpacing: -0.41,
-                //                       ),
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ],
-                //             ),
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
+                Positioned(
+                  top: 80, // 根据需要调整顶部偏移
+                  left: 0,
+                  right: 0,
+                  bottom: 80, // 避开底部输入框
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: AuthService.db
+                        .collection("chat")
+                        .orderBy("timestamp", descending: false)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return Center(child: Text("暂无消息"));
+                      }
+
+                      final messages = snapshot.data!.docs;
+
+                      return ListView.builder(
+                        padding: EdgeInsets.all(10),
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) {
+                          final message = messages[index]['chat'];
+                          final timestamp = messages[index]['timestamp'];
+                          final time = DateTime.fromMillisecondsSinceEpoch(timestamp);
+                          final formattedTime =
+                              "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
+
+                          return Align(
+                            alignment: Alignment.centerRight, // 根据你需求可改为 right
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 5),
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      message,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    formattedTime,
+                                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+
+                      );
+                    },
+                  ),
+                ),
+
                 Positioned(
                   bottom: 0,
                   child: Container(
@@ -707,11 +163,12 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        spacing: 10,
+                        spacing: 0,
                         children: [
                           Container(
                             width: 300,
                             child: TextField(
+                              controller: _chatController,
                               decoration: InputDecoration(
                                 hintText: "Your Text",
                                 border: OutlineInputBorder(),
@@ -721,16 +178,11 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                           Container(
                             width: 35,
                             height: 39,
-                            child: Icon(
-                              Icons.file_upload_outlined,
-                            ),
+                            child: Icon(Icons.file_upload_outlined),
                           ),
-                          Container(
-                            width: 35,
-                            height: 39,
-                            child: Icon(
-                              Icons.send,
-                            ),
+                          IconButton(
+                            icon: Icon(Icons.send, size: 30),
+                            onPressed: _sendMessage,
                           ),
                         ],
                       ),
