@@ -38,7 +38,7 @@ class _HomeState extends State<Home> {
 
   void loadPosts() async {
     try {
-      final snapshot = await AuthService.db.collection("posts").orderBy('timestamp').get();
+      final snapshot = await AuthService.db.collection("posts").orderBy('timestamp',descending: true).get();
 
       if (snapshot.docs.isEmpty) {
         print("No posts found");
@@ -124,6 +124,7 @@ class _HomeState extends State<Home> {
                   MyNavigationBar(),
                   TopBar(
                     isMiddleSearchBar: true,
+                    searchBarController: searchBarController,
                     rightIcon: Icons.post_add,
                     rightIcon_onTap: () async {
                       final result = await Navigator.pushNamed(context, "/CreatePost");

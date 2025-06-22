@@ -45,7 +45,7 @@ class _CreatePost extends State<CreatePost> {
     required BuildContext context,
     required String title,
     required String description,
-    required String userId,
+    required String uid,
     required String username,
     required String imageUrl,
     required String breed,
@@ -54,7 +54,7 @@ class _CreatePost extends State<CreatePost> {
     final postData = {
       "title": title,
       "description": description,
-      "userId": userId,
+      "uid": uid,
       "username": username,
       "imageUrl": imageUrl,
       "locationCoordinates": locationCoordinates,
@@ -170,7 +170,7 @@ class _CreatePost extends State<CreatePost> {
                             title: titleController.text,
                             description: descriptionController.text,
                             breed: breed,
-                            userId: AuthService.uid,
+                            uid: AuthService.uid,
                             username: AuthService.userData?['username'],
                             imageUrl: "",
                             locationCoordinates:

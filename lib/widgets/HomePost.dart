@@ -1,3 +1,5 @@
+import 'package:gan/pages/UserProfile.dart';
+import 'package:gan/services/AuthService.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -103,6 +105,17 @@ class _HomePostState extends State<HomePost> {
               HomePostAttribute(
                 title: "Posted by ${widget.postData['username']}",
                 icon: Icon(Icons.account_circle, size: 20),
+                onTap: (){
+                  if (widget.postData['uid']!=AuthService.uid){
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => UserProfile(viewingUID: widget.postData['uid'])
+                    ));
+                    Fluttertoast.showToast(msg: "Viewing user: ${widget.postData['username']}");
+                  }
+                  else{
+                    Fluttertoast.showToast(msg: "You are the post user...");
+                  }
+                  },
               ),
             ],
           ),

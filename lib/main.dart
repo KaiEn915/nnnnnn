@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/CreatePost.dart';
 import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/pages/GroupChatDetail.dart';
@@ -30,7 +31,7 @@ Future<void> main() async {
     if (user != null) {
       AuthService.uid=user.uid;
     } else {
-      print('User is signed out');
+      Fluttertoast.showToast(msg: "Signed out successfully");
     }
   });
 
@@ -66,7 +67,7 @@ class MyApp extends StatelessWidget {
         '/SignUp': (context) => const SignUp(),
         '/Home': (context) => const Home(),
         '/GroupChat':(context) => const GroupChat(),
-        '/UserProfile':(context)=> UserProfile(),
+        '/UserProfile':(context)=> UserProfile(viewingUID: AuthService.uid),
         '/Scan':(context)=> const Scan(),
         '/Setting':(context)=> const Setting(),
         '/CreatePost':(context)=> const CreatePost(),

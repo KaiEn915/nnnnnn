@@ -203,13 +203,9 @@ class AuthService {
     }
   }
 
-  static Future<Map<String, dynamic>?> getUserData() async {
-    print('getting user data');
-    User? user = _auth.currentUser;
-    if (user == null) return null;
-
+  static Future<Map<String, dynamic>?> getUserData(String uid) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> doc = await db.collection("users").doc(user.uid).get();
+      DocumentSnapshot<Map<String, dynamic>> doc = await db.collection("users").doc(uid).get();
       if (doc.exists) {
         print(doc);
         return doc.data();
@@ -224,7 +220,6 @@ class AuthService {
   }
 
   static Future<void> updateUserData() async {
-    print('getting user data');
     User? user = _auth.currentUser;
     if (user == null) return null;
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:gan/pages/PetImageAnalysis.dart';
+import 'package:gan/services/ImageService.dart';
 import 'package:gan/widgets/TopBar.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -48,28 +49,7 @@ class _ScanState extends State<Scan> {
     }
   }
 
-  Future<void> pickImage(ImageSource source) async {
-    final ImagePicker picker = ImagePicker();
-    try {
-      Fluttertoast.showToast(msg: "Pick an image");
-      final XFile? image = await picker.pickImage(source: source);
-      if (image == null) return;
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              PetImageAnalysis(image: image),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          transitionDuration: Duration(milliseconds: 500),
-        ),
-      );
-    } catch (e) {
-      print("Error picking image: $e");
-      return null;
-    }
-  }
+
 
   @override
   void initState() {
@@ -202,8 +182,20 @@ class _ScanState extends State<Scan> {
                                     left: 80,
                                     top: 5,
                                     child: GestureDetector(
-                                      onTap: () {
-                                        pickImage(ImageSource.gallery);
+                                      onTap: () async {
+                                        XFile? _image=await ImageService.pickImage(ImageSource.gallery);
+                                        if (_image==null) return;
+                                        Navigator.pushReplacement(
+                                          context,
+                                          PageRouteBuilder(
+                                            pageBuilder: (context, animation, secondaryAnimation) =>
+                                                PetImageAnalysis(image: _image),
+                                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                              return FadeTransition(opacity: animation, child: child);
+                                            },
+                                            transitionDuration: Duration(milliseconds: 500),
+                                          ),
+                                        );
                                       },
                                       child: SizedBox(
                                         width: 170,
