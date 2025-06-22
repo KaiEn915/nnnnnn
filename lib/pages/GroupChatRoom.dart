@@ -20,7 +20,9 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
       "timestamp": DateTime.now().millisecondsSinceEpoch,
     };
     print(postChat );
-    await AuthService.db.collection("chat").add(postChat);
+    await AuthService.db
+        .collection("chat")
+        .add(postChat);
   }
 
   late TextEditingController _chatController;
@@ -79,10 +81,6 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                         return Center(child: CircularProgressIndicator());
                       }
 
-                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return Center(child: Text("暂无消息"));
-                      }
-
                       final messages = snapshot.data!.docs;
 
                       return ListView.builder(
@@ -96,7 +94,7 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                               "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
 
                           return Align(
-                            alignment: Alignment.centerRight, // 根据你需求可改为 right
+                            alignment: Alignment.centerRight,
                             child: Container(
                               margin: EdgeInsets.symmetric(vertical: 5),
                               padding: EdgeInsets.all(10),
@@ -104,26 +102,39 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                 color: Colors.white.withOpacity(0.8),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Flexible(
-                                    child: Text(
-                                      message,
-                                      style: TextStyle(fontSize: 16),
+                                  Text(
+                                    "you",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Colors.blueAccent,
                                     ),
                                   ),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    formattedTime,
-                                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                                  SizedBox(height: 0),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          message,
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        formattedTime,
+                                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
                             ),
                           );
                         },
-
                       );
                     },
                   ),

@@ -6,11 +6,9 @@ class GroupChatDetail extends StatefulWidget {
 
   @override
   State<GroupChatDetail> createState() => _GroupChatDetailWidgetState();
-
 }
 
 class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
-
 
     @override
     Widget build(BuildContext context) {
@@ -40,14 +38,11 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                     height: 30,
                     child: Stack(
                       children: [
-                        Positioned(
-                          left: 0,
-                          top: 0,
-                          child: SizedBox(
+                          SizedBox(
                             width: 326,
                             height: 30,
                             child: Text(
-                              'GOH KIAT MENG’S GROUP CHAT',
+                              'GROUP CHAT',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -65,25 +60,25 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                               ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),
                 ),
+                //头像
                 Positioned(
-                  left: 124,
-                  top: 99,
+                  left: 145,
+                  top: 150,
                   child: Container(
                     width: 125,
                     height: 125,
                     decoration: ShapeDecoration(
                       image: DecorationImage(
-                        image: NetworkImage("https://placehold.co/125x125"),
+                        image: AssetImage("assets/images/cat.png"),
                         fit: BoxFit.cover,
                       ),
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
-                          width: 0.50,
+                          width: 0,
                           strokeAlign: BorderSide.strokeAlignOutside,
                         ),
                         borderRadius: BorderRadius.circular(100),
@@ -91,12 +86,13 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                     ),
                   ),
                 ),
+                //里面的members
                 Positioned(
-                  left: 24,
-                  top: 399,
+                  top: 460,
                   child: Container(
-                    width: 326,
-                    padding: const EdgeInsets.symmetric(vertical: 9),
+                    width: 390,
+                    height: 250,
+                    margin: const EdgeInsets.only(left: 10),
                     clipBehavior: Clip.antiAlias,
                     decoration: ShapeDecoration(
                       color: const Color(0xFFD5EDF8),
@@ -109,258 +105,125 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Wrap(
-                      alignment: WrapAlignment.center,
-                      runAlignment: WrapAlignment.center,
-                      spacing: 14,
-                      runSpacing: 21,
-                      children: [
-                        Container(
-                          width: 326,
-                          height: 24,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: SizedBox(
-                                  width: 326,
-                                  height: 24,
-                                  child: Text(
-                                    'MEMBERS',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontFamily: 'IBM Plex Sans',
-                                      fontWeight: FontWeight.w700,
-                                      height: 1,
-                                      letterSpacing: 3,
-                                      shadows: [
-                                        Shadow(offset: Offset(0, 4),
-                                            blurRadius: 4,
-                                            color: Color(0xFF000000)
-                                                .withOpacity(0.25))
-                                      ],
+                      child: SingleChildScrollView(
+                         child: Wrap(
+                          alignment: WrapAlignment.center,
+                          runAlignment: WrapAlignment.center,
+                          spacing: 14,
+                          runSpacing: 10,
+                          children: [
+                            Container(
+                              width: 390,
+                              height: 30,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    top: 10,
+                                    child: SizedBox(
+                                      width: 390,
+                                      height: 200,
+                                      child: Text(
+                                        'MEMBERS',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontFamily: 'IBM Plex Sans',
+                                          fontWeight: FontWeight.w700,
+                                          height: 1,
+                                          letterSpacing: 3,
+                                          shadows: [
+                                            Shadow(
+                                              offset: Offset(0, 4),
+                                              blurRadius: 4,
+                                              color: Color(0xFF000000).withOpacity(0.25),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: 137,
-                          height: 51,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
                             ),
-                          ),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 8.50,
-                                top: 7,
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: ShapeDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          "https://placehold.co/40x40"),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
+                            //到时members 放在里
+                            Container(
+                              width: 137,
+                              height: 51,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: ShapeDecoration(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              Positioned(
-                                left: 48.50,
-                                top: 5,
-                                child: SizedBox(
-                                  width: 83,
-                                  height: 44,
-                                  child: Text(
-                                    'Hue Zhi En',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.40,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    left: 8.50,
+                                    top: 7,
+                                    child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: ShapeDecoration(
+                                        image: DecorationImage(
+                                          image: NetworkImage("https://placehold.co/40x40"),
+                                          fit: BoxFit.cover,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(100),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 36.50,
-                                top: 35,
-                                child: Container(
-                                  width: 12,
-                                  height: 12,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          "https://placehold.co/12x12"),
-                                      fit: BoxFit.cover,
+                                  Positioned(
+                                    left: 48.50,
+                                    top: 5,
+                                    child: SizedBox(
+                                      width: 83,
+                                      height: 44,
+                                      child: Text(
+                                        'Hue Zhi En',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w400,
+                                          height: 1.40,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  Positioned(
+                                    left: 36.50,
+                                    top: 35,
+                                    child: Container(
+                                      width: 12,
+                                      height: 12,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: NetworkImage("https://placehold.co/12x12"),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: 138,
-                          height: 53,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
                             ),
-                          ),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 8.50,
-                                top: 7,
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: ShapeDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          "https://placehold.co/40x40"),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 48.50,
-                                top: 5,
-                                child: SizedBox(
-                                  width: 83,
-                                  height: 44,
-                                  child: Text(
-                                    'Goh Kiat Meng',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.40,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 36.50,
-                                top: 35,
-                                child: Container(
-                                  width: 12,
-                                  height: 12,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          "https://placehold.co/12x12"),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          ],
                         ),
-                        Container(
-                          width: 137,
-                          height: 53,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 8.50,
-                                top: 7,
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: ShapeDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          "https://placehold.co/40x40"),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 48.50,
-                                top: 5,
-                                child: SizedBox(
-                                  width: 83,
-                                  height: 44,
-                                  child: Text(
-                                    'Kho Tze Yang',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.40,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 36.50,
-                                top: 35,
-                                child: Container(
-                                  width: 12,
-                                  height: 12,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          "https://placehold.co/12x12"),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      )
                   ),
                 ),
+                //delete group chat
                 Positioned(
-                  left: 106,
-                  top: 608,
+                  left: 80,
+                  top: 750,
                   child: Container(
-                    width: 161,
-                    height: 41,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    width: 250,
+                    height: 60,
                     decoration: ShapeDecoration(
                       color: const Color(0xFF730000),
                       shape: RoundedRectangleBorder(
@@ -370,7 +233,6 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: 8,
                       children: [
                         Text(
                           'Delete Group Chat',
@@ -387,11 +249,11 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                   ),
                 ),
                 Positioned(
-                  left: 24,
-                  top: 284,
+                  left: 10,
+                  top: 320,
                   child: Container(
-                    width: 326,
-                    height: 82,
+                    width: 390,
+                    height: 100,
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     clipBehavior: Clip.antiAlias,
                     decoration: ShapeDecoration(
