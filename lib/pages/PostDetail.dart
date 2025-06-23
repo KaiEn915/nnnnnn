@@ -25,7 +25,6 @@ class PostDetail extends StatelessWidget {
       "post_id": postData['id'],
       "title": title,
       "description": description,
-      "messages":[],
       "timestamp": DateTime.now().millisecondsSinceEpoch,
     };
 

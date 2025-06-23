@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/CreatePost.dart';
+import 'package:gan/pages/ExchangeVoucher.dart';
 import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/pages/GroupChatDetail.dart';
 import 'package:gan/pages/GroupChatRoom.dart';
@@ -14,6 +15,7 @@ import 'package:gan/pages/Scan.dart';
 import 'package:gan/pages/Setting.dart';
 import 'package:gan/pages/SignUp.dart';
 import 'package:gan/pages/UserProfile.dart';
+import 'package:gan/pages/Voucher.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/MapService.dart';
 import 'package:tflite_v2/tflite_v2.dart';
@@ -71,8 +73,9 @@ class MyApp extends StatelessWidget {
         '/Scan':(context)=> const Scan(),
         '/Setting':(context)=> const Setting(),
         '/CreatePost':(context)=> const CreatePost(),
-        '/GroupChatRoom':(context)=> const GroupChatRoom(),
         '/GroupChatDetail':(context)=> const GroupChatDetail(),
+        '/Voucher':(context)=> const Voucher(),
+        '/ExchangeVoucher':(context)=> const ExchangeVoucher(),
       },
     );
   }

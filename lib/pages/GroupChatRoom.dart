@@ -4,25 +4,25 @@ import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/TopBar.dart';
 
 class GroupChatRoom extends StatefulWidget {
-  const GroupChatRoom({super.key});
+  const GroupChatRoom({super.key, required this.id});
+
+  final String id;
 
   @override
   State<GroupChatRoom> createState() => _GroupChatRoomWidgetState();
 }
 
 class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
-  static Future<void> saveChat({
-    required String chat,
-  }) async {
+  late final dbRef;
 
+
+  Future<void> saveChat({required String content}) async {
     final postChat = {
-      "chat": chat,
+      "content": content,
       "timestamp": DateTime.now().millisecondsSinceEpoch,
     };
-    print(postChat );
-    await AuthService.db
-        .collection("chat")
-        .add(postChat);
+
+    await dbRef.collection('messages').add(postChat);
   }
 
   late TextEditingController _chatController;
@@ -30,7 +30,9 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
   @override
   void initState() {
     super.initState();
+    dbRef=AuthService.db.collection("groupChats").doc(widget.id);
     _chatController = TextEditingController();
+
   }
 
   @override
@@ -43,7 +45,7 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
   void _sendMessage() {
     String message = _chatController.text.trim();
     if (message.isNotEmpty) {
-      saveChat(chat: message);
+      saveChat(content: message);
       print("发送消息: $message");
       _chatController.clear();
     }
@@ -51,7 +53,8 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
+     return dbRef==null? CircularProgressIndicator():
+     Material(
       child: Column(
         children: [
           Container(
@@ -67,14 +70,16 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
             child: Stack(
               children: [
                 Positioned(
-                  top: 80, // 根据需要调整顶部偏移
+                  top: 80,
+                  // 根据需要调整顶部偏移
                   left: 0,
                   right: 0,
-                  bottom: 80, // 避开底部输入框
+                  bottom: 80,
+                  // 避开底部输入框
                   child: StreamBuilder<QuerySnapshot>(
-                    stream: AuthService.db
-                        .collection("chat")
-                        .orderBy("timestamp", descending: false)
+                    stream: dbRef
+                        .collection('messages') // 👈 子集合
+                        .orderBy('timestamp', descending: false)
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -87,9 +92,11 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                         padding: EdgeInsets.all(10),
                         itemCount: messages.length,
                         itemBuilder: (context, index) {
-                          final message = messages[index]['chat'];
+                          final message = messages[index]['content'];
                           final timestamp = messages[index]['timestamp'];
-                          final time = DateTime.fromMillisecondsSinceEpoch(timestamp);
+                          final time = DateTime.fromMillisecondsSinceEpoch(
+                            timestamp,
+                          );
                           final formattedTime =
                               "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
 
@@ -126,7 +133,10 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                       SizedBox(width: 10),
                                       Text(
                                         formattedTime,
-                                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
                                       ),
                                     ],
                                   ),

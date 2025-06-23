@@ -101,8 +101,7 @@ class UserProfile extends StatefulWidget {
                                     borderRadius: BorderRadius.circular(100),
                                   ),
                                 ),
-                                child: viewingUserData?['imageData']!=null?
-                                Image.memory(base64Decode(viewingUserData?['imageData']),width: 117,height: 117):Icon(Icons.verified),
+                                child: Image.memory(base64Decode(viewingUserData?['imageData']),width: 117,height: 117),
                               ),
                             ],
                           ),
