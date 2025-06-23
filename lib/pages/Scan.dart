@@ -68,13 +68,8 @@ class _ScanState extends State<Scan> {
     return Container(
       width: MediaQuery.sizeOf(context).width,
       height: MediaQuery.sizeOf(context).height,
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/images/background2.png"),
-          fit: BoxFit.cover,
-        ),
-      ),
+
+      color: Colors.lightBlue,
       child: Stack(
         children: [
           Positioned(

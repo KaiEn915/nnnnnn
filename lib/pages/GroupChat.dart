@@ -17,9 +17,7 @@ class _GroupChatState extends State<GroupChat> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    print('here');
     loadGroupChats();
   }
 
@@ -32,7 +30,6 @@ class _GroupChatState extends State<GroupChat> {
     List<GroupChatPost> groupChatsData = [];
 
     for (String id in userGroupsId) {
-      print("id: "+id);
       final docSnap = await ref.doc(id).get();
       if (docSnap.exists) {
         groupChatsData.add(GroupChatPost(data:docSnap.data()!)); // `!` because we already checked exists
