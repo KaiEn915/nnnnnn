@@ -54,7 +54,7 @@ class _CreatePost extends State<CreatePost> {
     final postData = {
       "title": title,
       "description": description,
-      "uid": uid,
+      "owner_uid": uid,
       "username": username,
       "imageUrl": imageUrl,
       "locationCoordinates": locationCoordinates,
@@ -62,7 +62,9 @@ class _CreatePost extends State<CreatePost> {
       "breed": breed,
     };
 
-    await AuthService.db.collection("posts").add(postData);
+    final postRef=await AuthService.db.collection("posts").add(postData);
+
+    await postRef.update({"id": postRef.id});
   }
 
   Future<void> uploadImageToPost() async {

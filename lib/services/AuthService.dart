@@ -262,4 +262,10 @@ class AuthService {
       },
     );
   }
+
+  static Future<void> joinGroupChat(String id)async{
+    await db.collection("users").doc(uid).update({
+      "groupChats": FieldValue.arrayUnion([id]),
+    });
+  }
 }
