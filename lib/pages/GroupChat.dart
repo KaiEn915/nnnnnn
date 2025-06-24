@@ -41,8 +41,6 @@ class _GroupChatState extends State<GroupChat> {
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Column(

@@ -203,8 +203,11 @@ class UserProfile extends StatefulWidget {
                                   ),
                                   child: Row(
                                     children: [
-
-                                      Container(
+                                      GestureDetector(
+                                        onTap:(){
+                                          Navigator.pushNamed(context, '/ExchangeVoucher');
+                                          },
+                                        child:Container(
                                         width: 40,
                                         height: 40,
                                         decoration: BoxDecoration(
@@ -224,6 +227,7 @@ class UserProfile extends StatefulWidget {
                                           ],
                                         ),
                                       ),
+                                )
                                     ],
                                   ),
                                 ),
@@ -238,11 +242,12 @@ class UserProfile extends StatefulWidget {
                                   ),
                                   child: Row(
                                     children: [
-                                      Container(
-                                        width: 40,
-                                        height: 40,
+                                      GestureDetector(
+                                        onTap:(){
+                                          Navigator.pushNamed(context, '/Voucher');
+                                        },
                                         child: Icon(Icons.bookmark, size: 40),
-                                      ),
+                                      )
                                     ],
                                   ),
                                 ),
