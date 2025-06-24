@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:gan/pages/MyMap.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -71,6 +73,20 @@ class MapService{
     }
   }
 
+  static Future<void> openMap(BuildContext context,GeoPoint coordinates) async{
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+        builder: (context) => MyMap(
+      isPickingLocation: false,
+      initialCoordinates: LatLng(
+        coordinates.latitude,
+        coordinates.longitude,
+      ),
+    ),
+    )
+    );
+  }
 
 }
 

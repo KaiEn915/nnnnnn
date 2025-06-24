@@ -2,7 +2,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/MyMap.dart';
-import 'package:gan/widgets/HomePostAttribute.dart';
+import 'package:gan/widgets/PostAttribute.dart';
 import 'package:gan/services/MapService.dart';
 import 'package:latlong2/latlong.dart';
 class SimilarPetPost extends StatefulWidget{

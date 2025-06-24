@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:camera/camera.dart';
+import 'package:flutter/Material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -15,4 +20,27 @@ class ImageService{
       return null;
     }
   }
+
+  static Widget tryDisplayImage(String? imageData, {
+    double? width,
+    double? height,
+    BoxFit fit = BoxFit.cover,
+  }) {
+    if (imageData == null || imageData.isEmpty) {
+      return Icon(Icons.broken_image, size: width ?? 100, color: Colors.grey);
+    }
+
+    try {
+      Uint8List bytes = base64Decode(imageData);
+      return Image.memory(
+        bytes,
+        width: width,
+        height: height,
+        fit: fit,
+      );
+    } catch (e) {
+      return Icon(Icons.broken_image, size: width ?? 100, color: Colors.red);
+    }
+  }
+
 }

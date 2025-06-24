@@ -349,7 +349,7 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                 header: "ABOUT",
                 leftIcon: Icons.arrow_back,
                 leftIcon_onTap: () => {
-                  Navigator.pushNamed(context, "/GroupChatRoom"),
+                  Navigator.pop(context),
                 },
               ),
             ],

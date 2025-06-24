@@ -1,947 +1,379 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gan/pages/GroupChatRoom.dart';
 import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/ImageService.dart';
+import 'package:gan/services/MapService.dart';
+import 'package:gan/utils/OurUI.dart';
 import 'package:gan/widgets/AppButton.dart';
+import 'package:gan/widgets/PostAttribute.dart';
 import 'package:gan/widgets/TopBar.dart';
 
-class PostDetail extends StatelessWidget {
+class PostDetail extends StatefulWidget {
   const PostDetail({super.key, required this.postData});
 
   final Map<String, dynamic> postData;
 
-  bool get isOwner => postData['uid'] == AuthService.uid;
+  @override
+  State<StatefulWidget> createState() => _PostDetailState();
+}
+
+class _PostDetailState extends State<PostDetail> {
+  bool get isOwner => widget.postData['ownerUid'] == AuthService.uid;
+  String address = "";
+
+  @override
+  @override
+  void initState() {
+    super.initState();
+    loadAddress();
+  }
+
+  Future<void> loadAddress() async {
+    final address = await MapService.getAddressFromCoordinates(
+      widget.postData['locationCoordinates'],
+    );
+
+    setState(() {
+      this.address = address;
+    });
+  }
 
   Future<void> deletePost(BuildContext context) async {
-    await AuthService.db.collection("posts").doc(postData['post_id']).delete();
+    await AuthService.db
+        .collection("posts")
+        .doc(widget.postData['id'])
+        .delete();
 
     Navigator.pop(context, "postDeleted");
     Fluttertoast.showToast(msg: "Post deleted successfully");
   }
 
-  Future<void> createGroupChat(BuildContext context,String title, String description) async {
-    final data = {
-      "owner_uid": AuthService.uid,
-      "members_uid": [AuthService.uid],
-      "post_id": postData['id'],
-      "title": title,
-      "description": description,
-      "timestamp": DateTime.now().millisecondsSinceEpoch,
-    };
 
-    final ref = await AuthService.db.collection('groupChats').add(data);
-    await ref.update({"id": ref.id});
-
-    AuthService.joinGroupChat(ref.id);
-
-    Fluttertoast.showToast(msg: "Group chat created successfully");
-    Navigator.pop(context);
-
-  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.sizeOf(context).width,
       height: MediaQuery.sizeOf(context).height,
-      decoration: BoxDecoration(color: Colors.white),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/background2.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
 
       child: Stack(
         children: [
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: AppButton(
-              text: "Create Group Chat",
-              onPressed: () async {
-                await createGroupChat(context,"${postData['title']}'s Group Chat", "${postData['description']}");
-              },
-            ),
-          ),
-
           Positioned(
-            top: 100,
-            child: Column(
-              spacing: 10,
-              children: [
-                Positioned(
-                  left: 1,
-                  top: 81,
-                  child: Container(
-                    width: 374,
-                    height: 600,
-                    padding: const EdgeInsets.only(top: 10, bottom: 12),
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 825,
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 10,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
                     clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xBFC2E1F0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: ShapeDecoration(
+                        color: const Color(0xBFF9FFEF),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        shadows: [
+                          BoxShadow(
+                            color: Color(0x3F000000),
+                            blurRadius: 4,
+                            offset: Offset(0, 4),
+                            spreadRadius: 0,
+                          ),
+                        ],
+                      ),
+                      child: ImageService.tryDisplayImage(
+                        widget.postData['imageData'],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 350,
+                    height: 200,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 13,
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: OurUI.shapeDecoration(),
+                    child: SingleChildScrollView(
+                      child: Scrollbar(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 5,
+                          children: [
+                            FutureBuilder<Widget>(
+                              future: PostAttribute.address(
+                                context,
+                                widget.postData['locationCoordinates'],
+                              ),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return PostAttribute(
+                                    title: "Loading address...",
+                                    icon: Icon(
+                                      Icons.pin_drop,
+                                      color: Colors.grey,
+                                    ),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return PostAttribute(
+                                    title: "Location unavailable",
+                                    icon: Icon(Icons.error, color: Colors.red),
+                                  );
+                                } else {
+                                  return snapshot.data!;
+                                }
+                              },
+                            ),
+                            PostAttribute.postOwner(
+                              context,
+                              widget.postData['username'],
+                              widget.postData['ownerUid'],
+                            ),
+                            PostAttribute.since(widget.postData['timestamp']),
+                            PostAttribute.phoneNumber(
+                              widget.postData['phoneNumber'],
+                            ),
+                            PostAttribute.email(widget.postData['email']),
+                            PostAttribute.description(
+                              widget.postData['description'],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 350,
+                    height: 200,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: OurUI.shapeDecoration(),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: 10,
+                      spacing: 5,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: const Color(0xBFC2E1F0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 10,
-                            children: [
-                              Container(
-                                width: 138,
-                                height: 132,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: ShapeDecoration(
-                                  color: const Color(0xBFF9FFEF),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
-                                  shadows: [
-                                    BoxShadow(
-                                      color: Color(0x3F000000),
-                                      blurRadius: 4,
-                                      offset: Offset(0, 4),
-                                      spreadRadius: 0,
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  spacing: 10,
-                                  children: [
-                                    Container(
-                                      width: 190,
-                                      height: 147,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                            "https://placehold.co/190x147",
-                                          ),
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                        SizedBox(
+                          width: 302,
+                          height: 32,
+                          child: OurUI.font(text: "COMMENTS"),
                         ),
                         Container(
-                          width: 342,
-                          height: 215,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 13,
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: const Color(0xBFE5F9FF),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 2,
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                height: 23,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      width: 21,
-                                      height: 23,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                            "https://placehold.co/21x23",
-                                          ),
-                                          fit: BoxFit.cover,
-                                        ),
+                          height: 100,
+                          child: SingleChildScrollView(
+                            child: Scrollbar(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                spacing: 10,
+                                children: [
+                                  Container(
+                                    width: 300,
+                                    height: 50,
+                                    clipBehavior: Clip.antiAlias,
+                                    decoration: ShapeDecoration(
+                                      color: Colors.white.withValues(
+                                        alpha: 128,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 353,
-                                      height: 23,
-                                      child: Text(
-                                        '  Near Southern University College\n',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 10,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w600,
-                                          height: 0,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                height: 26,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      width: 21,
-                                      height: 26,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                            "https://placehold.co/21x26",
-                                          ),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 353,
-                                      height: 26,
-                                      child: Text(
-                                        '  Since 7 hours before',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 10,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w600,
-                                          height: 0,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                height: 26,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      width: 21,
-                                      height: 26,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                            "https://placehold.co/21x26",
-                                          ),
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 353,
-                                      height: 26,
-                                      child: Text(
-                                        '  +6012 3456 7890',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 10,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w600,
-                                          height: 0,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                height: 26,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      width: 21,
-                                      height: 26,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                            "https://placehold.co/21x26",
-                                          ),
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 353,
-                                      height: 26,
-                                      child: Text(
-                                        '  kiatmeng0101@gmail.com',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 10,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w600,
-                                          height: 0,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                height: 26,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      width: 21,
-                                      height: 26,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                            "https://placehold.co/21x26",
-                                          ),
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 353,
-                                      height: 26,
-                                      child: Text(
-                                        '  km_0101',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 10,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w600,
-                                          height: 0,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                height: 65,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(),
-                                child: Wrap(
-                                  alignment: WrapAlignment.start,
-                                  runAlignment: WrapAlignment.start,
-                                  runSpacing: 0,
-                                  children: [
-                                    Container(
-                                      width: 21,
-                                      height: 26,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                            "https://placehold.co/21x26",
-                                          ),
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 300,
-                                      height: 29,
-                                      child: Text(
-                                        '  About my pet:',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 10,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w600,
-                                          height: 0,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 321,
-                                      height: 35,
-                                      child: Text(
-                                        'My pet Chan Wei Er has been missing since November!!! It is a German Shepherd Dog,',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 10,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w600,
-                                          height: 1,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: 342,
-                          height: 153,
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: const Color(0xBFE1F9FF),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 9,
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                height: 32,
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      left: 0,
-                                      top: 0,
-                                      child: SizedBox(
-                                        width: 302,
-                                        height: 32,
-                                        child: Text(
-                                          'COMMENTS',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontFamily: 'IBM Plex Sans',
-                                            fontWeight: FontWeight.w700,
-                                            height: 1,
-                                            letterSpacing: 2.40,
-                                            shadows: [
-                                              Shadow(
-                                                offset: Offset(0, 4),
-                                                blurRadius: 4,
-                                                color: Color(
-                                                  0xFF000000,
-                                                ).withOpacity(0.25),
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                          top: 0,
+                                          left: 0,
+                                          child: Container(
+                                            width: 40,
+                                            height: 40,
+                                            decoration: ShapeDecoration(
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                  "https://placehold.co/32x32",
+                                                ),
+                                                fit: BoxFit.cover,
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                height: 99,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  spacing: 10,
-                                  children: [
-                                    Container(
-                                      width: 302,
-                                      height: 32,
-                                      decoration: ShapeDecoration(
-                                        color: Colors.white.withValues(
-                                          alpha: 128,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            left: 31,
-                                            top: 0,
-                                            child: Container(
-                                              width: 271,
-                                              height: 32,
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: BoxDecoration(),
-                                              child: Stack(
-                                                children: [
-                                                  Positioned(
-                                                    left: 2,
-                                                    top: 0,
-                                                    child: SizedBox(
-                                                      width: 269,
-                                                      height: 14,
-                                                      child: Text(
-                                                        '  Chok Yun Ying',
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 12,
-                                                          fontFamily: 'Iceland',
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          height: 1.40,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    left: 2,
-                                                    top: 14,
-                                                    child: SizedBox(
-                                                      width: 269,
-                                                      height: 14,
-                                                      child: Text(
-                                                        '  Don’t give up living!',
-                                                        style: TextStyle(
-                                                          color: const Color(
-                                                            0xFF828282,
-                                                          ),
-                                                          fontSize: 12,
-                                                          fontFamily: 'Inter',
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          height: 1.40,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(width: 0.10),
+                                                borderRadius:
+                                                    BorderRadius.circular(100),
                                               ),
                                             ),
                                           ),
-                                          Positioned(
-                                            left: 0,
-                                            top: 0,
-                                            child: Container(
-                                              width: 32,
-                                              height: 32,
-                                              decoration: ShapeDecoration(
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                    "https://placehold.co/32x32",
+                                        ),
+                                        Positioned(
+                                          left: 40,
+                                          top: 0,
+                                          right: 0,
+                                          child: Container(
+                                            height: 15,
+                                            alignment: Alignment.topLeft,
+                                            child: Text(
+                                              'Chok Yun Ying',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                                fontFamily: 'Iceland',
+                                                fontWeight: FontWeight.w400,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          left: 45,
+                                          right: 0,
+                                          top: 15,
+                                          bottom: 0,
+                                          child: Container(
+                                            alignment: Alignment.topLeft,
+                                            height: 30,
+                                            child: Scrollbar(
+                                              child: SingleChildScrollView(
+                                                child: Text(
+                                                  'Don’t give up living!' * 34,
+                                                  style: TextStyle(
+                                                    color: Color(0xFF828282),
+                                                    fontSize: 12,
+                                                    fontFamily: 'Inter',
+                                                    fontWeight: FontWeight.w400,
+                                                    decoration:
+                                                        TextDecoration.none,
                                                   ),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                shape: RoundedRectangleBorder(
-                                                  side: BorderSide(width: 0.10),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        100,
-                                                      ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                    Container(
-                                      width: 302,
-                                      height: 32,
-                                      decoration: ShapeDecoration(
-                                        color: Colors.white.withValues(
-                                          alpha: 128,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            left: 31,
-                                            top: 0,
-                                            child: Container(
-                                              width: 271,
-                                              height: 32,
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: BoxDecoration(),
-                                              child: Stack(
-                                                children: [
-                                                  Positioned(
-                                                    left: 2,
-                                                    top: 0,
-                                                    child: SizedBox(
-                                                      width: 269,
-                                                      height: 14,
-                                                      child: Text(
-                                                        '  Lee Chong Wei',
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 12,
-                                                          fontFamily: 'Iceland',
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          height: 1.40,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    left: 2,
-                                                    top: 14,
-                                                    child: SizedBox(
-                                                      width: 269,
-                                                      height: 14,
-                                                      child: Text(
-                                                        '  I saw your dog under my racket~',
-                                                        style: TextStyle(
-                                                          color: const Color(
-                                                            0xFF828282,
-                                                          ),
-                                                          fontSize: 12,
-                                                          fontFamily: 'Inter',
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          height: 1.40,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            left: 0,
-                                            top: 0,
-                                            child: Container(
-                                              width: 32,
-                                              height: 32,
-                                              decoration: ShapeDecoration(
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                    "https://placehold.co/32x32",
-                                                  ),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                shape: RoundedRectangleBorder(
-                                                  side: BorderSide(width: 0.10),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        100,
-                                                      ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 302,
-                                      height: 32,
-                                      decoration: ShapeDecoration(
-                                        color: Colors.white.withValues(
-                                          alpha: 128,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            left: 31,
-                                            top: 0,
-                                            child: Container(
-                                              width: 271,
-                                              height: 32,
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: BoxDecoration(),
-                                              child: Stack(
-                                                children: [
-                                                  Positioned(
-                                                    left: 2,
-                                                    top: 0,
-                                                    child: SizedBox(
-                                                      width: 269,
-                                                      height: 14,
-                                                      child: Text(
-                                                        '  Doraemon',
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 12,
-                                                          fontFamily: 'Iceland',
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          height: 1.40,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    left: 2,
-                                                    top: 14,
-                                                    child: SizedBox(
-                                                      width: 269,
-                                                      height: 14,
-                                                      child: Text(
-                                                        '  Your dog inside my pocket',
-                                                        style: TextStyle(
-                                                          color: const Color(
-                                                            0xFF828282,
-                                                          ),
-                                                          fontSize: 12,
-                                                          fontFamily: 'Inter',
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          height: 1.40,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            left: 0,
-                                            top: 0,
-                                            child: Container(
-                                              width: 32,
-                                              height: 32,
-                                              decoration: ShapeDecoration(
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                    "https://placehold.co/32x32",
-                                                  ),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                shape: RoundedRectangleBorder(
-                                                  side: BorderSide(width: 0.10),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        100,
-                                                      ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 302,
-                                      height: 32,
-                                      decoration: ShapeDecoration(
-                                        color: Colors.white.withValues(
-                                          alpha: 128,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            left: 31,
-                                            top: 0,
-                                            child: Container(
-                                              width: 271,
-                                              height: 32,
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: BoxDecoration(),
-                                              child: Stack(
-                                                children: [
-                                                  Positioned(
-                                                    left: 2,
-                                                    top: 0,
-                                                    child: SizedBox(
-                                                      width: 269,
-                                                      height: 14,
-                                                      child: Text(
-                                                        '  Pocket',
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 12,
-                                                          fontFamily: 'Iceland',
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          height: 1.40,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    left: 2,
-                                                    top: 14,
-                                                    child: SizedBox(
-                                                      width: 269,
-                                                      height: 14,
-                                                      child: Text(
-                                                        '  I got your dog',
-                                                        style: TextStyle(
-                                                          color: const Color(
-                                                            0xFF828282,
-                                                          ),
-                                                          fontSize: 12,
-                                                          fontFamily: 'Inter',
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          height: 1.40,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            left: 0,
-                                            top: 0,
-                                            child: Container(
-                                              width: 32,
-                                              height: 32,
-                                              decoration: ShapeDecoration(
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                    "https://placehold.co/32x32",
-                                                  ),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                shape: RoundedRectangleBorder(
-                                                  side: BorderSide(width: 0.10),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        100,
-                                                      ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: 342,
-                          height: 37,
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Colors.white.withValues(alpha: 128),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            shadows: [
-                              BoxShadow(
-                                color: Color(0x3F000000),
-                                blurRadius: 4,
-                                offset: Offset(0, 4),
-                                spreadRadius: 0,
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 15,
-                            children: [
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                      "https://placehold.co/30x30",
-                                    ),
-                                    fit: BoxFit.contain,
                                   ),
-                                ),
+                                ],
                               ),
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                      "https://placehold.co/30x30",
-                                    ),
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                      "https://placehold.co/30x30",
-                                    ),
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
+                  Container(
+                    width: 350,
+                    height: 37,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: OurUI.shapeDecoration(),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 15,
+                      children: [
+                        GestureDetector(
+                          onTap:(){
+                            AuthService.updateUserData();
+                            final groupChats = AuthService.userData?['groupChats'];
+                            final groupChatId = widget.postData['groupChatId'];
+                            if (groupChats is List && groupChats.contains(groupChatId)) {
+                              Fluttertoast.showToast(msg: "You already joined the group chat");
+                              return;
+                            }
+
+
+                            if (groupChatId == null || groupChatId.isEmpty) {
+                              Fluttertoast.showToast(msg: "Group chat doesn't exist for this post");
+                              return;
+                            }
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Join Group"),
+                                  content: Text("Do you agree to join this group?"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text("Cancel"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () async{
+                                        Navigator.pop(context);
+                                        final groupChatId=widget.postData['groupChatId'];
+                                        await AuthService.joinGroupChat(context,groupChatId);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => GroupChatRoom(id:groupChatId)),
+                                        );
+                                      },
+                                      child: Text("Join"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Icon(Icons.group, size: 30),
+                        ),
+                        GestureDetector(
+                          onTap:(){
+
+
+                          },
+                          child: Icon(Icons.add_comment, size: 30),
+                        ),
+                        GestureDetector(
+                          onTap:(){},
+                          child: Icon(Icons.bookmark, size: 30),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           TopBar(
             isMiddleSearchBar: false,
-            header: postData['title'],
+            header: widget.postData['title'],
             leftIcon: Icons.arrow_back,
             leftIcon_onTap: () {
               Navigator.pop(context);
             },
             rightIcon: isOwner ? Icons.delete : null,
-            rightIcon_onTap: () {
-              deletePost(context);
+            rightIcon_onTap: () async {
+              await deletePost(context);
             },
           ),
         ],

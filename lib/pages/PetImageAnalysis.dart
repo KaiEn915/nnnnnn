@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/RecognitionService.dart';
-import 'package:gan/widgets/OurFont.dart';
+import 'package:gan/utils/OurUI.dart';
 import 'package:gan/widgets/SimilarPetPost.dart';
 import 'package:gan/widgets/TopBar.dart';
 import 'package:tflite_v2/tflite_v2.dart';
@@ -156,11 +156,11 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
                               children: [
                                 Container(
                                   height: 50,
-                                  child: OurFont(text: "POSSIBLE BREED"),
+                                  child: OurUI.font(text: "POSSIBLE BREED"),
                                 ),
                                 Container(
                                   height: 55,
-                                  child: OurFont(
+                                  child: OurUI.font(
                                     text: breed,
                                     filledColor: true,
                                   ),
@@ -213,7 +213,7 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
                               SizedBox(
                                 width: 192,
                                 height: 72,
-                                child: OurFont(text: "SIMILAR PETS"),
+                                child: OurUI.font(text: "SIMILAR PETS"),
                               ),
                               Container(
                                 width: 32,

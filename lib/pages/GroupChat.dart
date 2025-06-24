@@ -64,20 +64,23 @@ class _GroupChatState extends State<GroupChat> {
               MyNavigationBar(),
               Positioned(
                 top: 96,
+                bottom:75,
                 child: Container(
                   width: MediaQuery
                       .sizeOf(context)
                       .width,
-                  height: 530,
                   clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(border: Border.all(width: 0)),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 15,
-                    children: _postWidgets,
-                  ),
+                  child:SingleChildScrollView(
+                    child:Scrollbar(child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 15,
+                      children: _postWidgets,
+                    ),)
+                  )
+
                 ),
               ),
               TopBar(isMiddleSearchBar: false, header: "GROUP CHATS")

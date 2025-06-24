@@ -49,6 +49,7 @@ class _AppButtonState extends State<AppButton> {
               fontFamily: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap',
               fontWeight: FontWeight.w500,
               height: 1.4,
+              decoration: TextDecoration.none
             ),
           ),
         ),

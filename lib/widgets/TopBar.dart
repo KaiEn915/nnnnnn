@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gan/widgets/OurFont.dart';
-
+import 'package:gan/utils/OurUI.dart';
 class TopBar extends StatelessWidget {
   const TopBar({
     super.key,
@@ -154,7 +153,7 @@ class TopBar extends StatelessWidget {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            OurFont(
+                            OurUI.font(
                               text: header,
                             )
                           ],

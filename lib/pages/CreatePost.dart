@@ -1,9 +1,14 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/MapService.dart';
 import 'package:gan/services/RecognitionService.dart';
+import 'package:gan/utils/OurUI.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:gan/widgets/TopBar.dart';
@@ -21,6 +26,7 @@ class _CreatePost extends State<CreatePost> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
+  Uint8List currentImageData = Uint8List(0);
   var breed = "Unknown Breed";
 
   @override
@@ -41,47 +47,75 @@ class _CreatePost extends State<CreatePost> {
     });
   }
 
-  static Future<void> createPost({
+  Future<void> createPost({
     required BuildContext context,
     required String title,
     required String description,
     required String uid,
-    required String username,
-    required String imageUrl,
     required String breed,
     required GeoPoint? locationCoordinates,
   }) async {
+
+
+
     final postData = {
       "title": title,
       "description": description,
-      "owner_uid": uid,
-      "username": username,
-      "imageUrl": imageUrl,
+      "ownerUid": uid,
+      "username": AuthService.userData?['username'],
+      "phoneNumber": AuthService.userData?['phoneNumber'],
+      "email": AuthService.userData?['email'],
+      "imageData": base64Encode(currentImageData),
       "locationCoordinates": locationCoordinates,
       "timestamp": DateTime.now().millisecondsSinceEpoch,
       "breed": breed,
     };
-
-    final postRef=await AuthService.db.collection("posts").add(postData);
-
+    final postRef = await AuthService.db.collection("posts").add(postData);
     await postRef.update({"id": postRef.id});
+
+    String groupChatId="";
+    if (await doCreateGroupChat(context)) {
+      groupChatId = await AuthService.createGroupChat(
+        context,
+        postRef.id,
+        "$title's Group Chat",
+        description,
+      );
+
+    }
+    await postRef.update({
+      "groupChatId": groupChatId,
+    });
+
+
   }
 
-  Future<void> uploadImageToPost() async {
-    final ImagePicker picker = ImagePicker();
-    try {
-      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-      if (image == null) return;
+  static Future<bool> doCreateGroupChat(BuildContext context) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Group Chat"),
+          content: Text("Do you want to create a group chat for this post?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: Text("No"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: Text("Ok"),
+            ),
+          ],
+        );
+      },
+    );
 
-      // detect breed
-      Fluttertoast.showToast(msg: "Detecting breed...");
-      var _recognitions = await RecognitionService.recognizeImage(image.path);
-      breed = _recognitions?[0]['label'];
-      Fluttertoast.showToast(msg: "Detected breed: $breed");
-    } catch (e) {
-      print("Error picking image: $e");
-      return null;
-    }
+    return result == true;
   }
 
   @override
@@ -123,23 +157,37 @@ class _CreatePost extends State<CreatePost> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        height: 300,
+                        height: 250,
                         width: 250,
+                        decoration: OurUI.shapeDecoration(),
                         child: Stack(
                           children: [
-                            Image.asset("assets/images/cat.png"),
-                            Align(
-                              alignment: Alignment.bottomRight,
+                            Positioned.fill(
+                              child: FittedBox(
+                                child: ImageService.tryDisplayImage(
+                                  base64Encode(currentImageData),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 10,
+                              right: 10,
                               child: GestureDetector(
                                 onTap: () async {
-                                  await uploadImageToPost();
+                                  XFile? image = await ImageService.pickImage(ImageSource.gallery);
+                                  if (image == null) return;
+                                  final bytes = await image.readAsBytes();
+                                  setState(() {
+                                    currentImageData = bytes;
+                                  });
                                 },
-                                child: Icon(Icons.upload, size: 50),
+                                child: Icon(Icons.upload, size: 32, color: Colors.black),
                               ),
                             ),
                           ],
                         ),
                       ),
+
 
                       LabeledInputBox(
                         isInputLocation: false,
@@ -173,8 +221,6 @@ class _CreatePost extends State<CreatePost> {
                             description: descriptionController.text,
                             breed: breed,
                             uid: AuthService.uid,
-                            username: AuthService.userData?['username'],
-                            imageUrl: "",
                             locationCoordinates:
                                 await MapService.getCoordinatesFromAddress(
                                   locationController.text,
@@ -184,7 +230,7 @@ class _CreatePost extends State<CreatePost> {
                           Navigator.pop(
                             context,
                             "postCreated",
-                          ); // this tells Home to reload posts
+                          );
                         },
                       ),
                     ],

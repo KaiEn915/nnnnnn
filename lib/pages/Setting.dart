@@ -41,9 +41,7 @@ class _SettingWidgetState extends State<Setting> {
           enableNearbyMissingPetNotifications,
       "enableGroupChatMessages": enableGroupChatMessages,
       "uid": AuthService.uid,
-      "imageData": currentProfileImageData != null
-          ? base64Encode(currentProfileImageData!)
-          : null,
+      "imageData": base64Encode(currentProfileImageData!)
     };
 
     await AuthService.db

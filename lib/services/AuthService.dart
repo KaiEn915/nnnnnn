@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gan/pages/GroupChatRoom.dart';
 import 'package:gan/pages/Login.dart';
 import 'package:gan/services/MapService.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,12 +14,13 @@ class AuthService {
   );
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore db = FirebaseFirestore.instance;
-  static Map<String,dynamic>? userData= {};
+  static Map<String, dynamic>? userData = {};
 
   static var uid;
 
-
-  static Future<UserCredential?> loginOrSignUpWithGoogle(BuildContext context) async {
+  static Future<UserCredential?> loginOrSignUpWithGoogle(
+    BuildContext context,
+  ) async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
@@ -31,13 +33,16 @@ class AuthService {
         return null;
       }
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      final UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
 
       if (userCredential.additionalUserInfo?.isNewUser == true) {
         await createUserData(userCredential, context);
@@ -65,7 +70,11 @@ class AuthService {
     }
   }
 
-  static Future<void> loginWithEmailAndPassword(String email, String password, BuildContext context) async {
+  static Future<void> loginWithEmailAndPassword(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
     if (email.isEmpty || password.isEmpty) {
       Fluttertoast.showToast(
         msg: "Please complete your credentials!",
@@ -107,7 +116,11 @@ class AuthService {
   }
 
   static Future<void> createAccountWithEmailAndPassword(
-      String email, String password, String confirmPassword, BuildContext context) async {
+    String email,
+    String password,
+    String confirmPassword,
+    BuildContext context,
+  ) async {
     if (password != confirmPassword) {
       Fluttertoast.showToast(
         msg: "Passwords do not match!",
@@ -134,9 +147,7 @@ class AuthService {
       );
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => Login(email: email),
-        ),
+        MaterialPageRoute(builder: (context) => Login(email: email)),
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -166,7 +177,10 @@ class AuthService {
     }
   }
 
-  static Future<void> createUserData(UserCredential userCredential, BuildContext context) async {
+  static Future<void> createUserData(
+    UserCredential userCredential,
+    BuildContext context,
+  ) async {
     User? user = userCredential.user;
     if (user != null) {
       String? username = await promptForUsername(context);
@@ -183,14 +197,17 @@ class AuthService {
         return;
       }
 
-      GeoPoint locationCoordinates = GeoPoint(position.latitude, position.longitude);
+      GeoPoint locationCoordinates = GeoPoint(
+        position.latitude,
+        position.longitude,
+      );
 
       Map<String, dynamic> userData = {
         "username": username,
         "email": user.email,
         "createdAt": DateTime.now().toIso8601String(),
         "phoneNumber": user.phoneNumber ?? "",
-        "locationCoordinates":locationCoordinates
+        "locationCoordinates": locationCoordinates,
       };
 
       try {
@@ -205,7 +222,10 @@ class AuthService {
 
   static Future<Map<String, dynamic>?> getUserData(String uid) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> doc = await db.collection("users").doc(uid).get();
+      DocumentSnapshot<Map<String, dynamic>> doc = await db
+          .collection("users")
+          .doc(uid)
+          .get();
       if (doc.exists) {
         print(doc);
         return doc.data();
@@ -224,9 +244,13 @@ class AuthService {
     if (user == null) return null;
 
     try {
-      DocumentSnapshot<Map<String, dynamic>> doc = await db.collection("users").doc(user.uid).get();
+      DocumentSnapshot<Map<String, dynamic>> doc = await db
+          .collection("users")
+          .doc(user.uid)
+          .get();
       if (doc.exists) {
-        userData=doc.data();
+        userData = doc.data();
+        Fluttertoast.showToast(msg: "User data is updated");
       } else {
         print('not exists');
       }
@@ -263,9 +287,34 @@ class AuthService {
     );
   }
 
-  static Future<void> joinGroupChat(String id)async{
+  static Future<String> createGroupChat(
+    BuildContext context,
+    String post_id,
+    String title,
+    String description,
+  ) async {
+    final data = {
+      "owner_uid": AuthService.uid,
+      "members_uid": [AuthService.uid],
+      "post_id": post_id,
+      "title": title,
+      "description": description,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+    };
+
+    final ref = await AuthService.db.collection('groupChats').add(data);
+    await ref.update({"id": ref.id});
+    Fluttertoast.showToast(msg: "Group chat created successfully");
+    await AuthService.joinGroupChat(context,ref.id);
+
+    return ref.id;
+  }
+
+  static Future<void> joinGroupChat(BuildContext context, String id) async {
     await db.collection("users").doc(uid).update({
       "groupChats": FieldValue.arrayUnion([id]),
     });
+    Fluttertoast.showToast(msg: "You have joined group chat $id");
+
   }
 }

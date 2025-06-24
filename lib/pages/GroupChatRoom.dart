@@ -229,7 +229,7 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                       ),
                       TopBar(
                         isMiddleSearchBar: false,
-                        header: "GROUPCHAT",
+                        header: "GROUP CHAT",
                         leftIcon: Icons.arrow_back,
                         leftIcon_onTap: () => {
                           Navigator.pushNamed(context, "/GroupChat"),
