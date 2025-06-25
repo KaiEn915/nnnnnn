@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gan/pages/GroupChatDetail.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/TopBar.dart';
 
@@ -119,7 +120,7 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                     padding: EdgeInsets.all(10),
                                     decoration: BoxDecoration(
                                       color: messageUid == currentUid
-                                          ? Colors.white.withOpacity(0.8)
+                                          ? Colors.white.withAlpha(204)
                                           : Colors.blue[100],
                                       borderRadius: BorderRadius.circular(10),
                                     ),
@@ -129,7 +130,7 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                           : CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          messageUid == currentUid ? "you" : senderName,// or "other"
+                                          messageUid == currentUid ? "You" : senderName,// or "other"
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 14,
@@ -236,7 +237,9 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                         },
                         rightIcon: Icons.error_outline,
                         rightIcon_onTap: () => {
-                          Navigator.pushNamed(context, "/GroupChatDetail"),
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                          GroupChatDetail(groupChatId: widget.id)
+                          )),
                         },
                       ),
                     ],

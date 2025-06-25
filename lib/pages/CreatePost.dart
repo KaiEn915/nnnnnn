@@ -73,50 +73,12 @@ class _CreatePost extends State<CreatePost> {
     final postRef = await AuthService.db.collection("posts").add(postData);
     await postRef.update({"id": postRef.id});
 
-    String groupChatId="";
-    if (await doCreateGroupChat(context)) {
-      groupChatId = await AuthService.createGroupChat(
-        context,
-        postRef.id,
-        "$title's Group Chat",
-        description,
-      );
-
-    }
-    await postRef.update({
-      "groupChatId": groupChatId,
-    });
+    await AuthService.promptForCreateGroupChat(context,postRef.id);
 
 
   }
 
-  static Future<bool> doCreateGroupChat(BuildContext context) async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Group Chat"),
-          content: Text("Do you want to create a group chat for this post?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-              child: Text("No"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-              child: Text("Ok"),
-            ),
-          ],
-        );
-      },
-    );
 
-    return result == true;
-  }
 
   @override
   Widget build(BuildContext context) {

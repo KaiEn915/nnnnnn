@@ -12,9 +12,7 @@ import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:flutter/services.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/TopBar.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:latlong2/latlong.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
@@ -41,7 +39,7 @@ class _SettingWidgetState extends State<Setting> {
           enableNearbyMissingPetNotifications,
       "enableGroupChatMessages": enableGroupChatMessages,
       "uid": AuthService.uid,
-      "imageData": base64Encode(currentProfileImageData!)
+      "imageData": currentProfileImageData==null?"": base64Encode(currentProfileImageData!)
     };
 
     await AuthService.db
@@ -422,7 +420,7 @@ class _SettingWidgetState extends State<Setting> {
             ),
             TopBar(
               isMiddleSearchBar: false,
-              header: "SETTING",
+              header: "SETTINGS",
               leftIcon: Icons.arrow_back,
               leftIcon_onTap: () => {
                 Navigator.pushNamed(context, "/UserProfile"),

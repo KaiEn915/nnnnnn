@@ -1,14 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/ImageService.dart';
 import 'package:gan/widgets/TopBar.dart';
 
 class GroupChatDetail extends StatefulWidget {
-  const GroupChatDetail({super.key});
+  const GroupChatDetail({super.key,required this.groupChatId});
+  final String groupChatId;
+
 
   @override
   State<GroupChatDetail> createState() => _GroupChatDetailWidgetState();
 }
 
 class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
+  Map<String,dynamic>? groupChatData={};
+
+  @override void initState() {
+    super.initState();
+    loadGroupChatData();
+  }
+  Future<void> loadGroupChatData()async{
+    final docSnap=await AuthService.db.collection("groupChats").doc(widget.groupChatId).get();
+
+    setState(() {
+      groupChatData=docSnap.data();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -50,7 +68,7 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                               Shadow(
                                 offset: Offset(0, 4),
                                 blurRadius: 4,
-                                color: Color(0xFF000000).withOpacity(0.25),
+                                color: Color(0xFF000000).withAlpha(64),
                               ),
                             ],
                           ),
@@ -60,26 +78,24 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                   ),
                 ),
               ),
+
               //头像
-              Positioned(
-                left: 145,
-                top: 150,
+              Align(
+                alignment: Alignment.topCenter,
                 child: Container(
                   width: 125,
                   height: 125,
+                  margin: EdgeInsets.only(top:150),
                   decoration: ShapeDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/cat.png"),
-                      fit: BoxFit.cover,
-                    ),
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
-                        width: 0,
+                        width: 1,
                         strokeAlign: BorderSide.strokeAlignOutside,
                       ),
                       borderRadius: BorderRadius.circular(100),
                     ),
                   ),
+                  child:ImageService.tryDisplayImage(groupChatData?['imageData']),
                 ),
               ),
               //里面的members
@@ -278,10 +294,7 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                       Positioned(
                         left: 0,
                         top: 0,
-                        child: Icon(
-                            Icons.info_outline,
-                            size: 20,
-                        ),
+                        child: Icon(Icons.info_outline, size: 20),
                       ),
                       Positioned(
                         top: 1,
@@ -316,13 +329,7 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                           ),
                         ),
                       ),
-                      Positioned(
-                        top: 65,
-                        child: Icon(
-                            Icons.history,
-                            size: 20,
-                        ),
-                      ),
+                      Positioned(top: 65, child: Icon(Icons.history, size: 20)),
                       Positioned(
                         top: 66,
                         left: 20,
@@ -348,9 +355,7 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                 isMiddleSearchBar: false,
                 header: "ABOUT",
                 leftIcon: Icons.arrow_back,
-                leftIcon_onTap: () => {
-                  Navigator.pop(context),
-                },
+                leftIcon_onTap: () => {Navigator.pop(context)},
               ),
             ],
           ),

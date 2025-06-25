@@ -73,7 +73,6 @@ class MyApp extends StatelessWidget {
         '/Scan':(context)=> const Scan(),
         '/Setting':(context)=> const Setting(),
         '/CreatePost':(context)=> const CreatePost(),
-        '/GroupChatDetail':(context)=> const GroupChatDetail(),
         '/Voucher':(context)=> const Voucher(),
         '/ExchangeVoucher':(context)=> const ExchangeVoucher(),
       },

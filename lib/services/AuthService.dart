@@ -291,12 +291,14 @@ class AuthService {
     BuildContext context,
     String post_id,
     String title,
+    String imageData,
     String description,
   ) async {
     final data = {
       "owner_uid": AuthService.uid,
       "members_uid": [AuthService.uid],
       "post_id": post_id,
+      "imageData": imageData,
       "title": title,
       "description": description,
       "timestamp": DateTime.now().millisecondsSinceEpoch,
@@ -305,7 +307,7 @@ class AuthService {
     final ref = await AuthService.db.collection('groupChats').add(data);
     await ref.update({"id": ref.id});
     Fluttertoast.showToast(msg: "Group chat created successfully");
-    await AuthService.joinGroupChat(context,ref.id);
+    await AuthService.joinGroupChat(context, ref.id);
 
     return ref.id;
   }
@@ -315,6 +317,54 @@ class AuthService {
       "groupChats": FieldValue.arrayUnion([id]),
     });
     Fluttertoast.showToast(msg: "You have joined group chat $id");
+  }
 
+  static Future<void> promptForCreateGroupChat(
+    BuildContext context,
+    String forPostId,
+  ) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Group Chat"),
+          content: Text("Do you want to create a group chat for this post?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: Text("No"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: Text("Ok"),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true) {
+      final postRef = AuthService.db.collection('posts').doc(forPostId);
+      final docSnap = await postRef.get();
+
+      if (docSnap.exists) {
+        Map<String, dynamic>? snapshot = docSnap.data();
+        if (snapshot != null) {
+          String groupChatId = await createGroupChat(
+            context,
+            snapshot['id'], // assuming the post has its own 'id' field
+            "${snapshot['title']}'s Group Chat",
+            snapshot['imageData'],
+            snapshot['description'],
+          );
+
+          await postRef.update({"groupChatId": groupChatId});
+        }
+      }
+    }
   }
 }

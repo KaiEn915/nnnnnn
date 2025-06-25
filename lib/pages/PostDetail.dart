@@ -312,6 +312,9 @@ class _PostDetailState extends State<PostDetail> {
 
                             if (groupChatId == null || groupChatId.isEmpty) {
                               Fluttertoast.showToast(msg: "Group chat doesn't exist for this post");
+                              if (isOwner){
+                                AuthService.promptForCreateGroupChat(context,widget.postData['id']);
+                              }
                               return;
                             }
                             showDialog(
