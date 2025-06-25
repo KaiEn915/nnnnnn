@@ -1,32 +1,48 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
+import 'package:gan/utils/OurUI.dart';
+import 'package:gan/widgets/AppButton.dart';
+import 'package:gan/widgets/OurFont.dart';
+import 'package:gan/widgets/PostAttribute.dart';
 import 'package:gan/widgets/TopBar.dart';
 
 class GroupChatDetail extends StatefulWidget {
-  const GroupChatDetail({super.key,required this.groupChatId});
-  final String groupChatId;
+  const GroupChatDetail({super.key, required this.groupChatId});
 
+  final String groupChatId;
 
   @override
   State<GroupChatDetail> createState() => _GroupChatDetailWidgetState();
 }
 
 class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
-  Map<String,dynamic>? groupChatData={};
+  DocumentReference<Map<String, dynamic>>? dbRef;
+  Map<String, dynamic>? groupChatData = {};
 
-  @override void initState() {
+  @override
+  void initState() {
     super.initState();
     loadGroupChatData();
   }
-  Future<void> loadGroupChatData()async{
-    final docSnap=await AuthService.db.collection("groupChats").doc(widget.groupChatId).get();
+
+  Future<void> loadGroupChatData() async {
+    dbRef = AuthService.db.collection("groupChats").doc(widget.groupChatId);
+    final docSnap = await dbRef?.get();
 
     setState(() {
-      groupChatData=docSnap.data();
+      groupChatData = docSnap?.data();
     });
   }
+  Future<List<Map<String, dynamic>>> _loadUserData(List<dynamic> uids) async {
+    final futures = uids.map((uid) async {
+      final doc = await AuthService.db.collection("users").doc(uid).get();
+      return (doc.data() ?? {}) as Map<String, dynamic>;
+    });
 
+    return await Future.wait(futures);
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -43,319 +59,187 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
           ),
           child: Stack(
             children: [
-              Positioned(
-                left: 45,
-                top: 280,
-                child: Container(
-                  width: 326,
-                  height: 30,
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        width: 326,
-                        height: 30,
-                        child: Text(
-                          'GROUP CHAT',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontFamily: 'IBM Plex Sans',
-                            fontWeight: FontWeight.w700,
-                            height: 1,
-                            letterSpacing: 3,
-                            shadows: [
-                              Shadow(
-                                offset: Offset(0, 4),
-                                blurRadius: 4,
-                                color: Color(0xFF000000).withAlpha(64),
-                              ),
-                            ],
-                          ),
+              Container(
+                margin: EdgeInsets.only(top: 100),
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  spacing: 25,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 150,
+                      height: 150,
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(width: 1),
+                          borderRadius: BorderRadius.circular(100),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: ImageService.tryDisplayImage(
+                          groupChatData?['imageData'],
+                        ),
+                      ),
+                    ),
+                    Container(child: OurFont(text: groupChatData?['title'] ?? '')),
+                    Container(
+                      height: 100,
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      clipBehavior: Clip.antiAlias,
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFFE5E5CF),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        shadows: [
+                          BoxShadow(
+                            color: Color(0x3F000000),
+                            blurRadius: 4,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          PostAttribute.description(
+                            groupChatData?['description'] ?? '',
+                            height: 40,
+                          ),
+                          PostAttribute.since(
+                            groupChatData?['timestamp'] ?? 0,
+                            height: 40,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 250,
+                      clipBehavior: Clip.antiAlias,
+                      padding: EdgeInsets.all(10),
+                      decoration: OurUI.shapeDecoration(
+                        color: Color(0xFFD5EDF8),
+                      ),
+                      child: Column(
+                        spacing: 10,
+                        children: [
+                          OurFont(text: "MEMBERS"),
+                          Container(
+                            width: 300,
+                            height: 175,
+                            child: FutureBuilder<DocumentSnapshot>(
+                              future: AuthService.db.collection("groupChats").doc(widget.groupChatId).get(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) return Text("Error loading group");
+                                if (!snapshot.hasData || !snapshot.data!.exists) return CircularProgressIndicator();
 
-              //头像
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  width: 125,
-                  height: 125,
-                  margin: EdgeInsets.only(top:150),
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1,
-                        strokeAlign: BorderSide.strokeAlignOutside,
-                      ),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                  ),
-                  child:ImageService.tryDisplayImage(groupChatData?['imageData']),
-                ),
-              ),
-              //里面的members
-              Positioned(
-                top: 460,
-                child: Container(
-                  width: 390,
-                  height: 250,
-                  margin: const EdgeInsets.only(left: 10),
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFD5EDF8),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1,
-                        strokeAlign: BorderSide.strokeAlignOutside,
-                        color: Colors.white,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: SingleChildScrollView(
-                    child: Wrap(
-                      alignment: WrapAlignment.center,
-                      runAlignment: WrapAlignment.center,
-                      spacing: 14,
-                      runSpacing: 10,
-                      children: [
-                        Container(
-                          width: 390,
-                          height: 30,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                top: 10,
-                                child: SizedBox(
-                                  width: 390,
-                                  height: 200,
-                                  child: Text(
-                                    'MEMBERS',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontFamily: 'IBM Plex Sans',
-                                      fontWeight: FontWeight.w700,
-                                      height: 1,
-                                      letterSpacing: 3,
-                                      shadows: [
-                                        Shadow(
-                                          offset: Offset(0, 4),
-                                          blurRadius: 4,
-                                          color: Color(
-                                            0xFF000000,
-                                          ).withOpacity(0.25),
+                                final data = snapshot.data!.data() as Map<String, dynamic>;
+                                final List<dynamic> memberUids = data["members_uid"] ?? [];
+
+                                return FutureBuilder<List<Map<String, dynamic>>>(
+                                  future: _loadUserData(memberUids),
+                                  builder: (context, userSnap) {
+                                    if (userSnap.connectionState == ConnectionState.waiting) return CircularProgressIndicator();
+                                    if (userSnap.hasError) return Text("Error loading user data");
+
+                                    final users = userSnap.data ?? [];
+
+                                    return Scrollbar(
+                                      child: SingleChildScrollView(
+                                        child: Wrap(
+                                          spacing: 14,
+                                          runSpacing: 10,
+                                          alignment: WrapAlignment.center,
+                                          children: users.map((user) {
+                                            final name = user["username"]*4 ?? "Unknown";
+                                            Widget imageWidget=ImageService.tryDisplayImage(user['imageData']);
+                                            final isOnline = user["isOnline"] ?? false;
+
+                                            return Container(
+                                              width: 140,
+                                              height: 60,
+                                              clipBehavior: Clip.antiAlias,
+                                              decoration: OurUI.shapeDecoration(),
+                                              padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                                              child: Row(
+                                                spacing: 5,
+                                                children: [
+                                                  Container(
+                                                      width: 40,
+                                                      height: 40,
+                                                      decoration: ShapeDecoration(
+                                                        shape: RoundedRectangleBorder(
+                                                          side: BorderSide(width: 1),
+                                                          borderRadius: BorderRadius.circular(100),
+                                                        ),
+                                                      ),
+                                                      child:Stack(
+                                                        children: [
+                                                          ClipRRect(
+                                                              borderRadius: BorderRadius.circular(100),
+                                                              child: FittedBox(
+                                                                child:imageWidget
+                                                              )
+                                                          ),
+                                                          Positioned(
+                                                            bottom:0,
+                                                            right:0,
+                                                            child: Container(
+                                                              width: 12,
+                                                              height: 12,
+                                                              decoration: BoxDecoration(
+                                                                color: isOnline ? Colors.green : Colors.red,
+                                                                shape: BoxShape.circle,
+                                                                border: Border.all(color: Colors.white, width: 1),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                  ),
+                                                  Text(
+                                                    name,
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 14,
+                                                      fontFamily: 'Inter',
+                                                      fontWeight: FontWeight.w400,
+                                                      height: 1.4,
+                                                      decoration: TextDecoration.none
+                                                    ),
+                                                  ),
+
+                                                ],
+                                              ),
+                                            );
+                                          }).toList(),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        //到时members 放在里
-                        Container(
-                          width: 137,
-                          height: 51,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 8.50,
-                                top: 7,
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: ShapeDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                        "https://placehold.co/40x40",
                                       ),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 48.50,
-                                top: 5,
-                                child: SizedBox(
-                                  width: 83,
-                                  height: 44,
-                                  child: Text(
-                                    'Hue Zhi En',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.40,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 36.50,
-                                top: 35,
-                                child: Container(
-                                  width: 12,
-                                  height: 12,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                        "https://placehold.co/12x12",
-                                      ),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              //delete group chat
-              Positioned(
-                left: 80,
-                top: 750,
-                child: Container(
-                  width: 250,
-                  height: 60,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFF730000),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Delete Group Chat',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
-                          height: 1.40,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 10,
-                top: 320,
-                child: Container(
-                  width: 390,
-                  height: 100,
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFE5E5CF),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x3F000000),
-                        blurRadius: 4,
-                        offset: Offset(0, 4),
-                        spreadRadius: 0,
-                      ),
-                    ],
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Icon(Icons.info_outline, size: 20),
-                      ),
-                      Positioned(
-                        top: 1,
-                        left: 20,
-                        child: SizedBox(
-                          width: 140,
-                          child: Text(
-                            'About this group:',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w600,
-                              height: 1.40,
+                                    );
+                                  },
+                                );
+                              },
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                      Positioned(
-                        top: 20,
-                        child: SizedBox(
-                          width: 326,
-                          child: Text(
-                            'Aimed to facilitate the process of finding my missing pet named Chan Wei Er.',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 12,
-                              fontFamily: 'Jura',
-                              fontWeight: FontWeight.w600,
-                              height: 1.40,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(top: 65, child: Icon(Icons.history, size: 20)),
-                      Positioned(
-                        top: 66,
-                        left: 20,
-                        child: SizedBox(
-                          width: 259,
-                          child: Text(
-                            'This group was created 7 days ago',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 12,
-                              fontFamily: 'Jura',
-                              fontWeight: FontWeight.w300,
-                              height: 1.40,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                    AppButton(
+                      text: "Delete Group Chat",
+                      backgroundColor: const Color(0xFF740000),
+                      onPressed: () {
+                        AuthService.deleteGroupChat(context,widget.groupChatId);
+                      },
+                    ),
+                  ],
                 ),
               ),
               TopBar(
                 isMiddleSearchBar: false,
                 header: "ABOUT",
                 leftIcon: Icons.arrow_back,
-                leftIcon_onTap: () => {Navigator.pop(context)},
+                leftIcon_onTap: () => Navigator.pop(context),
               ),
             ],
           ),

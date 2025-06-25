@@ -312,11 +312,14 @@ class AuthService {
     return ref.id;
   }
 
-  static Future<void> joinGroupChat(BuildContext context, String id) async {
+  static Future<void> joinGroupChat(BuildContext context, String groupChatId) async {
     await db.collection("users").doc(uid).update({
-      "groupChats": FieldValue.arrayUnion([id]),
+      "groupChats": FieldValue.arrayUnion([groupChatId]),
     });
-    Fluttertoast.showToast(msg: "You have joined group chat $id");
+    await db.collection("groupChats").doc(groupChatId).update({
+      "members_uid": FieldValue.arrayUnion([uid]),
+    });
+    Fluttertoast.showToast(msg: "You have joined group chat $groupChatId");
   }
 
   static Future<void> promptForCreateGroupChat(
@@ -367,4 +370,34 @@ class AuthService {
       }
     }
   }
+
+  static Future<void> deleteGroupChat(BuildContext context,String groupChatId) async {
+    final groupDoc = await db.collection('groupChats').doc(groupChatId).get();
+
+    if (!groupDoc.exists) return;
+
+    // Step 1: Get list of user UIDs from the group
+    final data = groupDoc.data();
+    final List<dynamic> memberUids = data?['members_uid'] ?? [];
+
+    // Step 2: For each user, remove the groupChatId from their activeGroupChats
+    final batch = db.batch();
+
+    for (var uid in memberUids) {
+      final userRef = db.collection('users').doc(uid);
+      batch.update(userRef, {
+        'groupChats': FieldValue.arrayRemove([groupChatId])
+      });
+    }
+
+    // Step 3: Delete the group chat document
+    final groupRef = db.collection('groupChats').doc(groupChatId);
+    batch.delete(groupRef);
+
+    // Step 4: Commit batch
+    await batch.commit();
+
+    Navigator.pushReplacementNamed(context, "/Home");
+  }
+
 }

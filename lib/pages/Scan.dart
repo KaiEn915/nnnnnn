@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:gan/pages/PetImageAnalysis.dart';
 import 'package:gan/services/ImageService.dart';
+import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/widgets/TopBar.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -180,17 +181,7 @@ class _ScanState extends State<Scan> {
                                       onTap: () async {
                                         XFile? _image=await ImageService.pickImage(ImageSource.gallery);
                                         if (_image==null) return;
-                                        Navigator.pushReplacement(
-                                          context,
-                                          PageRouteBuilder(
-                                            pageBuilder: (context, animation, secondaryAnimation) =>
-                                                PetImageAnalysis(image: _image),
-                                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                              return FadeTransition(opacity: animation, child: child);
-                                            },
-                                            transitionDuration: Duration(milliseconds: 500),
-                                          ),
-                                        );
+                                        NavigatorService.openPage(PetImageAnalysis(image: _image), context, true);
                                       },
                                       child: SizedBox(
                                         width: 170,

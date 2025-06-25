@@ -4,8 +4,10 @@ import 'package:gan/pages/GroupChatRoom.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/MapService.dart';
+import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/utils/OurUI.dart';
 import 'package:gan/widgets/AppButton.dart';
+import 'package:gan/widgets/OurFont.dart';
 import 'package:gan/widgets/PostAttribute.dart';
 import 'package:gan/widgets/TopBar.dart';
 
@@ -185,7 +187,7 @@ class _PostDetailState extends State<PostDetail> {
                         SizedBox(
                           width: 302,
                           height: 32,
-                          child: OurUI.font(text: "COMMENTS"),
+                          child: OurFont(text: "COMMENTS"),
                         ),
                         Container(
                           height: 100,
@@ -305,7 +307,7 @@ class _PostDetailState extends State<PostDetail> {
                             final groupChats = AuthService.userData?['groupChats'];
                             final groupChatId = widget.postData['groupChatId'];
                             if (groupChats is List && groupChats.contains(groupChatId)) {
-                              Fluttertoast.showToast(msg: "You already joined the group chat");
+                              NavigatorService.openPage(GroupChatRoom(id: widget.postData['groupChatId']), context, true);
                               return;
                             }
 

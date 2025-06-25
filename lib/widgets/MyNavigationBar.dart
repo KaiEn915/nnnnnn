@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gan/pages/GroupChat.dart';
+import 'package:gan/pages/Home.dart';
+import 'package:gan/pages/Scan.dart';
+import 'package:gan/pages/UserProfile.dart';
+import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/widgets/NavigationButton.dart';
 
 class MyNavigationBar extends StatelessWidget {
@@ -29,40 +35,28 @@ class MyNavigationBar extends StatelessWidget {
               label: 'Home',
               icon: Icons.home,
               onTap: () {
-                Navigator.pushReplacementNamed(
-                  context,
-                    '/Home'
-                );
+                NavigatorService.openPage(Home(), context, false);
               },
             ),
             NavigationButton(
               label: 'Chats',
               icon: Icons.chat,
               onTap: () {
-                Navigator.pushReplacementNamed(
-                  context,
-                  '/GroupChat',
-                ); // 跳转到 Chats 页面
+                NavigatorService.openPage(GroupChat(), context, false);
               },
             ),
             NavigationButton(
               label: 'Profile',
               icon: Icons.account_circle,
               onTap: () {
-                Navigator.pushReplacementNamed(
-                    context,
-                    '/UserProfile',
-                );
+                NavigatorService.openPage(UserProfile(viewingUID: AuthService.uid), context, true);
               },
             ),
             NavigationButton(
               label: 'Scan',
               icon: Icons.camera_alt,
               onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/Scan',
-                );
+                NavigatorService.openPage(Scan(), context, false);
               },
             ),
           ],
