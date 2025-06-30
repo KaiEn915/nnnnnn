@@ -208,6 +208,7 @@ class AuthService {
         "createdAt": DateTime.now().toIso8601String(),
         "phoneNumber": user.phoneNumber ?? "",
         "locationCoordinates": locationCoordinates,
+        "uid":user.uid,
       };
 
       try {
