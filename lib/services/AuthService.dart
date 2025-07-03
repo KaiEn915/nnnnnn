@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/pages/GroupChatRoom.dart';
 import 'package:gan/pages/Login.dart';
 import 'package:gan/services/MapService.dart';
+import 'package:gan/services/NavigatorService.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -251,7 +253,7 @@ class AuthService {
           .get();
       if (doc.exists) {
         userData = doc.data();
-        Fluttertoast.showToast(msg: "User data is updated");
+        Fluttertoast.showToast(msg: "User data is updated!!!");
       } else {
         print('not exists');
       }
@@ -321,6 +323,13 @@ class AuthService {
       "members_uid": FieldValue.arrayUnion([uid]),
     });
     Fluttertoast.showToast(msg: "You have joined group chat $groupChatId");
+    updateUserData();
+    NavigatorService.openPage(GroupChatRoom(id: groupChatId), context, true);
+  }
+  static Future<void> quitGroupChat(BuildContext context, String groupChatId) async {
+    await db.collection('users').doc(uid).update({"groupChats": FieldValue.arrayRemove([groupChatId])});
+    await db.collection('groupChats').doc(groupChatId).update({"members_uid": FieldValue.arrayRemove([uid])});
+    NavigatorService.openPage(GroupChat(), context, true);
   }
 
   static Future<void> promptForCreateGroupChat(

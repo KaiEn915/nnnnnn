@@ -18,11 +18,14 @@ import 'package:gan/pages/UserProfile.dart';
 import 'package:gan/pages/Voucher.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/MapService.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tflite_v2/tflite_v2.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  await MobileAds.instance.initialize();
+
   await Firebase.initializeApp();
 
   await MapService.getPermission();

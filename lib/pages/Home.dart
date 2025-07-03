@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:gan/services/AdService.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/HomePost.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
@@ -34,6 +35,8 @@ class _HomeState extends State<Home> {
         loadPosts();
       }
     });
+
+    AdService.loadAd();
   }
 
   void loadPosts() async {

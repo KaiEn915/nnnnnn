@@ -5,6 +5,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/Material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+
 import 'package:image_picker/image_picker.dart';
 
 class ImageService{
@@ -41,6 +43,12 @@ class ImageService{
     } catch (e) {
       return Icon(Icons.broken_image, size: width ?? 100, color: Colors.red);
     }
+  }
+  
+  static Future<void> saveImage(String imageData)async{
+    Fluttertoast.showToast(msg: "Saving images...");
+
+    Fluttertoast.showToast(msg: "Image not saved, save later!");
   }
 
 }

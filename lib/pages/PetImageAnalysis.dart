@@ -42,7 +42,11 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
   Future<void> initRecognition() async{
     _recognitions=await RecognitionService.recognizeImage(widget.image.path);
     breed=_recognitions?[0]['label'];
+    print(breed);
+    setState(() {
+      breed=breed;
 
+    });
     try {
       final snapshot = await AuthService.db.collection("posts").where('breed', isEqualTo: breed).get();
 
@@ -52,11 +56,10 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
       }
 
       final posts = snapshot.docs.map((doc) => doc.data()).take(5).toList();
-
-      setState(() {
-        breed=breed;
+      setState(){
         _postWidgets.addAll(posts.map((p) => SimilarPetPost(postData: p)));
-      });
+      }
+
     } catch (e) {
       Fluttertoast.showToast(msg: "Error: $e");
     }

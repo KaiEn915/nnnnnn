@@ -55,7 +55,6 @@ class GroupChatPost extends StatelessWidget {
                     height: 64,
                     decoration: ShapeDecoration(
                       image: DecorationImage(
-                        //groudchat 的头像
                         image: AssetImage("assets/images/"),
                         fit: BoxFit.cover,
                       ),

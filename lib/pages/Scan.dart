@@ -1,7 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:gan/pages/PetImageAnalysis.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/NavigatorService.dart';

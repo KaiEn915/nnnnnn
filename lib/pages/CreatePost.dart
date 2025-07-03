@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gan/services/AdService.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/MapService.dart';
@@ -193,6 +194,7 @@ class _CreatePost extends State<CreatePost> {
                             context,
                             "postCreated",
                           );
+
                         },
                       ),
                     ],
