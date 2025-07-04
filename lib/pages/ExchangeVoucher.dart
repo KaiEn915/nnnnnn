@@ -28,7 +28,6 @@ class ExchangeVoucher extends StatelessWidget {
               child: Container(
                 width: MediaQuery.sizeOf(context).width,
                 height: 500,
-
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(),
                   child: StreamBuilder<QuerySnapshot>(
