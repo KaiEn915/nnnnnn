@@ -16,66 +16,55 @@ class NavigationButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: 83,
-        height: 70,
-        clipBehavior: Clip.antiAlias,
-        decoration: const BoxDecoration(),
-        child: Stack(
-          children: [
-            Positioned(
-              top: 25,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: ShapeDecoration(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(width: 1, color: Color(0xFFDFDFDF)),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: ShapeDecoration(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(width: 1, color: Color(0xFFDFDFDF)),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(icon,size:15),
-                    SizedBox(
-                      width: 41,
-                      child: Text(
-                        label,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Color(0xFF828282),
-                          fontSize: 10,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
-                          height: 1.40,
-                        ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                spacing: 5,
+                children: [
+                  Icon(icon, size: 15),
+                  SizedBox(
+                    child: Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Color(0xFF828282),
+                        fontSize: 10,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        height: 1.40,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            Positioned(
-              top: 5,
-              left: 22,
-              child: Image(
-                image: AssetImage("assets/images/cat.png"),
-                width: 39,
-                height: 38,
-                fit: BoxFit.contain,
-              ),
+          ),
+          Positioned(
+            top:-22.5,
+            left: 0,
+            right: 0,
+            child: Image(
+              image: AssetImage("assets/images/cat.png"),
+              width: 38,
+              height: 38,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
-
-
-
