@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/CreatePost.dart';
 import 'package:gan/pages/ExchangeVoucher.dart';
+import 'package:gan/pages/Favorite.dart';
 import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/pages/GroupChatDetail.dart';
 import 'package:gan/pages/GroupChatRoom.dart';
@@ -78,6 +79,7 @@ class MyApp extends StatelessWidget {
         '/CreatePost':(context)=> const CreatePost(),
         '/Voucher':(context)=> const Voucher(),
         '/ExchangeVoucher':(context)=> const ExchangeVoucher(),
+        '/Favority':(context)=> const Favorite(),
       },
     );
   }

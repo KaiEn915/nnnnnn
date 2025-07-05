@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gan/pages/ExchangeVoucherOverlay.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/TopBar.dart';
 
@@ -315,20 +316,28 @@ class ExchangeVoucher extends StatelessWidget {
                                                 Positioned(
                                                   left: 7,
                                                   top: 5,
-                                                  child: SizedBox(
-                                                    width: 89,
-                                                    child: Text(
-                                                      'Exchange',
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: const Color(
-                                                          0xFF820000,
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        barrierDismissible: true,
+                                                        builder: (BuildContext context) {
+                                                          return const ExchangeVoucherOverlay();
+                                                        },
+                                                      );
+                                                    },
+                                                    child: SizedBox(
+                                                      width: 89,
+                                                      child: Text(
+                                                        'Exchange',
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(
+                                                          color: const Color(0xFF820000),
+                                                          fontSize: 14,
+                                                          fontFamily: 'Inter',
+                                                          fontWeight: FontWeight.w400,
+                                                          height: 1.40,
                                                         ),
-                                                        fontSize: 14,
-                                                        fontFamily: 'Inter',
-                                                        fontWeight:
-                                                        FontWeight.w400,
-                                                        height: 1.40,
                                                       ),
                                                     ),
                                                   ),
@@ -489,7 +498,7 @@ class ExchangeVoucher extends StatelessWidget {
               header: 'VOUCHER CENTRE',
               leftIcon: Icons.arrow_back,
               leftIcon_onTap: () => {
-                Navigator.pushNamed(context, "/UserProfile"),
+                Navigator.pushNamed(context, "/Voucher"),
               },
             ),
           ],

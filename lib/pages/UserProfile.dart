@@ -205,7 +205,7 @@ class UserProfile extends StatefulWidget {
                                     children: [
                                       GestureDetector(
                                         onTap:(){
-                                          Navigator.pushNamed(context, '/ExchangeVoucher');
+                                          Navigator.pushNamed(context, '/Voucher');
                                           },
                                         child:Container(
                                         width: 40,
@@ -244,7 +244,7 @@ class UserProfile extends StatefulWidget {
                                     children: [
                                       GestureDetector(
                                         onTap:(){
-                                          Navigator.pushNamed(context, '/Voucher');
+                                          Navigator.pushNamed(context, '/Favority');
                                         },
                                         child: Icon(Icons.bookmark, size: 40),
                                       )
