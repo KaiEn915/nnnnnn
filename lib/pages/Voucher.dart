@@ -225,7 +225,23 @@ class Voucher extends StatelessWidget {
                                                     Positioned(
                                                       left: 16,
                                                       top: 5.48,
-                                                      child: Container(
+                                                      child:GestureDetector(
+                                                        onTap: () {
+                                                          showDialog(
+                                                            context:
+                                                            context,
+                                                            barrierDismissible:
+                                                            true,
+                                                            builder:
+                                                                (
+                                                                BuildContext
+                                                                context,
+                                                                ) {
+                                                              return const VoucherOverlay();
+                                                            },
+                                                          );
+                                                        },
+                                                        child:Container(
                                                         width: 89,
                                                         height: 27,
                                                         decoration: ShapeDecoration(
@@ -236,14 +252,14 @@ class Voucher extends StatelessWidget {
                                                             side: BorderSide(
                                                               width: 1,
                                                               color:
-                                                                  const Color(
-                                                                    0xFFDFDFDF,
-                                                                  ),
+                                                              const Color(
+                                                                0xFFDFDFDF,
+                                                              ),
                                                             ),
                                                             borderRadius:
-                                                                BorderRadius.circular(
-                                                                  8,
-                                                                ),
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
                                                           ),
                                                         ),
                                                         child: Stack(
@@ -251,49 +267,33 @@ class Voucher extends StatelessWidget {
                                                             Positioned(
                                                               left: 0,
                                                               top: 5,
-                                                              child: GestureDetector(
-                                                                onTap: () {
-                                                                  showDialog(
-                                                                    context:
-                                                                        context,
-                                                                    barrierDismissible:
-                                                                        true,
-                                                                    builder:
-                                                                        (
-                                                                          BuildContext
-                                                                          context,
-                                                                        ) {
-                                                                          return const VoucherOverlay();
-                                                                        },
-                                                                  );
-                                                                },
-                                                                child: SizedBox(
-                                                                  width: 89,
-                                                                  child: Text(
-                                                                    'Use now!',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                      color: const Color(
-                                                                        0xFF145C00,
-                                                                      ),
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontFamily:
-                                                                          'Inter',
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400,
-                                                                      height:
-                                                                          1.40,
+                                                              child: SizedBox(
+                                                                width: 89,
+                                                                child: Text(
+                                                                  'Use now!',
+                                                                  textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                                  style: TextStyle(
+                                                                    color: const Color(
+                                                                      0xFF145C00,
                                                                     ),
+                                                                    fontSize:
+                                                                    14,
+                                                                    fontFamily:
+                                                                    'Inter',
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                    height:
+                                                                    1.40,
                                                                   ),
                                                                 ),
                                                               ),
                                                             ),
                                                           ],
                                                         ),
+                                                      ),
                                                       ),
                                                     ),
                                                     Positioned(

@@ -31,276 +31,288 @@ class ExchangeVoucher extends StatelessWidget {
                 height: 500,
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(),
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: AuthService.db
-                        .collection('vouchers')
-                        .orderBy('expiryTimestamp', descending: false)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      }
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: AuthService.db
+                      .collection('vouchers')
+                      .orderBy('expiryTimestamp', descending: false)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
 
-                      final vouchers = snapshot.data!.docs;
+                    final vouchers = snapshot.data!.docs;
 
-                      return ListView.builder(
+                    return ListView.builder(
+                      shrinkWrap: true,
 
-                        shrinkWrap: true,
+                      padding: EdgeInsets.all(10),
+                      itemCount: vouchers.length,
+                      itemBuilder: (context, index) {
+                        final title = vouchers[index]['title'];
+                        final expiryDate = DateTime.fromMillisecondsSinceEpoch(
+                          vouchers[index]['expiryTimestamp'],
+                        );
+                        final discountPercentage =
+                            vouchers[index]['discountPercentage'];
+                        final discountCap = vouchers[index]['discountCap'];
+                        final requiredPoints =
+                            vouchers[index]['requiredPoints'];
 
-                        padding: EdgeInsets.all(10),
-                        itemCount: vouchers.length,
-                        itemBuilder: (context, index) {
-                          final title = vouchers[index]['title'];
-                          final expiryDate = DateTime.fromMillisecondsSinceEpoch(vouchers[index]['expiryTimestamp']);
-                          final discountPercentage = vouchers[index]['discountPercentage'];
-                          final discountCap = vouchers[index]['discountCap'];
-                          final requiredPoints = vouchers[index]['requiredPoints'];
-
-                          return Container(
-                            height: 124,
-                            decoration: ShapeDecoration(
-                              color: const Color(0xFFFFD3D3),
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 0.50,
-                                  color: Colors.white,
-                                ),
-                                borderRadius: BorderRadius.circular(25),
+                        return Container(
+                          height: 124,
+                          decoration: ShapeDecoration(
+                            color: const Color(0xFFFFD3D3),
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                width: 0.50,
+                                color: Colors.white,
                               ),
+                              borderRadius: BorderRadius.circular(25),
                             ),
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  left: 17,
-                                  top: 5,
-                                  child: Container(
-                                    width: 122,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 10,
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                left: 17,
+                                top: 5,
+                                child: Container(
+                                  width: 122,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 10,
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: const Color(0xFFD19F9C),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: ShapeDecoration(
-                                      color: const Color(0xFFD19F9C),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 93,
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: ShapeDecoration(
-                                            color: const Color(0xFFFFFEF9),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(
-                                                5,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 93,
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: ShapeDecoration(
+                                          color: const Color(0xFFFFFEF9),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              5,
+                                            ),
+                                          ),
+                                          shadows: [
+                                            BoxShadow(
+                                              color: Color(0x3F000000),
+                                              blurRadius: 4,
+                                              offset: Offset(0, 4),
+                                              spreadRadius: 0,
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          spacing: 4,
+                                          children: [
+                                            Container(
+                                              width: double.infinity,
+                                              height: 15.20,
+                                              clipBehavior: Clip.antiAlias,
+                                              decoration: BoxDecoration(),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 19,
+                                                    height: 15,
+                                                    decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                        image: AssetImage(
+                                                          "assets/images/gift.png",
+                                                        ),
+                                                        fit: BoxFit.contain,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 66.18,
+                                                    height: 15,
+                                                    child: Text(
+                                                      'DUE $expiryDate',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        color: const Color(
+                                                          0xFFFF9191,
+                                                        ),
+                                                        fontSize: 10,
+                                                        fontFamily:
+                                                            'IBM Plex Sans',
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        height: 1,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    width: 19,
+                                                    height: 15,
+                                                    decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                        image: AssetImage(
+                                                          "assets/images/gift.png",
+                                                        ),
+                                                        fit: BoxFit.contain,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                            shadows: [
-                                              BoxShadow(
-                                                color: Color(0x3F000000),
-                                                blurRadius: 4,
-                                                offset: Offset(0, 4),
-                                                spreadRadius: 0,
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            spacing: 4,
-                                            children: [
-                                              Container(
-                                                width: double.infinity,
-                                                height: 15.20,
-                                                clipBehavior: Clip.antiAlias,
-                                                decoration: BoxDecoration(),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                      width: 19,
-                                                      height: 15,
-                                                      decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                          image: AssetImage(
-                                                            "assets/images/gift.png",
-                                                          ),
-                                                          fit: BoxFit.contain,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 66.18,
-                                                      height: 15,
-                                                      child: Text(
-                                                        'DUE $expiryDate',
-                                                        textAlign:
-                                                        TextAlign.center,
-                                                        style: TextStyle(
-                                                          color: const Color(
-                                                            0xFFFF9191,
-                                                          ),
-                                                          fontSize: 10,
-                                                          fontFamily:
-                                                          'IBM Plex Sans',
-                                                          fontWeight:
-                                                          FontWeight.w700,
-                                                          height: 1,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      width: 19,
-                                                      height: 15,
-                                                      decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                          image: AssetImage(
-                                                            "assets/images/gift.png",
-                                                          ),
-                                                          fit: BoxFit.contain,
-                                                        ),
-                                                      ),
+                                            SizedBox(
+                                              width: 106,
+                                              child: Text(
+                                                title,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 13,
+                                                  fontFamily: 'IBM Plex Sans',
+                                                  fontWeight: FontWeight.w700,
+                                                  height: 1,
+                                                  shadows: [
+                                                    Shadow(
+                                                      offset: Offset(0, 4),
+                                                      blurRadius: 4,
+                                                      color: Color(
+                                                        0xFF000000,
+                                                      ).withOpacity(0.25),
                                                     ),
                                                   ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 106,
-                                                child: Text(
-                                                  title,
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 13,
-                                                    fontFamily: 'IBM Plex Sans',
-                                                    fontWeight: FontWeight.w700,
-                                                    height: 1,
-                                                    shadows: [
-                                                      Shadow(
-                                                        offset: Offset(0, 4),
-                                                        blurRadius: 4,
-                                                        color: Color(
-                                                          0xFF000000,
-                                                        ).withOpacity(0.25),
-                                                      ),
-                                                    ],
+                                            ),
+                                            SizedBox(
+                                              width: 106,
+                                              child: Text(
+                                                '$discountPercentage% OFF',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: const Color(
+                                                    0xFFFE0000,
                                                   ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 106,
-                                                child: Text(
-                                                  '$discountPercentage% OFF',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: const Color(
-                                                      0xFFFE0000,
+                                                  fontSize: 16,
+                                                  fontFamily: 'IBM Plex Sans',
+                                                  fontWeight: FontWeight.w700,
+                                                  height: 1,
+                                                  shadows: [
+                                                    Shadow(
+                                                      offset: Offset(0, 4),
+                                                      blurRadius: 4,
+                                                      color: Color(
+                                                        0xFF000000,
+                                                      ).withOpacity(0.25),
                                                     ),
-                                                    fontSize: 16,
-                                                    fontFamily: 'IBM Plex Sans',
-                                                    fontWeight: FontWeight.w700,
-                                                    height: 1,
-                                                    shadows: [
-                                                      Shadow(
-                                                        offset: Offset(0, 4),
-                                                        blurRadius: 4,
-                                                        color: Color(
-                                                          0xFF000000,
-                                                        ).withOpacity(0.25),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 106,
-                                                child: Text(
-                                                  'UP TO RM$discountCap',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: const Color(
-                                                      0xFFFE6100,
+                                            ),
+                                            SizedBox(
+                                              width: 106,
+                                              child: Text(
+                                                'UP TO RM$discountCap',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: const Color(
+                                                    0xFFFE6100,
+                                                  ),
+                                                  fontSize: 16,
+                                                  fontFamily: 'IBM Plex Sans',
+                                                  fontWeight: FontWeight.w700,
+                                                  height: 1,
+                                                  shadows: [
+                                                    Shadow(
+                                                      offset: Offset(0, 4),
+                                                      blurRadius: 4,
+                                                      color: Color(
+                                                        0xFF000000,
+                                                      ).withOpacity(0.25),
                                                     ),
-                                                    fontSize: 16,
-                                                    fontFamily: 'IBM Plex Sans',
-                                                    fontWeight: FontWeight.w700,
-                                                    height: 1,
-                                                    shadows: [
-                                                      Shadow(
-                                                        offset: Offset(0, 4),
-                                                        blurRadius: 4,
-                                                        color: Color(
-                                                          0xFF000000,
-                                                        ).withOpacity(0.25),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                  ],
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 325,
+                                child: Container(
+                                  width: 25,
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        "assets/images/pin.png",
+                                      ),
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
-                                Positioned(
-                                  left: 325,
-                                  child: Container(
-                                    width: 25,
-                                    height: 25,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                          "assets/images/pin.png",
-                                        ),
-                                        fit: BoxFit.cover,
+                              ),
+                              Positioned(
+                                left: 155,
+                                top: 20,
+                                child: Container(
+                                  width: 165,
+                                  height: 34,
+                                  child: FittedBox(
+                                    child: Text(
+                                      "Price: $requiredPoints pts",
+                                      style: TextStyle(
+                                        fontFamily: 'Iceland',
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black,
                                       ),
                                     ),
                                   ),
                                 ),
-                                Positioned(
-                                  left: 155,
-                                  top: 20,
-                                  child: Container(
-                                    width: 165,
-                                    height: 34,
-                                    child: FittedBox(
-                                      child: Text(
-                                        "Price: $requiredPoints pts",
-                                        style: TextStyle(
-                                          fontFamily: 'Iceland',
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 185,
-                                  top: 70,
-                                  child: Container(
-                                    width: 120,
-                                    height: 50,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: BoxDecoration(),
-                                    child: Stack(
-                                      children: [
-                                        Positioned(
-                                          left: 8,
-                                          top: 5.48,
+                              ),
+                              Positioned(
+                                left: 185,
+                                top: 70,
+                                child: Container(
+                                  width: 120,
+                                  height: 50,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(),
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        left: 8,
+                                        top: 5.48,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            showDialog(
+                                              context: context,
+                                              barrierDismissible: true,
+                                              builder: (BuildContext context) {
+                                                return const ExchangeVoucherOverlay();
+                                              },
+                                            );
+                                          },
                                           child: Container(
                                             width: 100,
                                             height: 30,
@@ -308,7 +320,7 @@ class ExchangeVoucher extends StatelessWidget {
                                               color: const Color(0xFFC9A0A0),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
-                                                BorderRadius.circular(8),
+                                                    BorderRadius.circular(8),
                                               ),
                                             ),
                                             child: Stack(
@@ -316,28 +328,21 @@ class ExchangeVoucher extends StatelessWidget {
                                                 Positioned(
                                                   left: 7,
                                                   top: 5,
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      showDialog(
-                                                        context: context,
-                                                        barrierDismissible: true,
-                                                        builder: (BuildContext context) {
-                                                          return const ExchangeVoucherOverlay();
-                                                        },
-                                                      );
-                                                    },
-                                                    child: SizedBox(
-                                                      width: 89,
-                                                      child: Text(
-                                                        'Exchange',
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(
-                                                          color: const Color(0xFF820000),
-                                                          fontSize: 14,
-                                                          fontFamily: 'Inter',
-                                                          fontWeight: FontWeight.w400,
-                                                          height: 1.40,
+                                                  child: SizedBox(
+                                                    width: 89,
+                                                    child: Text(
+                                                      'Exchange',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        color: const Color(
+                                                          0xFF820000,
                                                         ),
+                                                        fontSize: 14,
+                                                        fontFamily: 'Inter',
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        height: 1.40,
                                                       ),
                                                     ),
                                                   ),
@@ -346,51 +351,52 @@ class ExchangeVoucher extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        Positioned(
-                                          left: 45,
-                                          top: -7.52,
-                                          child: Container(
-                                            width: 25,
-                                            height: 27,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: AssetImage(
-                                                  "assets/images/cat.png",
-                                                ),
-                                                fit: BoxFit.contain,
+                                      ),
+                                      Positioned(
+                                        left: 45,
+                                        top: -7.52,
+                                        child: Container(
+                                          width: 25,
+                                          height: 27,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: AssetImage(
+                                                "assets/images/cat.png",
                                               ),
+                                              fit: BoxFit.contain,
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 180,
-                                  top: 95,
-                                  child: Container(
-                                    transform: Matrix4.identity()..scale(-1.0, 1.0),
-                                    width: 55,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                          "assets/images/Cat3.png",
-                                        ),
-                                        fit: BoxFit.contain,
                                       ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 180,
+                                top: 95,
+                                child: Container(
+                                  transform: Matrix4.identity()
+                                    ..scale(-1.0, 1.0),
+                                  width: 55,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        "assets/images/Cat3.png",
+                                      ),
+                                      fit: BoxFit.contain,
                                     ),
                                   ),
                                 ),
-
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  )
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ),
             Positioned(
@@ -418,7 +424,9 @@ class ExchangeVoucher extends StatelessWidget {
                       clipBehavior: Clip.antiAlias,
                       decoration: ShapeDecoration(
                         image: DecorationImage(
-                          image: AssetImage("assets/images/pointBackground.png"),
+                          image: AssetImage(
+                            "assets/images/pointBackground.png",
+                          ),
                           fit: BoxFit.cover,
                         ),
                         shape: RoundedRectangleBorder(
@@ -497,9 +505,7 @@ class ExchangeVoucher extends StatelessWidget {
               isMiddleSearchBar: false,
               header: 'VOUCHER CENTRE',
               leftIcon: Icons.arrow_back,
-              leftIcon_onTap: () => {
-                Navigator.pushNamed(context, "/Voucher"),
-              },
+              leftIcon_onTap: () => {Navigator.pushNamed(context, "/Voucher")},
             ),
           ],
         ),
