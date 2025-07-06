@@ -6,6 +6,7 @@ import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/HomePost.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
 import 'package:gan/widgets/TopBar.dart';
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -21,13 +22,8 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    AuthService.updateUserData();
-
     loadPosts();
     super.initState();
-
-
-
     searchBarController.addListener(_onSearchChanged);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
@@ -35,13 +31,14 @@ class _HomeState extends State<Home> {
         loadPosts();
       }
     });
-
-    AdService.loadAd();
   }
 
   void loadPosts() async {
     try {
-      final snapshot = await AuthService.db.collection("posts").orderBy('timestamp',descending: true).get();
+      final snapshot = await AuthService.db
+          .collection("posts")
+          .orderBy('timestamp', descending: true)
+          .get();
 
       if (snapshot.docs.isEmpty) {
         print("No posts found");
@@ -67,27 +64,39 @@ class _HomeState extends State<Home> {
   }
 
   void search() async {
-    String query = searchBarController.text.trim();
-    if (query.isNotEmpty) {
-      print("Searching for: $query");
-      final ref = AuthService.db.collection("posts");
-      final snapshot = await ref
-          .where("title", isGreaterThanOrEqualTo: query)
-          .where(
-            "title",
-            isLessThan: query + 'z',
-          ) // crude way to capture prefix match
-          .get();
+    String query = searchBarController.text.trim().toLowerCase();
 
-      final postList = snapshot.docs.map((doc) => doc.data()).toList();
+    if (query.isEmpty) {
+      print("Search bar is empty.");
+      loadPosts();
+      return;
+    }
+
+    print("Searching for: $query");
+
+    final ref = AuthService.db.collection("posts");
+
+    try {
+      final snapshot = await ref.get();
+
+      final postList = snapshot.docs
+          .map((doc) => doc.data())
+          .where((data) {
+        final title = (data['title'] ?? '').toString().toLowerCase();
+        final content = (data['content'] ?? '').toString().toLowerCase();
+        return title.contains(query) || content.contains(query);
+      })
+          .toList();
 
       setState(() {
         _postWidgets = postList.map((p) => HomePost(postData: p)).toList();
       });
-    } else {
-      print("Search bar is empty.");
+
+    } catch (e) {
+      print("Error during search: $e");
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +139,10 @@ class _HomeState extends State<Home> {
                     searchBarController: searchBarController,
                     rightIcon: Icons.post_add,
                     rightIcon_onTap: () async {
-                      final result = await Navigator.pushNamed(context, "/CreatePost");
+                      final result = await Navigator.pushNamed(
+                        context,
+                        "/CreatePost",
+                      );
                       if (result == 'postCreated') {
                         setState(() {
                           _postWidgets.clear();
@@ -138,7 +150,6 @@ class _HomeState extends State<Home> {
                         loadPosts();
                       }
                     },
-
                   ),
                 ],
               ),

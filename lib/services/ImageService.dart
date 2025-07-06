@@ -24,8 +24,8 @@ class ImageService{
   }
 
   static Widget tryDisplayImage(String? imageData, {
-    double? width,
-    double? height,
+    double? width=100,
+    double? height=100,
     BoxFit fit = BoxFit.cover,
   }) {
     if (imageData == null || imageData.isEmpty) {

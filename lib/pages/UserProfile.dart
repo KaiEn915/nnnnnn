@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gan/pages/FavoritePost.dart';
 import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
 import 'package:gan/widgets/TopBar.dart';
 
@@ -244,7 +246,7 @@ class UserProfile extends StatefulWidget {
                                     children: [
                                       GestureDetector(
                                         onTap:(){
-                                          Navigator.pushNamed(context, '/Favority');
+                                          NavigatorService.openPage(FavoritePost(), context, false);
                                         },
                                         child: Icon(Icons.bookmark, size: 40),
                                       )

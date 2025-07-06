@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gan/pages/UserProfile.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
+import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/utils/OurUI.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/OurFont.dart';
@@ -157,64 +159,68 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                                             Widget imageWidget=ImageService.tryDisplayImage(user['imageData']);
                                             final isOnline = user["isOnline"] ?? false;
 
-                                            return Container(
-                                              width: 140,
-                                              height: 60,
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: OurUI.shapeDecoration(),
-                                              padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                                              child: Row(
-                                                spacing: 5,
-                                                children: [
-                                                  Container(
-                                                      width: 40,
-                                                      height: 40,
-                                                      decoration: ShapeDecoration(
-                                                        shape: RoundedRectangleBorder(
-                                                          side: BorderSide(width: 1),
-                                                          borderRadius: BorderRadius.circular(100),
-                                                        ),
-                                                      ),
-                                                      child:Stack(
-                                                        children: [
-                                                          ClipRRect(
-                                                              borderRadius: BorderRadius.circular(100),
-                                                              child: FittedBox(
-                                                                child:imageWidget
-                                                              )
+                                            return GestureDetector(
+                                              onTap: (){NavigatorService.openPage(UserProfile(viewingUID: user['uid']), context, false);},
+                                              child: Container(
+                                                width: 140,
+                                                height: 60,
+                                                clipBehavior: Clip.antiAlias,
+                                                decoration: OurUI.shapeDecoration(),
+                                                padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                                                child: Row(
+                                                  spacing: 5,
+                                                  children: [
+                                                    Container(
+                                                        width: 40,
+                                                        height: 40,
+                                                        decoration: ShapeDecoration(
+                                                          shape: RoundedRectangleBorder(
+                                                            side: BorderSide(width: 1),
+                                                            borderRadius: BorderRadius.circular(100),
                                                           ),
-                                                          Positioned(
-                                                            bottom:0,
-                                                            right:0,
-                                                            child: Container(
-                                                              width: 12,
-                                                              height: 12,
-                                                              decoration: BoxDecoration(
-                                                                color: isOnline ? Colors.green : Colors.red,
-                                                                shape: BoxShape.circle,
-                                                                border: Border.all(color: Colors.white, width: 1),
+                                                        ),
+                                                        child:Stack(
+                                                          children: [
+                                                            ClipRRect(
+                                                                borderRadius: BorderRadius.circular(100),
+                                                                child: FittedBox(
+                                                                    child:imageWidget
+                                                                )
+                                                            ),
+                                                            Positioned(
+                                                              bottom:0,
+                                                              right:0,
+                                                              child: Container(
+                                                                width: 12,
+                                                                height: 12,
+                                                                decoration: BoxDecoration(
+                                                                  color: isOnline ? Colors.green : Colors.red,
+                                                                  shape: BoxShape.circle,
+                                                                  border: Border.all(color: Colors.white, width: 1),
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                  ),
-                                                  Text(
-                                                    name,
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 14,
-                                                      fontFamily: 'Inter',
-                                                      fontWeight: FontWeight.w400,
-                                                      height: 1.4,
-                                                      decoration: TextDecoration.none
+                                                          ],
+                                                        )
                                                     ),
-                                                  ),
+                                                    Text(
+                                                      name,
+                                                      textAlign: TextAlign.center,
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 14,
+                                                          fontFamily: 'Inter',
+                                                          fontWeight: FontWeight.w400,
+                                                          height: 1.4,
+                                                          decoration: TextDecoration.none
+                                                      ),
+                                                    ),
 
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             );
+
                                           }).toList(),
                                         ),
                                       ),

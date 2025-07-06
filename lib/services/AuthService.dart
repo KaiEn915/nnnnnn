@@ -16,7 +16,7 @@ class AuthService {
   );
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore db = FirebaseFirestore.instance;
-  static Map<String, dynamic>? userData = {};
+  static final DocumentReference<Map<String,dynamic>> userDocRef = FirebaseFirestore.instance.collection('users').doc(uid);
 
   static var uid;
 
@@ -242,26 +242,6 @@ class AuthService {
     }
   }
 
-  static Future<void> updateUserData() async {
-    User? user = _auth.currentUser;
-    if (user == null) return null;
-
-    try {
-      DocumentSnapshot<Map<String, dynamic>> doc = await db
-          .collection("users")
-          .doc(user.uid)
-          .get();
-      if (doc.exists) {
-        userData = doc.data();
-        Fluttertoast.showToast(msg: "User data is updated!!!");
-      } else {
-        print('not exists');
-      }
-    } catch (e) {
-      print("Error fetching user data: $e");
-    }
-  }
-
   static Future<String?> promptForUsername(BuildContext context) async {
     TextEditingController controller = TextEditingController();
     return showDialog<String>(
@@ -316,15 +296,25 @@ class AuthService {
   }
 
   static Future<void> joinGroupChat(BuildContext context, String groupChatId) async {
-    await db.collection("users").doc(uid).update({
-      "groupChats": FieldValue.arrayUnion([groupChatId]),
-    });
-    await db.collection("groupChats").doc(groupChatId).update({
-      "members_uid": FieldValue.arrayUnion([uid]),
-    });
-    Fluttertoast.showToast(msg: "You have joined group chat $groupChatId");
-    updateUserData();
-    NavigatorService.openPage(GroupChatRoom(id: groupChatId), context, true);
+    final ref=await AuthService.db.collection("posts").doc(groupChatId).get();
+    final snapshot=ref.data();
+    final members = snapshot?['members_uid'] as List<dynamic>? ?? [];
+    final memberCount = members.length;
+
+    if (memberCount>=100){
+      Fluttertoast.showToast(msg: "Join failed, the group chat is fulled");
+    }
+    else{
+      await db.collection("users").doc(uid).update({
+        "groupChats": FieldValue.arrayUnion([groupChatId]),
+      });
+      await db.collection("groupChats").doc(groupChatId).update({
+        "members_uid": FieldValue.arrayUnion([uid]),
+      });
+      Fluttertoast.showToast(msg: "You have joined group chat $groupChatId");
+    }
+
+
   }
   static Future<void> quitGroupChat(BuildContext context, String groupChatId) async {
     await db.collection('users').doc(uid).update({"groupChats": FieldValue.arrayRemove([groupChatId])});
@@ -408,6 +398,10 @@ class AuthService {
     await batch.commit();
 
     Navigator.pushReplacementNamed(context, "/Home");
+  }
+
+  static Future<void> setOnline(bool isOnline)async{
+    userDocRef.update({"isOnline":isOnline});
   }
 
 }

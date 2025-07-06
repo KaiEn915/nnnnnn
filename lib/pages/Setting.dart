@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gan/services/AdService.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/MapService.dart';
 import 'package:gan/widgets/AppButton.dart';
@@ -43,12 +42,8 @@ class _SettingWidgetState extends State<Setting> {
       "imageData": currentProfileImageData==null?"": base64Encode(currentProfileImageData!)
     };
 
-    await AuthService.db
-        .collection("users")
-        .doc(AuthService.uid)
+    await AuthService.userDocRef
         .update(settingData);
-
-    AuthService.updateUserData();
 
     Fluttertoast.showToast(
       msg: "Changes saved successfully!",
@@ -73,12 +68,11 @@ class _SettingWidgetState extends State<Setting> {
   }
 
   Future<void> loadUserSettings() async {
-    await AuthService.updateUserData();
-    Map<String, dynamic>? data = AuthService.userData;
+    final snapshot=await AuthService.userDocRef.get();
+    Map<String, dynamic>? data = snapshot.data();
     String address = await MapService.getAddressFromCoordinates(
       data?['locationCoordinates'],
     );
-    print("address: $address");
 
     setState(() {
       usernameController.text = data?['username'] ?? "";

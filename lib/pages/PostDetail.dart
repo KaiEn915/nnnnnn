@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/GroupChatRoom.dart';
@@ -24,7 +25,13 @@ class _PostDetailState extends State<PostDetail> {
   bool get isOwner => widget.postData['ownerUid'] == AuthService.uid;
   String address = "";
 
-  @override
+  Future<bool> isPostFavorited() async {
+    final userDoc = await AuthService.db.collection('users').doc(AuthService.uid).get();
+    final favorites = userDoc.data()?['favoritePosts_id'] ?? [];
+
+    return favorites.contains(widget.postData['id']);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +59,15 @@ class _PostDetailState extends State<PostDetail> {
   }
 
 
+  Future<void> addToFavoritePost()async{
+    await AuthService.db.collection("users").doc(AuthService.uid).update({"favoritePosts_id":FieldValue.arrayUnion([widget.postData['id']])});
+    Fluttertoast.showToast(msg: "Post added to favorite successfully");
+  }
+
+  Future<void> removeFromFavoritePost()async{
+    await AuthService.db.collection("users").doc(AuthService.uid).update({"favoritePosts_id":FieldValue.arrayRemove([widget.postData['id']])});
+    Fluttertoast.showToast(msg: "Post removed from favorite successfully");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -302,9 +318,9 @@ class _PostDetailState extends State<PostDetail> {
                       spacing: 15,
                       children: [
                         GestureDetector(
-                          onTap:(){
-                            AuthService.updateUserData();
-                            final groupChats = AuthService.userData?['groupChats'];
+                          onTap:()async{
+                            final snapshot=await AuthService.userDocRef.get();
+                            final groupChats = snapshot['groupChats'];
                             final groupChatId = widget.postData['groupChatId'];
                             if (groupChats is List && groupChats.contains(groupChatId)) {
                               NavigatorService.openPage(GroupChatRoom(id: widget.postData['groupChatId']), context, true);
@@ -337,10 +353,8 @@ class _PostDetailState extends State<PostDetail> {
                                         Navigator.pop(context);
                                         final groupChatId=widget.postData['groupChatId'];
                                         await AuthService.joinGroupChat(context,groupChatId);
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => GroupChatRoom(id:groupChatId)),
-                                        );
+                                        NavigatorService.openPage(GroupChatRoom(id: groupChatId), context, false);
+
                                       },
                                       child: Text("Join"),
                                     ),
@@ -359,7 +373,16 @@ class _PostDetailState extends State<PostDetail> {
                           child: Icon(Icons.add_comment, size: 30),
                         ),
                         GestureDetector(
-                          onTap:(){},
+                          onTap:()async{
+                            bool _isPostFavorited = await isPostFavorited();
+                            if (_isPostFavorited){
+                              await removeFromFavoritePost();
+                            }
+                            else{
+                              await addToFavoritePost();
+                            }
+
+                          },
                           child: Icon(Icons.bookmark, size: 30),
                         ),
                       ],

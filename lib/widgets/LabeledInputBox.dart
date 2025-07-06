@@ -105,8 +105,9 @@ class _LabeledInputBox extends State<LabeledInputBox> {
                               Positioned.fill(
                                 child: GestureDetector(
                                   onTap: () async {
-                                    GeoPoint coordinates = AuthService
-                                        .userData?['locationCoordinates'];
+                                    final snapshot=await AuthService.userDocRef.get();
+                                    final data=snapshot.data();
+                                    GeoPoint coordinates = data?['locationCoordinates'];
 
                                     final LatLng? selectedLocation =
                                         await Navigator.push<LatLng>(

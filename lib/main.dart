@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/CreatePost.dart';
 import 'package:gan/pages/ExchangeVoucher.dart';
-import 'package:gan/pages/Favorite.dart';
+import 'package:gan/pages/FavoritePost.dart';
 import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/pages/GroupChatDetail.dart';
 import 'package:gan/pages/GroupChatRoom.dart';
@@ -33,10 +33,12 @@ Future<void> main() async {
 
   await loadModel();
 
-  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+  FirebaseAuth.instance.authStateChanges().listen((User? user)async {
     if (user != null) {
       AuthService.uid=user.uid;
+      await AuthService.setOnline(true);
     } else {
+      await AuthService.setOnline(false);
       Fluttertoast.showToast(msg: "Signed out successfully");
     }
   });
@@ -79,7 +81,6 @@ class MyApp extends StatelessWidget {
         '/CreatePost':(context)=> const CreatePost(),
         '/Voucher':(context)=> const Voucher(),
         '/ExchangeVoucher':(context)=> const ExchangeVoucher(),
-        '/Favority':(context)=> const Favorite(),
       },
     );
   }

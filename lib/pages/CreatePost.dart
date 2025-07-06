@@ -3,18 +3,14 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gan/services/AdService.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/MapService.dart';
-import 'package:gan/services/RecognitionService.dart';
 import 'package:gan/utils/OurUI.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:gan/widgets/TopBar.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:latlong2/latlong.dart';
 
 class CreatePost extends StatefulWidget {
   const CreatePost({super.key});
@@ -37,10 +33,10 @@ class _CreatePost extends State<CreatePost> {
   }
 
   void initializePost() async {
-    await AuthService.updateUserData();
-
+    final snapshot=await AuthService.userDocRef.get();
+    final data=snapshot.data();
     String address = await MapService.getAddressFromCoordinates(
-      AuthService.userData?['locationCoordinates'],
+      data?['locationCoordinates'],
     );
 
     setState(() {
@@ -58,14 +54,16 @@ class _CreatePost extends State<CreatePost> {
   }) async {
 
 
+    final snapshot=await AuthService.userDocRef.get();
+    final data=snapshot.data();
 
     final postData = {
       "title": title,
       "description": description,
       "ownerUid": uid,
-      "username": AuthService.userData?['username'],
-      "phoneNumber": AuthService.userData?['phoneNumber'],
-      "email": AuthService.userData?['email'],
+      "username": data?['username'],
+      "phoneNumber": data?['phoneNumber'],
+      "email": data?['email'],
       "imageData": base64Encode(currentImageData),
       "locationCoordinates": locationCoordinates,
       "timestamp": DateTime.now().millisecondsSinceEpoch,
