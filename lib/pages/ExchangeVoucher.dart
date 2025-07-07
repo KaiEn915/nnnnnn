@@ -258,10 +258,10 @@ class ExchangeVoucher extends StatelessWidget {
                                 ),
                               ),
                               Positioned(
-                                left: 325,
+                                left: 360,
                                 child: Container(
-                                  width: 25,
-                                  height: 25,
+                                  width: 30,
+                                  height: 30,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image: AssetImage(
@@ -373,13 +373,13 @@ class ExchangeVoucher extends StatelessWidget {
                                 ),
                               ),
                               Positioned(
-                                left: 180,
-                                top: 95,
+                                left: 175,
+                                top: 90,
                                 child: Container(
                                   transform: Matrix4.identity()
                                     ..scale(-1.0, 1.0),
-                                  width: 55,
-                                  height: 40,
+                                  width: 60,
+                                  height: 45,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image: AssetImage(

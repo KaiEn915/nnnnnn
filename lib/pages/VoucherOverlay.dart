@@ -10,7 +10,6 @@ class VoucherOverlay extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
         width: 349,
-        height: 475,
         padding: const EdgeInsets.all(10),
         decoration: ShapeDecoration(
           gradient: LinearGradient(
@@ -35,6 +34,7 @@ class VoucherOverlay extends StatelessWidget {
           children: [
             Column(
               mainAxisSize: MainAxisSize.min,
+              spacing: 10,
               children: [
                 // 顶部文字
                 Container(
@@ -64,7 +64,6 @@ class VoucherOverlay extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 15),
                 // 中部二维码
                 Container(
                   width: 349,
@@ -80,7 +79,6 @@ class VoucherOverlay extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 15),
                 Container(
                   width: 349,
                   padding: const EdgeInsets.all(10),

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/pages/GroupChatDetail.dart';
+import 'package:gan/pages/TakePicture.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/NavigatorService.dart';
@@ -116,13 +117,6 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
     }
   }
 
-  Future<void> sendImage() async {
-    XFile? image = await ImageService.pickImage(ImageSource.gallery);
-    if (image == null) return;
-    final bytes = await File(image.path).readAsBytes();
-    String content = base64Encode(bytes);
-    saveChat(content: content, isImageMessage: true);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -305,7 +299,7 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                               spacing: 0,
                               children: [
                                 Container(
-                                  width: 300,
+                                  width: 265,
                                   child: TextField(
                                     controller: _chatController,
                                     decoration: InputDecoration(
@@ -315,14 +309,24 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                   ),
                                 ),
                                 GestureDetector(
-                                  onTap: sendImage,
+                                  onTap: () async {
+                                    final result = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => TakePicture(
+                                          isFromGroupChatRoom: true,
+                                        ),
+                                      ),
+                                    );
+                                    saveChat(content: result,isImageMessage: true);
+
+                                  },
                                   child: Container(
                                     width: 35,
-                                    height: 39,
-                                    child: Icon(Icons.file_upload_outlined),
+                                    height: 35,
+                                    child: Icon(Icons.camera_alt),
                                   ),
                                 ),
-
                                 IconButton(
                                   icon: Icon(Icons.send, size: 30),
                                   onPressed: _sendMessage,

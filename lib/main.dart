@@ -12,7 +12,7 @@ import 'package:gan/pages/GroupChatRoom.dart';
 import 'package:gan/pages/Home.dart';
 import 'package:gan/pages/Login.dart';
 import 'package:gan/pages/PetImageAnalysis.dart';
-import 'package:gan/pages/Scan.dart';
+import 'package:gan/pages/TakePicture.dart';
 import 'package:gan/pages/Setting.dart';
 import 'package:gan/pages/SignUp.dart';
 import 'package:gan/pages/UserProfile.dart';
@@ -76,7 +76,6 @@ class MyApp extends StatelessWidget {
         '/Home': (context) => const Home(),
         '/GroupChat':(context) => const GroupChat(),
         '/UserProfile':(context)=> UserProfile(viewingUID: AuthService.uid),
-        '/Scan':(context)=> const Scan(),
         '/Setting':(context)=> const Setting(),
         '/CreatePost':(context)=> const CreatePost(),
         '/Voucher':(context)=> const Voucher(),

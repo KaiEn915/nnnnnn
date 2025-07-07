@@ -10,6 +10,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageService{
+  CameraController? _controller;
+  List<CameraDescription>? _cameras;
+  bool _isInitialized = false;
+
   static Future<XFile?> pickImage(ImageSource source) async {
     final ImagePicker picker = ImagePicker();
     try {
@@ -50,5 +54,6 @@ class ImageService{
 
     Fluttertoast.showToast(msg: "Image not saved, save later!");
   }
+
 
 }

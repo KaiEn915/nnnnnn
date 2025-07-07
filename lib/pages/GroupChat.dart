@@ -20,8 +20,8 @@ class _GroupChatState extends State<GroupChat> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
+    return Scaffold(
+      body:
         Container(
           width: MediaQuery.sizeOf(context).width,
           height: MediaQuery.sizeOf(context).height,
@@ -89,7 +89,7 @@ class _GroupChatState extends State<GroupChat> {
             ],
           ),
         ),
-      ],
+
     );
   }
 }

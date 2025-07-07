@@ -54,9 +54,9 @@ class _FavoritePostState extends State<FavoritePost> {
                         child: Text("No favorite posts found."),
                       );
                     }
+                    final data = userSnapshot.data?.data() as Map<String, dynamic>;
 
-                    final favoriteIds =
-                        userSnapshot.data!.get("favoritePosts_id") ?? [];
+                    final favoriteIds = List<String>.from(data["favoritePosts_id"] ?? []);
 
                     if (favoriteIds.isEmpty) {
                       return const Center(child: Text("No favorite posts."));
@@ -91,8 +91,12 @@ class _FavoritePostState extends State<FavoritePost> {
                             final postData = doc.data();
 
                             return GestureDetector(
-                              onTap: (){
-                                NavigatorService.openPage(PostDetail(postData: postData), context, false);
+                              onTap: () {
+                                NavigatorService.openPage(
+                                  PostDetail(postData: postData),
+                                  context,
+                                  false,
+                                );
                               },
                               child: Container(
                                 width: 180,
@@ -139,25 +143,22 @@ class _FavoritePostState extends State<FavoritePost> {
                                                 postData['locationCoordinates'],
                                               ),
                                               builder: (context, snapshot) {
-                                                if (snapshot
-                                                    .connectionState ==
+                                                if (snapshot.connectionState ==
                                                     ConnectionState.waiting) {
                                                   return const SizedBox(
                                                     height: 20,
                                                     child: Center(
                                                       child:
-                                                      CircularProgressIndicator(
-                                                        strokeWidth: 2,
-                                                      ),
+                                                          CircularProgressIndicator(
+                                                            strokeWidth: 2,
+                                                          ),
                                                     ),
                                                   );
-                                                } else if (snapshot
-                                                    .hasError) {
+                                                } else if (snapshot.hasError) {
                                                   return const Text(
                                                     "Error loading address",
                                                   );
-                                                } else if (!snapshot
-                                                    .hasData) {
+                                                } else if (!snapshot.hasData) {
                                                   return const Text(
                                                     "No address found",
                                                   );
@@ -166,7 +167,11 @@ class _FavoritePostState extends State<FavoritePost> {
                                                 }
                                               },
                                             ),
-                                            PostAttribute.postOwner(context,postData['username'] ,postData['ownerUid']),
+                                            PostAttribute.postOwner(
+                                              context,
+                                              postData['username'],
+                                              postData['ownerUid'],
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -194,9 +199,8 @@ class _FavoritePostState extends State<FavoritePost> {
                                     ),
                                   ],
                                 ),
-                              )
+                              ),
                             );
-
                           }).toList(),
                         );
                       },
@@ -205,6 +209,7 @@ class _FavoritePostState extends State<FavoritePost> {
                 ),
               ),
             ),
+
             TopBar(
               isMiddleSearchBar: false,
               header: "FAVORITE POSTS",

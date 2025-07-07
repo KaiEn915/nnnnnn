@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/pages/Home.dart';
-import 'package:gan/pages/Scan.dart';
+import 'package:gan/pages/TakePicture.dart';
 import 'package:gan/pages/UserProfile.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/NavigatorService.dart';
@@ -258,7 +258,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
               label: 'Scan',
               icon: Icons.camera_alt,
               onTap: () {
-                NavigatorService.openPage(Scan(), context, false);
+                NavigatorService.openPage(TakePicture(isFromGroupChatRoom: false), context, false);
               },
             ),
             NavigationButton(

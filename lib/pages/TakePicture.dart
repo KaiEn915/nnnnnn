@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,14 +9,15 @@ import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/widgets/TopBar.dart';
 import 'package:image_picker/image_picker.dart';
 
-class Scan extends StatefulWidget {
-  const Scan({super.key});
+class TakePicture extends StatefulWidget {
+  const TakePicture({super.key,required this.isFromGroupChatRoom});
+  final bool isFromGroupChatRoom;
 
   @override
-  State<StatefulWidget> createState() => _ScanState();
+  State<StatefulWidget> createState() => _TakePictureState();
 }
 
-class _ScanState extends State<Scan> {
+class _TakePictureState extends State<TakePicture> {
   CameraController? _controller;
   List<CameraDescription>? _cameras;
   bool _isInitialized = false;
@@ -35,17 +38,24 @@ class _ScanState extends State<Scan> {
     if (_controller != null && _controller!.value.isInitialized) {
       final image = await _controller!.takePicture();
 
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              PetImageAnalysis(image: image),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          transitionDuration: Duration(milliseconds: 500),
-        ),
-      );
+      if (widget.isFromGroupChatRoom){
+        final bytes=await image.readAsBytes();
+        Navigator.pop(context,base64Encode(bytes));
+      }
+      else{
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                PetImageAnalysis(image: image),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            transitionDuration: Duration(milliseconds: 500),
+          ),
+        );
+      }
+
     }
   }
 
@@ -180,7 +190,14 @@ class _ScanState extends State<Scan> {
                                       onTap: () async {
                                         XFile? _image=await ImageService.pickImage(ImageSource.gallery);
                                         if (_image==null) return;
-                                        NavigatorService.openPage(PetImageAnalysis(image: _image), context, true);
+                                        if (widget.isFromGroupChatRoom){
+                                          final bytes=await _image.readAsBytes();
+                                          Navigator.pop(context,base64Encode(bytes));
+                                        }
+                                        else{
+                                          NavigatorService.openPage(PetImageAnalysis(image: _image), context, true);
+                                        }
+
                                       },
                                       child: SizedBox(
                                         width: 170,

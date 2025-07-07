@@ -14,9 +14,10 @@ class GroupChatPost extends StatelessWidget {
     return members.length;
   }
 
-  Future<bool> isOnline() async {
+  Future<bool> isOtherOnline() async {
     final collection = AuthService.db.collection('users');
     final members = data['members_uid'] as List<dynamic>? ?? [];
+    members.remove(AuthService.uid);
 
     for (final member in members) {
       final ref = await collection.doc(member).get();
@@ -103,6 +104,7 @@ class GroupChatPost extends StatelessWidget {
               ),
               Positioned(
                 bottom: 0,
+                left:0,
                 child: Row(
                   spacing: 10,
                   children: [
@@ -153,33 +155,31 @@ class GroupChatPost extends StatelessWidget {
               ),
               Positioned(
                 left: 0,
-                bottom: 30,
+                bottom: 35,
                 child: Row(
                   spacing: 10,
                   children: [
                     FutureBuilder<bool>(
-                      future: isOnline(),
+                      future: isOtherOnline(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Icon(Icons.circle_rounded, size: 10, color: Colors.grey);
-                        }
-
                         final online = snapshot.data ?? false;
-                        print('online: $online');
-                        return Icon(Icons.circle_rounded, size: 10, color: online ? Colors.green : Colors.red);
+                        return Row(
+                          spacing: 10,
+                          children: [
+                            Icon(Icons.circle_rounded, size: 10, color: online ? Colors.green : Colors.red),
+                            Text(online? "Some are online":"No others online",  style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w600,
+                            ),)
+                          ],
+                        );
+
                       },
                     )
                     ,
-                    Text(
-                      '3 onlines',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
-                        height: 0,
-                      ),
-                    ),
+
                   ],
                 ),
               ),
