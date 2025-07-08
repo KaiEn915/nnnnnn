@@ -293,7 +293,7 @@ class AuthService {
     await AuthService.joinGroupChat(context, ref.id);
 
     return ref.id;
-  }
+  } 
 
   static Future<void> joinGroupChat(BuildContext context, String groupChatId) async {
     final ref=await AuthService.db.collection("posts").doc(groupChatId).get();

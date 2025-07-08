@@ -1,9 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:gan/pages/VoucherOverlay.dart';
+import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/TopBar.dart';
 
-class Voucher extends StatelessWidget {
+class Voucher extends StatefulWidget {
   const Voucher({super.key});
+
+  @override
+  State<Voucher> createState() => _addVoucher();
+}
+
+class _addVoucher extends State<Voucher> {
+  late final dbRef;
+
+  Future<void> saveChat({
+    required String title,
+    required int requirePoint,
+  }) async {
+    final postVoucher = {
+      'title': title,
+    };
+
+    await dbRef.collection('userVouchers').add(postVoucher);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    dbRef = AuthService.db.collection("users").doc(AuthService.uid);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,75 +250,74 @@ class Voucher extends StatelessWidget {
                                                     Positioned(
                                                       left: 16,
                                                       top: 5.48,
-                                                      child:GestureDetector(
+                                                      child: GestureDetector(
                                                         onTap: () {
                                                           showDialog(
-                                                            context:
-                                                            context,
+                                                            context: context,
                                                             barrierDismissible:
-                                                            true,
+                                                                true,
                                                             builder:
                                                                 (
-                                                                BuildContext
-                                                                context,
+                                                                  BuildContext
+                                                                  context,
                                                                 ) {
-                                                              return const VoucherOverlay();
-                                                            },
+                                                                  return const VoucherOverlay();
+                                                                },
                                                           );
                                                         },
-                                                        child:Container(
-                                                        width: 89,
-                                                        height: 27,
-                                                        decoration: ShapeDecoration(
-                                                          color: const Color(
-                                                            0xFFA0C9AF,
-                                                          ),
-                                                          shape: RoundedRectangleBorder(
-                                                            side: BorderSide(
-                                                              width: 1,
-                                                              color:
-                                                              const Color(
-                                                                0xFFDFDFDF,
-                                                              ),
+                                                        child: Container(
+                                                          width: 89,
+                                                          height: 27,
+                                                          decoration: ShapeDecoration(
+                                                            color: const Color(
+                                                              0xFFA0C9AF,
                                                             ),
-                                                            borderRadius:
-                                                            BorderRadius.circular(
-                                                              8,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        child: Stack(
-                                                          children: [
-                                                            Positioned(
-                                                              left: 0,
-                                                              top: 5,
-                                                              child: SizedBox(
-                                                                width: 89,
-                                                                child: Text(
-                                                                  'Use now!',
-                                                                  textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                                  style: TextStyle(
-                                                                    color: const Color(
-                                                                      0xFF145C00,
+                                                            shape: RoundedRectangleBorder(
+                                                              side: BorderSide(
+                                                                width: 1,
+                                                                color:
+                                                                    const Color(
+                                                                      0xFFDFDFDF,
                                                                     ),
-                                                                    fontSize:
-                                                                    14,
-                                                                    fontFamily:
-                                                                    'Inter',
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                    height:
-                                                                    1.40,
+                                                              ),
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    8,
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                          child: Stack(
+                                                            children: [
+                                                              Positioned(
+                                                                left: 0,
+                                                                top: 5,
+                                                                child: SizedBox(
+                                                                  width: 89,
+                                                                  child: Text(
+                                                                    'Use now!',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style: TextStyle(
+                                                                      color: const Color(
+                                                                        0xFF145C00,
+                                                                      ),
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontFamily:
+                                                                          'Inter',
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      height:
+                                                                          1.40,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                            ],
+                                                          ),
                                                         ),
-                                                      ),
                                                       ),
                                                     ),
                                                     Positioned(

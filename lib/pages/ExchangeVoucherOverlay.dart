@@ -130,7 +130,7 @@ class ExchangeVoucherOverlay extends StatelessWidget {
                     // Yes Button
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context).pop();
+                        Navigator.pop(context,'/Voucher');
                       },
                       child: Stack(
                         alignment: Alignment.topCenter,
