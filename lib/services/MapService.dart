@@ -49,20 +49,15 @@ class MapService{
     return null;
   }
   static Future<String> getAddressFromCoordinates(GeoPoint coor) async {
-    print("searching for latitude ${coor.latitude}, longtitude ${coor.longitude}");
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
         coor.latitude,
         coor.longitude,
       );
-      print("placemarks found");
 
       if (placemarks.isNotEmpty) {
-        print("is not empty");
         Placemark place = placemarks.first;
-        print("place: $place");
         String address='${place.name}, ${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
-        print("address: $address");
         return address;
       } else {
         return "";

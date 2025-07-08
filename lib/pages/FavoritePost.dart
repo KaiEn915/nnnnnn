@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/PostDetail.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
@@ -14,6 +16,17 @@ class FavoritePost extends StatefulWidget {
 }
 
 class _FavoritePostState extends State<FavoritePost> {
+  Future<void> removeFromFavoritePost(String id) async {
+    await AuthService.userDocRef.update({
+      "favoritePosts_id": FieldValue.arrayRemove([id]),
+    });
+    Fluttertoast.showToast(msg: "Post is unfavorited");
+
+    setState(() {
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,9 +52,7 @@ class _FavoritePostState extends State<FavoritePost> {
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(),
                 child: FutureBuilder(
-                  future: AuthService.db
-                      .collection("users")
-                      .doc(AuthService.uid)
+                  future: AuthService.userDocRef
                       .get(),
                   builder: (context, userSnapshot) {
                     if (userSnapshot.connectionState ==
@@ -54,9 +65,12 @@ class _FavoritePostState extends State<FavoritePost> {
                         child: Text("No favorite posts found."),
                       );
                     }
-                    final data = userSnapshot.data?.data() as Map<String, dynamic>;
+                    final data =
+                        userSnapshot.data?.data() as Map<String, dynamic>;
 
-                    final favoriteIds = List<String>.from(data["favoritePosts_id"] ?? []);
+                    final favoriteIds = List<String>.from(
+                      data["favoritePosts_id"] ?? [],
+                    );
 
                     if (favoriteIds.isEmpty) {
                       return const Center(child: Text("No favorite posts."));
@@ -179,7 +193,14 @@ class _FavoritePostState extends State<FavoritePost> {
                                     Positioned(
                                       left: 140,
                                       top: 225,
-                                      child: Icon(Icons.delete, size: 25),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          removeFromFavoritePost(
+                                            postData['id'],
+                                          );
+                                        },
+                                        child: Icon(Icons.delete, size: 25),
+                                      ),
                                     ),
                                     Positioned(
                                       left: 71,
