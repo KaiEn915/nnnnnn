@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ExchangeVoucherOverlay extends StatelessWidget {
-  const ExchangeVoucherOverlay({super.key});
+  final Map<String, dynamic> data;
+
+  const ExchangeVoucherOverlay({super.key,required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +132,15 @@ class ExchangeVoucherOverlay extends StatelessWidget {
                     // Yes Button
                     GestureDetector(
                       onTap: () {
-                        Navigator.pop(context,'/Voucher');
+                        Navigator.of(context).pop(); // 先关闭 Dialog
+                        // 再跳转页面并传值
+                        Future.delayed(Duration(milliseconds: 100), () {
+                          Navigator.pushNamed(
+                            context,
+                            '/Voucher',
+                            arguments: data,
+                          );
+                        });
                       },
                       child: Stack(
                         alignment: Alignment.topCenter,

@@ -309,7 +309,15 @@ class ExchangeVoucher extends StatelessWidget {
                                               context: context,
                                               barrierDismissible: true,
                                               builder: (BuildContext context) {
-                                                return const ExchangeVoucherOverlay();
+                                                return ExchangeVoucherOverlay(
+                                                  data: {
+                                                    'title': title,
+                                                    'requiredPoints': requiredPoints,
+                                                    'discountPercentage': discountPercentage,
+                                                    'discountCap': discountCap,
+                                                    'expiryTimestamp': vouchers[index]['expiryTimestamp'],
+                                                  },
+                                                );
                                               },
                                             );
                                           },
