@@ -48,8 +48,10 @@ class _addVoucher extends State<Voucher> {
                   margin: EdgeInsetsGeometry.only(left: 10),
                   width: 392,
                   height: 600,
+
+
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  clipBehavior: Clip.antiAlias,
+                  clipBehavior: Clip.none,
                   decoration: BoxDecoration(),
                   child: FutureBuilder(
                     future: AuthService.userDocRef.get(),
@@ -87,10 +89,12 @@ class _addVoucher extends State<Voucher> {
                             }
                             final vouchers = snapshot.data!;
                             return SingleChildScrollView(
+                              clipBehavior: Clip.none,
                               child: Wrap(
                                 alignment: WrapAlignment.center,
                                 runSpacing: 20,
                                 spacing: 20,
+                                clipBehavior: Clip.none,
                                 children: vouchers.map((voucher) {
                                   final title = voucher['title'];
                                   final discountPercentage =
@@ -106,173 +110,121 @@ class _addVoucher extends State<Voucher> {
                                       .month}/${expiryDate.year}';
 
                                   return Container(
-                                    width: 165,
-                                    height: 200,
+                                    width: 170,
+                                    clipBehavior: Clip.none,
+                                    decoration: ShapeDecoration(
+                                      color: const Color(0xFFFBFFD0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
                                     child: Stack(
+                                      clipBehavior: Clip.none, // allows the cat image to overflow
                                       children: [
-                                        Positioned(
-                                          left: 6,
-                                          top: 5,
-                                          child: Container(
-                                            width: 170,
-                                            height: 200,
+                                        // Main card
+                                        Center(
+                                          child:Container(
+                                            margin:EdgeInsets.all(15),
+                                            padding:EdgeInsets.all(5),
                                             decoration: ShapeDecoration(
-                                              color: const Color(0xFFFBFFD0),
+                                              color: const Color(0xFFFFFEF9),
                                               shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius
-                                                    .circular(
-                                                  10,
-                                                ),
+                                                borderRadius: BorderRadius.circular(5),
                                               ),
+                                              shadows: [
+                                                BoxShadow(
+                                                  color: Color(0x3F000000),
+                                                  blurRadius: 4,
+                                                  offset: Offset(0, 4),
+                                                ),
+                                              ],
                                             ),
-                                            child: Stack(
+                                            child: Column(
+                                              spacing: 10,
                                               children: [
-                                                Positioned(
-                                                  left: 8,
-                                                  top: 17,
-                                                  child: Container(
-                                                    width: 140,
-                                                    height: 160,
-                                                    clipBehavior: Clip
-                                                        .antiAlias,
-                                                    decoration: ShapeDecoration(
-                                                      color: const Color(
-                                                          0xFFFFFEF9),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: [
+                                                    Image.asset("assets/images/gift.png", width: 20, height: 20),
+                                                    Text(
+                                                      formattedExpiry,
+                                                      style: TextStyle(
+                                                        color: Color(0xFFFF9191),
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w700,
+                                                        decoration: TextDecoration.none,
                                                       ),
-                                                      shadows: [
-                                                        BoxShadow(
-                                                          color: Color(
-                                                              0x3F000000),
-                                                          blurRadius: 4,
-                                                          offset: Offset(0, 4),
-                                                          spreadRadius: 0,
-                                                        ),
-                                                      ],
                                                     ),
-                                                    child: Column(
-                                                      children: [
-                                                        SizedBox(height: 10),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment
-                                                              .spaceEvenly,
-                                                          children: [
-                                                            Image.asset(
-                                                              "assets/images/gift.png",
-                                                              width: 20,
-                                                              height: 20,
-                                                            ),
-                                                            Text(
-                                                              formattedExpiry,
-                                                              style: TextStyle(
-                                                                color: Color(
-                                                                  0xFFFF9191,
-                                                                ),
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                FontWeight.w700,
-                                                              ),
-                                                            ),
-                                                            Image.asset(
-                                                              "assets/images/gift.png",
-                                                              width: 20,
-                                                              height: 20,
-                                                            ),
-                                                          ],
+                                                    Image.asset("assets/images/gift.png", width: 20, height: 20),
+                                                  ],
+                                                ),
+
+                                                Text(
+                                                  title,
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.bold,
+                                                    decoration: TextDecoration.none,
+                                                  ),
+                                                ),
+
+                                                Text(
+                                                  '$discountPercentage% OFF',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Color(0xFFFE0000),
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    decoration: TextDecoration.none,
+                                                  ),
+                                                ),
+
+                                                Text(
+                                                  'UP TO RM$discountCap',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Color(0xFFFE6100),
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    decoration: TextDecoration.none,
+                                                  ),
+                                                ),
+
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      barrierDismissible: true,
+                                                      builder: (BuildContext context) {
+                                                        return const VoucherOverlay();
+                                                      },
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    width: 89,
+                                                    height: 27,
+                                                    decoration: ShapeDecoration(
+                                                      color: const Color(0xFFA0C9AF),
+                                                      shape: RoundedRectangleBorder(
+                                                        side: BorderSide(
+                                                          width: 1,
+                                                          color: Color(0xFFDFDFDF),
                                                         ),
-                                                        SizedBox(height: 4),
-                                                        Text(
-                                                          title,
-                                                          textAlign: TextAlign
-                                                              .center,
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 13,
-                                                            fontWeight:
-                                                            FontWeight.bold,
-                                                          ),
+                                                        borderRadius: BorderRadius.circular(8),
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        'Use now!',
+                                                        style: TextStyle(
+                                                          color: const Color(0xFF145C00),
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w400,
+                                                          decoration: TextDecoration.none,
                                                         ),
-                                                        SizedBox(height: 10),
-                                                        Text(
-                                                          '$discountPercentage% OFF',
-                                                          textAlign: TextAlign
-                                                              .center,
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFFE0000),
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                            FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 10),
-                                                        Text(
-                                                          'UP TO RM$discountCap',
-                                                          textAlign: TextAlign
-                                                              .center,
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xFFFE6100),
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                            FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 10),
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            showDialog(
-                                                              context: context,
-                                                              barrierDismissible:
-                                                              true,
-                                                              builder:
-                                                                  (BuildContext
-                                                              context,) {
-                                                                return const VoucherOverlay();
-                                                              },
-                                                            );
-                                                          },
-                                                          child: Container(
-                                                            width: 89,
-                                                            height: 27,
-                                                            decoration: ShapeDecoration(
-                                                              color: const Color(
-                                                                0xFFA0C9AF,
-                                                              ),
-                                                              shape: RoundedRectangleBorder(
-                                                                side: BorderSide(
-                                                                  width: 1,
-                                                                  color: Color(
-                                                                    0xFFDFDFDF,
-                                                                  ),
-                                                                ),
-                                                                borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                  8,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            child: Center(
-                                                              child: Text(
-                                                                'Use now!',
-                                                                style: TextStyle(
-                                                                  color: const Color(
-                                                                    0xFF145C00,
-                                                                  ),
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -280,34 +232,35 @@ class _addVoucher extends State<Voucher> {
                                             ),
                                           ),
                                         ),
+
+                                        // Pin icon on top
                                         Positioned(
-                                          left: -10,
-                                          top: 151,
+                                          top: -5,
+                                          right: -5,
+                                          child: Container(
+                                            width: 20,
+                                            height: 20,
+                                            clipBehavior: Clip.none,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage("assets/images/pin.png"),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+
+                                        // Cat image at bottom left corner
+                                        Positioned(
+                                          left: -15,
+                                          bottom: -15,
                                           child: Container(
                                             width: 65,
                                             height: 65,
                                             decoration: BoxDecoration(
                                               image: DecorationImage(
-                                                image: AssetImage(
-                                                  "assets/images/Cat3.png",
-                                                ),
+                                                image: AssetImage("assets/images/Cat3.png"),
                                                 fit: BoxFit.contain,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 140,
-                                          top: 0,
-                                          child: Container(
-                                            width: 20,
-                                            height: 20,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: AssetImage(
-                                                  "assets/images/pin.png",
-                                                ),
-                                                fit: BoxFit.cover,
                                               ),
                                             ),
                                           ),
@@ -315,6 +268,7 @@ class _addVoucher extends State<Voucher> {
                                       ],
                                     ),
                                   );
+
                                 }).toList(),
                               ),
                             );

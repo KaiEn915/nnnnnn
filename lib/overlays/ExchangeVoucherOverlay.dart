@@ -138,6 +138,15 @@ class ExchangeVoucherOverlay extends StatelessWidget {
                     GestureDetector(
                       onTap: () async{
 
+                        final doc=await AuthService.userDocRef.get();
+                        final snapshot=doc.data();
+                        int userPoints=snapshot?['rewardPoints']??0;
+
+                        int requiredPoints=data['requiredPoints'];
+
+                        await AuthService.userDocRef.update({"rewardPoints":userPoints-requiredPoints});
+                        Fluttertoast.showToast(msg: '$requiredPoints points removed from your balance');
+
                         await AuthService.userDocRef.update({"ownedVouchers_id":FieldValue.arrayUnion([data['id']])});
                         Fluttertoast.showToast(msg: "Voucher exchanged successfully!");
 
