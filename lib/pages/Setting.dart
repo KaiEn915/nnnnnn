@@ -70,6 +70,7 @@ class _SettingWidgetState extends State<Setting> {
   Future<void> loadUserSettings() async {
     final snapshot=await AuthService.userDocRef.get();
     Map<String, dynamic>? data = snapshot.data();
+
     String address = await MapService.getAddressFromCoordinates(
       data?['locationCoordinates'],
     );

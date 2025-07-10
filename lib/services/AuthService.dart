@@ -16,7 +16,7 @@ class AuthService {
   );
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore db = FirebaseFirestore.instance;
-  static final DocumentReference<Map<String,dynamic>> userDocRef = FirebaseFirestore.instance.collection('users').doc(uid);
+  static DocumentReference<Map<String,dynamic>> userDocRef = FirebaseFirestore.instance.collection('users').doc(uid);
 
   static var uid;
 
@@ -56,7 +56,8 @@ class AuthService {
         textColor: Colors.white,
         gravity: ToastGravity.CENTER,
       );
-
+      uid=userCredential.user?.uid;
+      userDocRef = FirebaseFirestore.instance.collection('users').doc(uid);
       Navigator.pushReplacementNamed(context, '/Home');
 
       return userCredential;
@@ -97,6 +98,8 @@ class AuthService {
         gravity: ToastGravity.CENTER,
       );
 
+      uid=_auth.currentUser?.uid;
+      userDocRef = FirebaseFirestore.instance.collection('users').doc(uid);
       Navigator.pushReplacementNamed(context, '/Home');
     } on FirebaseAuthException catch (e) {
       if (e.code == "invalid-credential") {
@@ -211,6 +214,7 @@ class AuthService {
         "phoneNumber": user.phoneNumber ?? "",
         "locationCoordinates": locationCoordinates,
         "uid":user.uid,
+        "rewardPoints":0,
       };
 
       try {

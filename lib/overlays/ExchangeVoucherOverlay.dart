@@ -1,4 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gan/pages/Voucher.dart';
+import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/NavigatorService.dart';
 
 class ExchangeVoucherOverlay extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -131,16 +136,14 @@ class ExchangeVoucherOverlay extends StatelessWidget {
                     ),
                     // Yes Button
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async{
+
+                        await AuthService.userDocRef.update({"ownedVouchers_id":FieldValue.arrayUnion([data['id']])});
+                        Fluttertoast.showToast(msg: "Voucher exchanged successfully!");
+
                         Navigator.of(context).pop(); // 先关闭 Dialog
-                        // 再跳转页面并传值
-                        Future.delayed(Duration(milliseconds: 100), () {
-                          Navigator.pushNamed(
-                            context,
-                            '/Voucher',
-                            arguments: data,
-                          );
-                        });
+                        NavigatorService.openPage(Voucher(), context, true);
+
                       },
                       child: Stack(
                         alignment: Alignment.topCenter,

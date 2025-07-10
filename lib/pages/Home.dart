@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:gan/services/AuthService.dart';
+import 'package:gan/utils/OurUI.dart';
 import 'package:gan/widgets/HomePost.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
+import 'package:gan/widgets/OurFont.dart';
 import 'package:gan/widgets/TopBar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -135,7 +137,18 @@ class _HomeState extends State<Home> {
                       } else if (snapshot.hasError) {
                         return Center(child: Text("Error: ${snapshot.error}"));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(child: Text("No posts found."));
+                        return Center(
+                            child: Container(
+                                margin: EdgeInsets.symmetric(horizontal: 30),
+                                decoration: OurUI.shapeDecoration(color:Colors.black.withAlpha(64),hasShadow: false),
+                                child:Container(
+                                  padding:EdgeInsets.all(10),
+                                  child: OurFont(text: "No posts found..."),
+                                )
+
+                            )
+
+                        );
                       } else {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
