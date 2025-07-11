@@ -5,6 +5,7 @@ import 'package:gan/pages/PostDetail.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/NavigatorService.dart';
+import 'package:gan/services/PostService.dart';
 import 'package:gan/widgets/PostAttribute.dart';
 import 'package:gan/widgets/TopBar.dart';
 
@@ -16,17 +17,6 @@ class FavoritePost extends StatefulWidget {
 }
 
 class _FavoritePostState extends State<FavoritePost> {
-  Future<void> removeFromFavoritePost(String id) async {
-    await AuthService.userDocRef.update({
-      "favoritePosts_id": FieldValue.arrayRemove([id]),
-    });
-    Fluttertoast.showToast(msg: "Post is unfavorited");
-
-    setState(() {
-
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +97,7 @@ class _FavoritePostState extends State<FavoritePost> {
                             return GestureDetector(
                               onTap: () {
                                 NavigatorService.openPage(
-                                  PostDetail(postData: postData),
+                                  PostDetail(id:postData['id']),
                                   context,
                                   false,
                                 );
@@ -184,7 +174,7 @@ class _FavoritePostState extends State<FavoritePost> {
                                             PostAttribute.postOwner(
                                               context,
                                               postData['username'],
-                                              postData['ownerUid'],
+                                              postData['owner_uid'],
                                             ),
                                           ],
                                         ),
@@ -195,9 +185,12 @@ class _FavoritePostState extends State<FavoritePost> {
                                       top: 225,
                                       child: GestureDetector(
                                         onTap: () {
-                                          removeFromFavoritePost(
+                                          PostService.unfavoritePost(
                                             postData['id'],
                                           );
+                                          setState(() {
+
+                                          });
                                         },
                                         child: Icon(Icons.delete, size: 25),
                                       ),

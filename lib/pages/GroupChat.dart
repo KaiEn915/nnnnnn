@@ -48,8 +48,9 @@ class _GroupChatState extends State<GroupChat> {
                     child: FutureBuilder<List<DocumentSnapshot>>(
                       future: () async {
                         final snapshot = await AuthService.userDocRef.get();
+                        final data=snapshot.data();
                         final groupChatIds =
-                            snapshot.data()?['groupChats'] as List<dynamic>? ??
+                            data?['activeGroupChats_id'] as List<dynamic>? ??
                             [];
 
                         return Future.wait(

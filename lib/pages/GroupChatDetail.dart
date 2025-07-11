@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gan/pages/Home.dart';
 import 'package:gan/pages/UserProfile.dart';
 import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/GroupChatService.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/utils/OurUI.dart';
@@ -238,13 +240,15 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                       text: "Delete Group Chat",
                       backgroundColor: const Color(0xFF740000),
                       onPressed: () {
-                        AuthService.deleteGroupChat(context,widget.groupChatId);
+                        GroupChatService.deleteGroupChat(widget.groupChatId);
+                        NavigatorService.openPage(Home(), context, true);
                       },
                     ):    AppButton(
                       text: "Quit Group Chat",
                       backgroundColor: const Color(0xFF740000),
                       onPressed: () {
-                        AuthService.quitGroupChat(context,widget.groupChatId);
+                        GroupChatService.quitGroupChat(widget.groupChatId);
+                        NavigatorService.openPage(Home(), context, true);
                       },
                     ),
                   ],

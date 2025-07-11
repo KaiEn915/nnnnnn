@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/MapService.dart';
+import 'package:gan/services/PostService.dart';
 import 'package:gan/utils/OurUI.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
@@ -44,38 +44,7 @@ class _CreatePost extends State<CreatePost> {
     });
   }
 
-  Future<void> createPost({
-    required BuildContext context,
-    required String title,
-    required String description,
-    required String uid,
-    required String breed,
-    required GeoPoint? locationCoordinates,
-  }) async {
 
-
-    final snapshot=await AuthService.userDocRef.get();
-    final data=snapshot.data();
-
-    final postData = {
-      "title": title,
-      "description": description,
-      "ownerUid": uid,
-      "username": data?['username'],
-      "phoneNumber": data?['phoneNumber'],
-      "email": data?['email'],
-      "imageData": base64Encode(currentImageData),
-      "locationCoordinates": locationCoordinates,
-      "timestamp": DateTime.now().millisecondsSinceEpoch,
-      "breed": breed,
-    };
-    final postRef = await AuthService.db.collection("posts").add(postData);
-    await postRef.update({"id": postRef.id});
-
-    await AuthService.promptForCreateGroupChat(context,postRef.id);
-
-
-  }
 
 
 
@@ -176,9 +145,10 @@ class _CreatePost extends State<CreatePost> {
                         text: "Post",
                         width: 150,
                         onPressed: () async {
-                          await createPost(
+                          await PostService.createPost(
                             context: context,
                             title: titleController.text,
+                            imageData: currentImageData,
                             description: descriptionController.text,
                             breed: breed,
                             uid: AuthService.uid,

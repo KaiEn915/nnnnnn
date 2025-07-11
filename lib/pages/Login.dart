@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gan/pages/ForgotPassword.dart';
 import 'package:gan/pages/SignUp.dart';
 import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -127,12 +128,8 @@ class _LoginState extends State<Login> {
                           text: "Forgot Password",
                           width: 140,
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ForgotPassword(),
-                              ),
-                            );
+                            NavigatorService.openPage(ForgotPassword(), context, false);
+
                           },
                         ),
                         AppButton(

@@ -47,7 +47,7 @@ class _HomePostState extends State<HomePost> {
                 context,
                 PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) =>
-                      PostDetail(postData: widget.postData),
+                      PostDetail(id: widget.postData['id']),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
                         return FadeTransition(opacity: animation, child: child);
@@ -85,7 +85,7 @@ class _HomePostState extends State<HomePost> {
                     }
                   },
                 ),
-                PostAttribute.postOwner(context, widget.postData['username'], widget.postData['ownerUid'])
+                PostAttribute.postOwner(context, widget.postData['username'], widget.postData['owner_uid'])
                 ,
               ],
             ),
