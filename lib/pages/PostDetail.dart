@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gan/overlays/PostDetailOverlay.dart';
 import 'package:gan/pages/GroupChatRoom.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
@@ -227,74 +228,105 @@ class _PostDetailState extends State<PostDetail> {
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
-                                    child: Stack(
-                                      children: [
-                                        Positioned(
-                                          top: 0,
-                                          left: 0,
-                                          child: Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: ShapeDecoration(
-                                              image: DecorationImage(
-                                                image: NetworkImage(
-                                                  "https://placehold.co/32x32",
+                                    child: StreamBuilder<QuerySnapshot>(
+                                      stream: AuthService.db
+                                          .collection("posts")
+                                          .doc(widget.postData['id'])
+                                          .collection("comments")
+                                          .orderBy("timestamp", descending: true)
+                                          .snapshots(),
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return Center(child: CircularProgressIndicator());
+                                        }
+
+                                        final comments = snapshot.data!.docs;
+
+                                        return ListView.builder(
+                                          itemCount: comments.length,
+                                          itemBuilder: (context, index) {
+                                            final commentData = comments[index];
+                                            final username = commentData['username'] ?? "Anonymous";
+                                            final comment = commentData['comment'];
+
+                                            return Container(
+                                              margin: EdgeInsets.symmetric(vertical: 4),
+                                              width: 300,
+                                              height: 50,
+                                              clipBehavior: Clip.antiAlias,
+                                              decoration: ShapeDecoration(
+                                                color: Colors.white.withOpacity(0.5),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(8),
                                                 ),
-                                                fit: BoxFit.cover,
                                               ),
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(width: 0.10),
-                                                borderRadius:
-                                                    BorderRadius.circular(100),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 40,
-                                          top: 0,
-                                          right: 0,
-                                          child: Container(
-                                            height: 15,
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              'Chok Yun Ying',
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12,
-                                                fontFamily: 'Iceland',
-                                                fontWeight: FontWeight.w400,
-                                                decoration: TextDecoration.none,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 45,
-                                          right: 0,
-                                          top: 15,
-                                          bottom: 0,
-                                          child: Container(
-                                            alignment: Alignment.topLeft,
-                                            height: 30,
-                                            child: Scrollbar(
-                                              child: SingleChildScrollView(
-                                                child: Text(
-                                                  'Don’t give up living!' * 34,
-                                                  style: TextStyle(
-                                                    color: Color(0xFF828282),
-                                                    fontSize: 12,
-                                                    fontFamily: 'Inter',
-                                                    fontWeight: FontWeight.w400,
-                                                    decoration:
-                                                        TextDecoration.none,
+                                              child: Stack(
+                                                children: [
+                                                  Positioned(
+                                                    top: 0,
+                                                    left: 0,
+                                                    child: Container(
+                                                      width: 40,
+                                                      height: 40,
+                                                      decoration: ShapeDecoration(
+                                                        image: DecorationImage(
+                                                          image: NetworkImage("https://placehold.co/32x32"),
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                        shape: RoundedRectangleBorder(
+                                                          side: BorderSide(width: 0.10),
+                                                          borderRadius: BorderRadius.circular(100),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
+                                                  Positioned(
+                                                    left: 40,
+                                                    top: 0,
+                                                    right: 0,
+                                                    child: Container(
+                                                      height: 15,
+                                                      alignment: Alignment.topLeft,
+                                                      child: Text(
+                                                        username,
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 12,
+                                                          fontFamily: 'Iceland',
+                                                          fontWeight: FontWeight.w400,
+                                                          decoration: TextDecoration.none,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    left: 45,
+                                                    right: 0,
+                                                    top: 15,
+                                                    bottom: 0,
+                                                    child: Container(
+                                                      alignment: Alignment.topLeft,
+                                                      height: 30,
+                                                      child: SingleChildScrollView(
+                                                        child: Text(
+                                                          comment,
+                                                          style: TextStyle(
+                                                            color: Color(0xFF828282),
+                                                            fontSize: 12,
+                                                            fontFamily: 'Inter',
+                                                            fontWeight: FontWeight.w400,
+                                                            decoration: TextDecoration.none,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                            );
+                                          },
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],
@@ -367,8 +399,13 @@ class _PostDetailState extends State<PostDetail> {
                         ),
                         GestureDetector(
                           onTap:(){
-
-
+                            showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (BuildContext context) {
+                                return PostDetailOverlay(postId: widget.postData['id']);
+                              },
+                            );
                           },
                           child: Icon(Icons.add_comment, size: 30),
                         ),
