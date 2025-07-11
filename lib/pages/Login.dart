@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gan/pages/ForgotPassword.dart';
 import 'package:gan/pages/SignUp.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/widgets/AppButton.dart';
@@ -125,7 +126,14 @@ class _LoginState extends State<Login> {
                         AppButton(
                           text: "Forgot Password",
                           width: 140,
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ForgotPassword(),
+                              ),
+                            );
+                          },
                         ),
                         AppButton(
                           text: "Sign Up",
