@@ -29,6 +29,7 @@ class _UserProfileWidgetState extends State<UserProfile> {
   }
 
   Future<void> initViewingUserData() async {
+    print('viewing: '+widget.viewingUID);
     final data = await AuthService.getUserData(widget.viewingUID);
     setState(() {
       viewingUserData = data;

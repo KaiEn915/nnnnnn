@@ -45,43 +45,48 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               alignment: WrapAlignment.spaceEvenly,
               runAlignment: WrapAlignment.spaceBetween,
               children: [
-                Stack(
-                  children: [
-                    Align(
-                      child: Text(
-                        'FORGOT PASSWORD',
-                        style: GoogleFonts.ibmPlexSans(
-                          decoration: TextDecoration.none,
-                          fontSize: 60,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 7,
-                          foreground: Paint()
-                            ..style = PaintingStyle.stroke
-                            ..strokeWidth = 4
-                            ..color = const Color(0xC0305B7E),
+                Container(
+                  margin: EdgeInsetsGeometry.directional(top: 50),
+                  width: MediaQuery.sizeOf(context).width,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Align(
+                        child: Text(
+                          'FORGOT PASSWORD',
+                          style: GoogleFonts.ibmPlexSans(
+                            decoration: TextDecoration.none,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 7,
+                            foreground: Paint()
+                              ..style = PaintingStyle.stroke
+                              ..strokeWidth = 4
+                              ..color = const Color(0xC0305B7E),
+                          ),
                         ),
                       ),
-                    ),
-                    Align(
-                      child: Text(
-                        'FORGOT PASSWORD',
-                        style: GoogleFonts.ibmPlexSans(
-                          letterSpacing: 7,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.none,
-                          fontSize: 60,
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              offset: Offset(0, 8),
-                              blurRadius: 16,
-                              color: Colors.black.withAlpha(64),
-                            ),
-                          ],
+                      Align(
+                        child: Text(
+                          'FORGOT PASSWORD',
+                          style: GoogleFonts.ibmPlexSans(
+                            letterSpacing: 7,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.none,
+                            fontSize: 30,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(0, 8),
+                                blurRadius: 16,
+                                color: Colors.black.withAlpha(64),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 LabeledInputBox(
                   isInputLocation: false,
@@ -93,7 +98,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 AppButton(
                   text: "Request Reset Link",
                   width: 180,
-                  onPressed: sendPasswordResetEmail,
+                  onPressed: () async {
+                    await sendPasswordResetEmail(); // 假设这是一个 Future 函数
+                    // 成功后跳转回登录页
+                    Navigator.of(
+                      context,
+                    ).pop(); // 如果是从 login page push 来的，pop 会回到 login
+                    // 或者使用：
+                    // Navigator.of(context).pushReplacementNamed('/login');
+                  },
                 ),
               ],
             ),

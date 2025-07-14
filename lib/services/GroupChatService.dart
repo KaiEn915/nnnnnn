@@ -27,12 +27,12 @@ class GroupChatService{
     final ref = await AuthService.db.collection('groupChats').add(data);
     await ref.update({"id": ref.id});
     Fluttertoast.showToast(msg: "Group chat created successfully");
-    await joinGroupChat(context, ref.id);
+    await joinGroupChat(ref.id);
 
     return ref.id;
   }
 
-  static Future<void> joinGroupChat(BuildContext context, String groupChatId) async {
+  static Future<void> joinGroupChat(String groupChatId) async {
     final ref=await AuthService.db.collection("posts").doc(groupChatId).get();
     final snapshot=ref.data();
     final members = snapshot?['members_uid'] as List<dynamic>? ?? [];

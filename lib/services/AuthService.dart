@@ -99,6 +99,7 @@ class AuthService {
       );
 
       uid=_auth.currentUser?.uid;
+      print('sssss: '+uid);
       userDocRef = FirebaseFirestore.instance.collection('users').doc(uid);
       Navigator.pushReplacementNamed(context, '/Home');
     } on FirebaseAuthException catch (e) {
