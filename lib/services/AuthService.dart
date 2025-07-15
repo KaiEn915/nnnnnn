@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -56,9 +58,8 @@ class AuthService {
         textColor: Colors.white,
         gravity: ToastGravity.CENTER,
       );
-      uid=userCredential.user?.uid;
-      userDocRef = FirebaseFirestore.instance.collection('users').doc(uid);
-      Navigator.pushReplacementNamed(context, '/Home');
+
+      loginSuccess(context,userCredential.user!.uid);
 
       return userCredential;
     } catch (error) {
@@ -98,10 +99,7 @@ class AuthService {
         gravity: ToastGravity.CENTER,
       );
 
-      uid=_auth.currentUser?.uid;
-      print('sssss: '+uid);
-      userDocRef = FirebaseFirestore.instance.collection('users').doc(uid);
-      Navigator.pushReplacementNamed(context, '/Home');
+      loginSuccess(context,_auth.currentUser!.uid);
     } on FirebaseAuthException catch (e) {
       if (e.code == "invalid-credential") {
         Fluttertoast.showToast(
@@ -275,9 +273,37 @@ class AuthService {
     );
   }
 
-
-  static Future<void> setOnline(bool isOnline)async{
-    userDocRef.update({"isOnline":isOnline});
+  static void loginSuccess(BuildContext context,String withUid){
+    uid=withUid;
+    userDocRef = FirebaseFirestore.instance.collection('users').doc(uid);
+    // keep tracks of user online or offline
+    Timer.periodic(Duration(minutes: 5), (timer) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({'lastUpdated': FieldValue.serverTimestamp()});
+    });
+    Navigator.pushReplacementNamed(context, '/Home');
   }
+
+  static Future<bool> isOnline(String uid) async {
+    final snapshot = await db.collection("users").doc(uid).get();
+    final data = snapshot.data();
+
+    if (data == null || data['lastUpdated'] == null) {
+      return false;
+    }
+
+    final Timestamp lastUpdated = data['lastUpdated'];
+    final DateTime lastOnline = lastUpdated.toDate();
+    final Duration diff = DateTime.now().difference(lastOnline);
+
+    final bool isOnline=diff.inMinutes<=10;
+    print("User $uid is ${isOnline?"Online":"Offline"}!");
+
+    return isOnline;
+  }
+
+
 
 }

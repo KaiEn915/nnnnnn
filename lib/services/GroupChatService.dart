@@ -141,4 +141,25 @@ class GroupChatService{
 
     await batch.commit();
   }
+  static Future<void> saveMessageTo({
+    required DocumentReference groupChatRef,
+    required String content,
+    bool isImageMessage = false,
+  }) async {
+    final postChat = {
+      "content": content,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "owner_uid": AuthService.uid,
+      "isImageMessage": isImageMessage,
+    };
+
+    await groupChatRef.collection('messages').add(postChat);
+  }
+  static Future<void> deleteMessageFrom(DocumentReference groupChatRef, String messageID) async {
+    await groupChatRef
+        .collection("messages")
+        .doc(messageID)
+        .delete();
+  }
+
 }

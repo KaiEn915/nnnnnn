@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'package:gan/pages/UserProfile.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -183,127 +186,169 @@ class _PostDetailState extends State<PostDetail> {
                                 child: OurFont(text: "COMMENTS"),
                               ),
                               Container(
-                                height: 100,
-                                child: SingleChildScrollView(
-                                  child: Scrollbar(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      spacing: 10,
-                                      children: [
-                                        Container(
-                                          width: 300,
-                                          height: 50,
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: ShapeDecoration(
-                                            color: Colors.white.withValues(
-                                              alpha: 128,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                          ),
-                                          child: StreamBuilder<QuerySnapshot>(
-                                            stream: AuthService.db
-                                                .collection("posts")
-                                                .doc(data['id'])
-                                                .collection("comments")
-                                                .orderBy(
-                                                  "timestamp",
-                                                  descending: true,
-                                                )
-                                                .snapshots(),
-                                            builder: (context, snapshot) {
-                                              if (!snapshot.hasData) {
-                                                return Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                );
-                                              }
+                                height: 150,
+                                child: StreamBuilder<QuerySnapshot>(
+                                  stream: AuthService.db
+                                      .collection("posts")
+                                      .doc(data['id'])
+                                      .collection("comments")
+                                      .orderBy("timestamp", descending: true)
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
 
-                                              final comments =
-                                                  snapshot.data!.docs;
+                                    final comments = snapshot.data!.docs;
+                                    if (comments.isEmpty) {
+                                      return Center(child: Text("No comments"));
+                                    }
 
-                                              return ListView.builder(
-                                                itemCount: comments.length,
-                                                itemBuilder: (context, index) {
-                                                  final commentData =
-                                                      comments[index];
-                                                  final username =
-                                                      commentData['username'] ??
-                                                      "Anonymous";
-                                                  final comment =
-                                                      commentData['comment'];
+                                    final uniqueUids = comments
+                                        .map(
+                                          (doc) => doc['owner_uid'] as String,
+                                        )
+                                        .toSet()
+                                        .toList();
 
-                                                  return Container(
-                                                    margin:
-                                                        EdgeInsets.symmetric(
-                                                          vertical: 4,
-                                                        ),
-                                                    width: 300,
-                                                    height: 50,
-                                                    clipBehavior:
-                                                        Clip.antiAlias,
-                                                    decoration: ShapeDecoration(
-                                                      color: Colors.white
-                                                          .withOpacity(0.5),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              8,
+                                    return FutureBuilder<
+                                      List<
+                                        DocumentSnapshot<Map<String, dynamic>>
+                                      >
+                                    >(
+                                      future: Future.wait(
+                                        uniqueUids.map(
+                                          (uid) => AuthService.db
+                                              .collection('users')
+                                              .doc(uid)
+                                              .get(),
+                                        ),
+                                      ),
+                                      builder: (context, userSnapshots) {
+                                        if (!userSnapshots.hasData) {
+                                          return Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
+
+                                        final userMap = {
+                                          for (var snap in userSnapshots.data!)
+                                            if (snap.exists)
+                                              snap.id: snap.data()!,
+                                        };
+
+                                        return ListView.builder(
+                                          itemCount: comments.length,
+                                          itemBuilder: (context, index) {
+                                            final commentData = comments[index];
+                                            final userId =
+                                                commentData['owner_uid'];
+                                            final user = userMap[userId];
+                                            final timestamp =
+                                                commentData['timestamp'];
+
+                                            return Container(
+                                              margin: EdgeInsets.symmetric(
+                                                vertical: 4,
+                                              ),
+                                              width: 300,
+                                              height: 60,
+                                              decoration: ShapeDecoration(
+                                                color: Colors.white.withAlpha(
+                                                  128,
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                              ),
+                                              child: Stack(
+                                                children: [
+                                                  // User avatar
+                                                  Positioned(
+                                                    top: 0,
+                                                    left: 0,
+                                                    child:GestureDetector(
+                                                      onTap: (){NavigatorService.openPage(UserProfile(viewingUID: commentData['owner_uid']), context, false);},
+                                                      child: Container(
+                                                        width: 40,
+                                                        height: 40,
+                                                        decoration: ShapeDecoration(
+                                                          image:
+                                                          user != null &&
+                                                              user['imageData'] !=
+                                                                  null
+                                                              ? DecorationImage(
+                                                            image: MemoryImage(
+                                                              base64Decode(
+                                                                user['imageData'],
+                                                              ),
                                                             ),
-                                                      ),
-                                                    ),
-                                                    child: Stack(
-                                                      children: [
-                                                        Positioned(
-                                                          top: 0,
-                                                          left: 0,
-                                                          child: Container(
-                                                            width: 40,
-                                                            height: 40,
-                                                            decoration: ShapeDecoration(
-                                                              image: DecorationImage(
-                                                                image: NetworkImage(
-                                                                  "https://placehold.co/32x32",
-                                                                ),
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                              ),
-                                                              shape: RoundedRectangleBorder(
-                                                                side:
-                                                                    BorderSide(
-                                                                      width:
-                                                                          0.10,
-                                                                    ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      100,
-                                                                    ),
-                                                              ),
+                                                            fit: BoxFit
+                                                                .cover,
+                                                          )
+                                                              : null,
+                                                          shape: RoundedRectangleBorder(
+                                                            side: BorderSide(
+                                                              width: 0.10,
+                                                            ),
+                                                            borderRadius:
+                                                            BorderRadius.circular(
+                                                              100,
                                                             ),
                                                           ),
                                                         ),
+                                                      ),
+                                                    )
+                                                  ),
+
+                                                  // Username
+                                                  Positioned(
+                                                    left: 45,
+                                                    top: 0,
+                                                    right: 0,
+                                                    child: Text(
+                                                      user?['username'] ??
+                                                          "Unknown",
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 12,
+                                                        fontFamily: 'Iceland',
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        decoration:
+                                                            TextDecoration.none,
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // Comment content
+                                                  Positioned(
+                                                    left: 45,
+                                                    right: 0,
+                                                    top: 15,
+                                                    bottom: 0,
+                                                    child:
+                                                        // Comment content (scrollable)
                                                         Positioned(
-                                                          left: 40,
-                                                          top: 0,
+                                                          left: 45,
                                                           right: 0,
-                                                          child: Container(
-                                                            height: 15,
-                                                            alignment: Alignment
-                                                                .topLeft,
+                                                          top: 15,
+                                                          bottom: 15,
+                                                          child: SingleChildScrollView(
+                                                            scrollDirection:
+                                                                Axis.vertical,
                                                             child: Text(
-                                                              username,
+                                                              commentData['content'],
                                                               style: TextStyle(
-                                                                color: Colors
-                                                                    .black,
+                                                                color: Color(
+                                                                  0xFF828282,
+                                                                ),
                                                                 fontSize: 12,
                                                                 fontFamily:
-                                                                    'Iceland',
+                                                                    'Inter',
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w400,
@@ -314,47 +359,39 @@ class _PostDetailState extends State<PostDetail> {
                                                             ),
                                                           ),
                                                         ),
-                                                        Positioned(
-                                                          left: 45,
-                                                          right: 0,
-                                                          top: 15,
-                                                          bottom: 0,
-                                                          child: Container(
-                                                            alignment: Alignment
-                                                                .topLeft,
-                                                            height: 30,
-                                                            child: SingleChildScrollView(
-                                                              child: Text(
-                                                                comment,
-                                                                style: TextStyle(
-                                                                  color: Color(
-                                                                    0xFF828282,
-                                                                  ),
-                                                                  fontSize: 12,
-                                                                  fontFamily:
-                                                                      'Inter',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  decoration:
-                                                                      TextDecoration
-                                                                          .none,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
+                                                  ),
+
+                                                  // Time ago
+                                                  Positioned(
+                                                    right: 4,
+                                                    bottom: 4,
+                                                    child: Text(
+                                                      timestamp is Timestamp
+                                                          ? timeago.format(
+                                                              timestamp
+                                                                  .toDate(),
+                                                              locale: 'en',
+                                                            )
+                                                          : '',
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 10,
+                                                        fontFamily: 'Iceland',
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        decoration:
+                                                            TextDecoration.none,
+                                                      ),
                                                     ),
-                                                  );
-                                                },
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
                                 ),
                               ),
                             ],

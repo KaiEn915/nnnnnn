@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -33,15 +36,7 @@ Future<void> main() async {
 
   await loadModel();
 
-  FirebaseAuth.instance.authStateChanges().listen((User? user)async {
-    if (user != null) {
-      AuthService.uid=user.uid;
-      await AuthService.setOnline(true);
-    } else {
-      await AuthService.setOnline(false);
-      Fluttertoast.showToast(msg: "Signed out successfully");
-    }
-  });
+
 
   runApp(const MyApp());
 }

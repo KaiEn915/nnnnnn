@@ -304,12 +304,10 @@ class _UserProfileWidgetState extends State<UserProfile> {
             ),
             TopBar(
               isMiddleSearchBar: false,
-              leftIcon: widget.isViewingOther ? Icons.arrow_back : null,
-              leftIcon_onTap: widget.isViewingOther
-                  ? () {
+              leftIcon: Icons.arrow_back,
+              leftIcon_onTap: () {
                 Navigator.pop(context);
-              }
-                  : null,
+              },
               header: "PROFILE",
               rightIcon: widget.isViewingOther
                   ? null

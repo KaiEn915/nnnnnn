@@ -14,17 +14,13 @@ class _PostComment extends State<PostDetailOverlay> {
   late TextEditingController _commentController;
 
   Future<void> saveComment({
-    required String comment,
+    required String content,
   }) async {
-    final uid = AuthService.uid;
-    final userData = await AuthService.getUserData(uid);
-    final username = userData?['username'];
 
     final postComment = {
-      "comment": comment,
-      "timestamp": DateTime.now().millisecondsSinceEpoch,
-      "userUid": uid,
-      "username": username,
+      "content": content,
+      "timestamp": DateTime.now(),
+      "owner_uid": AuthService.uid,
     };
       await dbRef.collection('comments').add(postComment);
   }
@@ -174,7 +170,7 @@ class _PostComment extends State<PostDetailOverlay> {
                         onTap: () async{
                           String comment = _commentController.text;
                           if (comment.isNotEmpty) {
-                            await saveComment(comment: comment);
+                            await saveComment(content: comment);
                             Navigator.of(context).pop();
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(

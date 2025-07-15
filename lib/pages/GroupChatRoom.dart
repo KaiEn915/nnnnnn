@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:gan/pages/GroupChatDetail.dart';
 import 'package:gan/pages/TakePicture.dart';
 import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/GroupChatService.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/widgets/TopBar.dart';
@@ -25,27 +26,6 @@ class GroupChatRoom extends StatefulWidget {
 class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
   late final dbRef;
   late TextEditingController _chatController;
-
-  Future<void> saveChat({
-    required String content,
-    bool isImageMessage = false,
-  }) async {
-    final uid = AuthService.uid;
-
-    // 获取当前用户资料
-    final userData = await AuthService.getUserData(uid);
-    final username = userData?['username'];
-
-    final postChat = {
-      "content": content,
-      "timestamp": DateTime.now().millisecondsSinceEpoch,
-      "uid": AuthService.uid,
-      "username": username,
-      "isImageMessage": isImageMessage,
-    };
-
-    await dbRef.collection('messages').add(postChat);
-  }
 
   void onTapImage(String imageData) {
     showDialog(
@@ -111,12 +91,11 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
   void _sendMessage() {
     String message = _chatController.text.trim();
     if (message.isNotEmpty) {
-      saveChat(content: message);
+      GroupChatService.saveMessageTo(groupChatRef: dbRef, content: message);
       print("发送消息: $message");
       _chatController.clear();
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -144,12 +123,11 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                         bottom: 80,
                         child: StreamBuilder<QuerySnapshot>(
                           stream: dbRef
-                              .collection('messages') // 👈 子集合
+                              .collection('messages')
                               .orderBy('timestamp', descending: false)
                               .snapshots(),
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
+                            if (!snapshot.hasData) {
                               return Center(child: CircularProgressIndicator());
                             }
 
@@ -159,102 +137,167 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                               padding: EdgeInsets.all(10),
                               itemCount: messages.length,
                               itemBuilder: (context, index) {
+                                final doc = messages[index];
+                                final messageId = doc.id;
+                                final data = doc.data() as Map<String, dynamic>;
+
                                 final isImageMessage =
-                                    messages[index]['isImageMessage'];
-                                final message = messages[index]['content'];
-                                final timestamp = messages[index]['timestamp'];
-                                final messageUid = messages[index]['uid'];
-                                final senderName = messages[index]['username'];
-                                final currentUid = AuthService.uid;
+                                    data['isImageMessage'] ?? false;
+                                final message = data['content'] ?? '';
+                                final senderUid = data['owner_uid'];
+                                final timestamp = data['timestamp'];
                                 final time =
                                     DateTime.fromMillisecondsSinceEpoch(
                                       timestamp,
                                     );
                                 final formattedTime =
                                     "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
+                                final currentUid = AuthService.uid;
 
-                                return GestureDetector(
-                                  onLongPressStart: (details) {
-                                    showMenu(
-                                      context: context,
-                                      position: RelativeRect.fromLTRB(
-                                        details.globalPosition.dx,
-                                        details.globalPosition.dy,
-                                        details.globalPosition.dx,
-                                        details.globalPosition.dy,
-                                      ),
-                                      items: [
-                                        const PopupMenuItem<String>(
-                                          value: 'delete',
-                                          child: Text('Delete'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                  onTap: () {
-                                    if (isImageMessage) onTapImage(message);
-                                  },
-                                  child: Align(
-                                    alignment: messageUid == currentUid
-                                        ? Alignment.centerRight
-                                        : Alignment.centerLeft,
-                                    child: Container(
-                                      margin: EdgeInsets.symmetric(vertical: 5),
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        color: messageUid == currentUid
-                                            ? Colors.white.withAlpha(204)
-                                            : Colors.blue[100],
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            messageUid == currentUid
-                                            ? CrossAxisAlignment.end
-                                            : CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            messageUid == currentUid
-                                                ? "You"
-                                                : senderName, // or "other"
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: messageUid == currentUid
-                                                  ? Colors.blueAccent
-                                                  : Colors.green,
-                                            ),
+                                return FutureBuilder<
+                                  DocumentSnapshot<Map<String, dynamic>>
+                                >(
+                                  future: AuthService.db
+                                      .collection('users')
+                                      .doc(senderUid)
+                                      .get(),
+                                  builder: (context, senderSnapshot) {
+                                    if (!senderSnapshot.hasData) {
+                                      return SizedBox(); // return empty space to avoid layout shift
+                                    }
+
+                                    final senderData = senderSnapshot.data!
+                                        .data();
+                                    if (senderData == null) return SizedBox();
+
+                                    final username = senderUid == currentUid
+                                        ? "You"
+                                        : senderData['username'] ?? 'User';
+                                    final imageData = senderData['imageData'];
+
+                                    return GestureDetector(
+                                      onLongPressStart: (details) async {
+                                        final selected = await showMenu<String>(
+                                          context: context,
+                                          position: RelativeRect.fromLTRB(
+                                            details.globalPosition.dx,
+                                            details.globalPosition.dy,
+                                            details.globalPosition.dx,
+                                            details.globalPosition.dy,
                                           ),
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
+                                          items: const [
+                                            PopupMenuItem<String>(
+                                              value: 'delete',
+                                              child: Text('Delete'),
+                                            ),
+                                          ],
+                                        );
+
+                                        if (selected == 'delete') {
+                                          GroupChatService.deleteMessageFrom(
+                                            dbRef,
+                                            messageId,
+                                          );
+                                        }
+                                      },
+                                      onTap: () {
+                                        if (isImageMessage) onTapImage(message);
+                                      },
+                                      child: Align(
+                                        alignment: senderUid == currentUid
+                                            ? Alignment.centerRight
+                                            : Alignment.centerLeft,
+                                        child: Container(
+                                          margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+                                          child: Row(
+                                            mainAxisAlignment: senderUid == currentUid
+                                                ? MainAxisAlignment.end
+                                                : MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            spacing: 8,
                                             children: [
+                                              if (senderUid != currentUid && imageData != null)
+                                                ClipOval(
+                                                  child: Image.memory(
+                                                    base64Decode(imageData),
+                                                    width: 64,
+                                                    height: 64,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+
+
+                                              // Chat bubble
                                               Flexible(
-                                                child: isImageMessage
-                                                    ? Image.memory(
-                                                        base64Decode(message),
-                                                        height: 100,
-                                                      )
-                                                    : Text(
-                                                        message,
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(10),
+                                                  decoration: BoxDecoration(
+                                                    color: senderUid == currentUid
+                                                        ? Colors.white.withAlpha(220)
+                                                        : Colors.blue[100],
+                                                    borderRadius: BorderRadius.circular(12),
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment: senderUid == currentUid
+                                                        ? CrossAxisAlignment.end
+                                                        : CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        username,
                                                         style: TextStyle(
-                                                          fontSize: 16,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 14,
+                                                          color: senderUid == currentUid
+                                                              ? Colors.blueAccent
+                                                              : Colors.green,
                                                         ),
                                                       ),
-                                              ),
-                                              SizedBox(width: 10),
-                                              Text(
-                                                formattedTime,
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.grey,
+                                                      isImageMessage
+                                                          ? ClipRRect(
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        child: Image.memory(
+                                                          base64Decode(message),
+                                                          height: 120,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      )
+                                                          : Text(
+                                                        message,
+                                                        style: const TextStyle(
+                                                          fontSize: 15,
+                                                          color: Colors.black87,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        formattedTime,
+                                                        style: const TextStyle(
+                                                          fontSize: 11,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
+
+                                              // Avatar (for self only)
+                                              if (senderUid == currentUid && imageData != null)
+                                                ClipOval(
+                                                  child: Image.memory(
+                                                    base64Decode(imageData),
+                                                    width: 40,
+                                                    height: 40,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
                                             ],
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
+
+                                    );
+                                  },
                                 );
                               },
                             );
@@ -318,8 +361,11 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                         ),
                                       ),
                                     );
-                                    saveChat(content: result,isImageMessage: true);
-
+                                    GroupChatService.saveMessageTo(
+                                      groupChatRef: dbRef,
+                                      content: result,
+                                      isImageMessage: true,
+                                    );
                                   },
                                   child: Container(
                                     width: 35,

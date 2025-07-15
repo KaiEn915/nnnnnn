@@ -15,14 +15,12 @@ class GroupChatPost extends StatelessWidget {
   }
 
   Future<bool> isOtherOnline() async {
-    final collection = AuthService.db.collection('users');
     final members = data['members_uid'] as List<dynamic>? ?? [];
     members.remove(AuthService.uid);
 
     for (final member in members) {
-      final ref = await collection.doc(member).get();
-      final snapshot = ref.data();
-      if (snapshot?['isOnline'] == true) {
+      bool isOnline=await AuthService.isOnline(member);
+      if (isOnline) {
         return true;
       }
     }
