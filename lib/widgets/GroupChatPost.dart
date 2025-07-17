@@ -78,12 +78,7 @@ class GroupChatPost extends StatelessWidget {
                     width: 64,
                     height: 64,
                     decoration: BoxDecoration(),
-                    child: FittedBox(
-                        child:ClipOval(
-                          child: ImageService.tryDisplayImage(data['imageData']),
-                        )
-
-                    ),
+                    child: ImageService.tryDisplayImage(data['imageData'])
                   )
               ),
               Positioned(

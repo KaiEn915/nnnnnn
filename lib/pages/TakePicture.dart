@@ -10,8 +10,8 @@ import 'package:gan/widgets/TopBar.dart';
 import 'package:image_picker/image_picker.dart';
 
 class TakePicture extends StatefulWidget {
-  const TakePicture({super.key,required this.isFromGroupChatRoom});
-  final bool isFromGroupChatRoom;
+  const TakePicture({super.key,required this.doPopAfterDone});
+  final bool doPopAfterDone;
 
   @override
   State<StatefulWidget> createState() => _TakePictureState();
@@ -31,16 +31,14 @@ class _TakePictureState extends State<TakePicture> {
         _isInitialized = true;
       });
     }
-    print("initialized");
   }
 
   Future<void> _takePicture() async {
     if (_controller != null && _controller!.value.isInitialized) {
       final image = await _controller!.takePicture();
 
-      if (widget.isFromGroupChatRoom){
-        final bytes=await image.readAsBytes();
-        Navigator.pop(context,base64Encode(bytes));
+      if (widget.doPopAfterDone){
+        Navigator.pop(context,image);
       }
       else{
         Navigator.pushReplacement(
@@ -190,9 +188,8 @@ class _TakePictureState extends State<TakePicture> {
                                       onTap: () async {
                                         XFile? _image=await ImageService.pickImage(ImageSource.gallery);
                                         if (_image==null) return;
-                                        if (widget.isFromGroupChatRoom){
-                                          final bytes=await _image.readAsBytes();
-                                          Navigator.pop(context,base64Encode(bytes));
+                                        if (widget.doPopAfterDone){
+                                          Navigator.pop(context,_image);
                                         }
                                         else{
                                           NavigatorService.openPage(PetImageAnalysis(image: _image), context, true);

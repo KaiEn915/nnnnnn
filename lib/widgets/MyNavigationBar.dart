@@ -258,7 +258,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
               label: 'Scan',
               icon: Icons.camera_alt,
               onTap: () {
-                NavigatorService.openPage(TakePicture(isFromGroupChatRoom: false), context, false);
+                NavigatorService.openPage(TakePicture(doPopAfterDone: false), context, false);
               },
             ),
             NavigationButton(

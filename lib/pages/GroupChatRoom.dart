@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -353,17 +354,12 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                 ),
                                 GestureDetector(
                                   onTap: () async {
-                                    final result = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => TakePicture(
-                                          isFromGroupChatRoom: true,
-                                        ),
-                                      ),
-                                    );
+                                    final image = await ImageService.promptPicture(context, true);
+                                    final bytes=await image.readAsBytes();
+                                    final imageData=base64Encode(bytes);
                                     GroupChatService.saveMessageTo(
                                       groupChatRef: dbRef,
-                                      content: result,
+                                      content: imageData,
                                       isImageMessage: true,
                                     );
                                   },

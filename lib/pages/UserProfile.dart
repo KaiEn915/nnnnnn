@@ -29,7 +29,6 @@ class _UserProfileWidgetState extends State<UserProfile> {
   }
 
   Future<void> initViewingUserData() async {
-    print('viewing: '+widget.viewingUID);
     final data = await AuthService.getUserData(widget.viewingUID);
     setState(() {
       viewingUserData = data;
@@ -49,9 +48,7 @@ class _UserProfileWidgetState extends State<UserProfile> {
             fit: BoxFit.cover,
           ),
         ),
-        child: viewingUserData == null
-            ? const Center(child: CircularProgressIndicator())
-            : Stack(
+        child: Stack(
           children: [
             Positioned(
               left: 0,
@@ -95,7 +92,7 @@ class _UserProfileWidgetState extends State<UserProfile> {
                                 ),
                               ),
                               child: viewingUserData?['imageData'] == null
-                                  ? Icon(Icons.verified_user)
+                                  ? Icon(Icons.account_circle,size: 117)
                                   : Image.memory(
                                 base64Decode(
                                   viewingUserData?['imageData'],
@@ -158,7 +155,7 @@ class _UserProfileWidgetState extends State<UserProfile> {
               ),
             ),
             MyNavigationBar(),
-            widget.isViewingOther
+            widget.viewingUID.isEmpty? Center(child:CircularProgressIndicator()) :widget.isViewingOther
                 ? SizedBox()
                 : Positioned(
               left: 21,
@@ -286,7 +283,7 @@ class _UserProfileWidgetState extends State<UserProfile> {
                 ),
               ),
             ),
-            widget.isViewingOther
+            widget.viewingUID.isEmpty? Center(child:CircularProgressIndicator()) :widget.isViewingOther
                 ? SizedBox()
                 : Positioned(
               left: 175,

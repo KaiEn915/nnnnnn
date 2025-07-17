@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/Material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gan/pages/TakePicture.dart';
 
 
 import 'package:image_picker/image_picker.dart';
@@ -27,33 +28,27 @@ class ImageService{
     }
   }
 
-  static Widget tryDisplayImage(String? imageData, {
-    double? width=100,
-    double? height=100,
-    BoxFit fit = BoxFit.cover,
-  }) {
-    if (imageData == null || imageData.isEmpty) {
-      return Icon(Icons.broken_image, size: width ?? 100, color: Colors.grey);
-    }
 
-    try {
-      Uint8List bytes = base64Decode(imageData);
-      return Image.memory(
-        bytes,
-        width: width,
-        height: height,
-        fit: fit,
-      );
-    } catch (e) {
-      return Icon(Icons.broken_image, size: width ?? 100, color: Colors.red);
-    }
-  }
-  
   static Future<void> saveImage(String imageData)async{
     Fluttertoast.showToast(msg: "Saving images...");
 
     Fluttertoast.showToast(msg: "Image not saved, save later!");
   }
 
+  static Future<XFile> promptPicture(BuildContext context,bool doPopAfterDone)async{
+    final result=await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TakePicture(
+          doPopAfterDone: doPopAfterDone,
+        ),
+      ),
+    );
 
+    return result;
+  }
+
+  static Widget tryDisplayImage(String imageData){
+    return imageData.isEmpty? Icon(Icons.broken_image):Image.memory(base64Decode(imageData));
+  }
 }

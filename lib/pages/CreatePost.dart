@@ -33,8 +33,8 @@ class _CreatePost extends State<CreatePost> {
   }
 
   void initializePost() async {
-    final snapshot=await AuthService.userDocRef.get();
-    final data=snapshot.data();
+    final snapshot = await AuthService.userDocRef.get();
+    final data = snapshot.data();
     String address = await MapService.getAddressFromCoordinates(
       data?['locationCoordinates'],
     );
@@ -43,10 +43,6 @@ class _CreatePost extends State<CreatePost> {
       locationController.text = address;
     });
   }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -69,56 +65,68 @@ class _CreatePost extends State<CreatePost> {
               leftIcon: Icons.arrow_back,
               leftIcon_onTap: () => {Navigator.pop(context)},
             ),
-            Center(
-              child: SingleChildScrollView(
-                child: Container(
-                  width: MediaQuery.sizeOf(context).width,
-                  height: 700,
-                  margin: EdgeInsets.only(left: 15, right: 15, top: 0),
-                  decoration: ShapeDecoration(
-                    color: Colors.white.withAlpha(128),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 1, color: Colors.black),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
+            Container(
+              width: MediaQuery.sizeOf(context).width,
+              height: 700,
+              margin: EdgeInsets.symmetric(horizontal: 15, vertical: 120),
+              clipBehavior: Clip.none,
+              decoration: ShapeDecoration(
+                color: Colors.white.withAlpha(128),
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(width: 1, color: Colors.black),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                child: SingleChildScrollView(
                   child: Column(
                     spacing: 10,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        height: 250,
-                        width: 250,
+                        height: 200,
+                        width: 200,
                         decoration: OurUI.shapeDecoration(),
                         child: Stack(
+                          clipBehavior: Clip.none,
                           children: [
-                            Positioned.fill(
-                              child: FittedBox(
-                                child: ImageService.tryDisplayImage(
-                                  base64Encode(currentImageData),
+                            Center(
+                              child: Container(
+                                margin:EdgeInsets.all(10),
+                                child: FittedBox(
+                                  child: ImageService.tryDisplayImage(
+                                    base64Encode(currentImageData),
+                                  ),
                                 ),
                               ),
                             ),
                             Positioned(
-                              bottom: 10,
-                              right: 10,
+
+                              bottom: -15,
+                              right: -15,
                               child: GestureDetector(
                                 onTap: () async {
-                                  XFile? image = await ImageService.pickImage(ImageSource.gallery);
-                                  if (image == null) return;
+                                  XFile? image =
+                                      await ImageService.promptPicture(
+                                        context,
+                                        true,
+                                      );
                                   final bytes = await image.readAsBytes();
                                   setState(() {
                                     currentImageData = bytes;
                                   });
                                 },
-                                child: Icon(Icons.upload, size: 32, color: Colors.black),
+                                child: Icon(
+                                  Icons.upload,
+                                  size: 32,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ),
-
-
                       LabeledInputBox(
                         isInputLocation: false,
                         label: "Title: ",
@@ -158,11 +166,7 @@ class _CreatePost extends State<CreatePost> {
                                 ),
                           );
 
-                          Navigator.pop(
-                            context,
-                            "postCreated",
-                          );
-
+                          Navigator.pop(context, "postCreated");
                         },
                       ),
                     ],

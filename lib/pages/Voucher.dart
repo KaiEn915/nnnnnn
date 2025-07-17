@@ -59,8 +59,9 @@ class _addVoucher extends State<Voucher> {
                       if (!snapshot.hasData) {
                         return Center(child: CircularProgressIndicator());
                       }
-                      List<dynamic> ownedVouchers_id = snapshot
-                          .data?['ownedVouchers_id'];
+                      final data=snapshot.data!.data();
+
+                      List<dynamic> ownedVouchers_id = data?['ownedVouchers_id']??[];
                       if (ownedVouchers_id.isEmpty) {
                         return Center(
                             child: Container(

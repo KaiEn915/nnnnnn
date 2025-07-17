@@ -179,7 +179,7 @@ class _SettingWidgetState extends State<Setting> {
                   spacing: 9,
                   children: [
                     LabeledInputBox(
-                      label: "username",
+                      label: "Username",
                       textController: usernameController,
                       isInputLocation: false,
                       width: 370,
@@ -354,8 +354,7 @@ class _SettingWidgetState extends State<Setting> {
                 alignment: Alignment.center,
                 child:GestureDetector(
                   onTap: () async{
-                    XFile? image= await ImageService.pickImage(ImageSource.gallery);
-                    if (image==null) return;
+                    XFile image= await ImageService.promptPicture(context,true);
 
                     final bytes = await File(image.path).readAsBytes();
                     setState(() {
@@ -394,7 +393,7 @@ class _SettingWidgetState extends State<Setting> {
                         )
                             : const CircleAvatar(
                           radius: 50,
-                          backgroundColor: Colors.grey,
+                          backgroundColor: Colors.white,
                           child: Icon(Icons.person),
                         ),
                         Positioned(
