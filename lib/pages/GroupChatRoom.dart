@@ -209,67 +209,103 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                             ? Alignment.centerRight
                                             : Alignment.centerLeft,
                                         child: Container(
-                                          margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-                                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+                                          margin: const EdgeInsets.symmetric(
+                                            vertical: 6,
+                                            horizontal: 6,
+                                          ),
+                                          constraints: BoxConstraints(
+                                            maxWidth:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).size.width *
+                                                0.75,
+                                          ),
                                           child: Row(
-                                            mainAxisAlignment: senderUid == currentUid
+                                            mainAxisAlignment:
+                                                senderUid == currentUid
                                                 ? MainAxisAlignment.end
                                                 : MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             spacing: 8,
                                             children: [
-                                              if (senderUid != currentUid && imageData != null)
+                                              if (senderUid != currentUid)
                                                 ClipOval(
-                                                  child: Image.memory(
-                                                    base64Decode(imageData),
-                                                    width: 64,
-                                                    height: 64,
-                                                    fit: BoxFit.cover,
+                                                  child: Container(
+                                                    width: 40,
+                                                    height: 40,
+                                                    child:
+                                                        ImageService.tryDisplayImage(
+                                                          imageData??null,
+                                                          40,
+                                                        ),
                                                   ),
                                                 ),
-
 
                                               // Chat bubble
                                               Flexible(
                                                 child: Container(
-                                                  padding: const EdgeInsets.all(10),
+                                                  padding: const EdgeInsets.all(
+                                                    10,
+                                                  ),
                                                   decoration: BoxDecoration(
-                                                    color: senderUid == currentUid
-                                                        ? Colors.white.withAlpha(220)
+                                                    color:
+                                                        senderUid == currentUid
+                                                        ? Colors.white
+                                                              .withAlpha(220)
                                                         : Colors.blue[100],
-                                                    borderRadius: BorderRadius.circular(12),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
                                                   ),
                                                   child: Column(
-                                                    crossAxisAlignment: senderUid == currentUid
+                                                    crossAxisAlignment:
+                                                        senderUid == currentUid
                                                         ? CrossAxisAlignment.end
-                                                        : CrossAxisAlignment.start,
+                                                        : CrossAxisAlignment
+                                                              .start,
                                                     children: [
                                                       Text(
                                                         username,
                                                         style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                           fontSize: 14,
-                                                          color: senderUid == currentUid
-                                                              ? Colors.blueAccent
+                                                          color:
+                                                              senderUid ==
+                                                                  currentUid
+                                                              ? Colors
+                                                                    .blueAccent
                                                               : Colors.green,
                                                         ),
                                                       ),
                                                       isImageMessage
                                                           ? ClipRRect(
-                                                        borderRadius: BorderRadius.circular(8),
-                                                        child: Image.memory(
-                                                          base64Decode(message),
-                                                          height: 120,
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      )
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    8,
+                                                                  ),
+                                                              child:
+                                                                  Image.memory(
+                                                                    base64Decode(
+                                                                      message,
+                                                                    ),
+                                                                    height: 120,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
+                                                            )
                                                           : Text(
-                                                        message,
-                                                        style: const TextStyle(
-                                                          fontSize: 15,
-                                                          color: Colors.black87,
-                                                        ),
-                                                      ),
+                                                              message,
+                                                              style:
+                                                                  const TextStyle(
+                                                                    fontSize:
+                                                                        15,
+                                                                    color: Colors
+                                                                        .black87,
+                                                                  ),
+                                                            ),
                                                       Text(
                                                         formattedTime,
                                                         style: const TextStyle(
@@ -283,20 +319,18 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                               ),
 
                                               // Avatar (for self only)
-                                              if (senderUid == currentUid && imageData != null)
+                                              if (senderUid == currentUid)
                                                 ClipOval(
-                                                  child: Image.memory(
-                                                    base64Decode(imageData),
+                                                  child: Container(
                                                     width: 40,
                                                     height: 40,
-                                                    fit: BoxFit.cover,
-                                                  ),
+                                                    child:ImageService.tryDisplayImage(imageData??"", 40)
+                                                  )
                                                 ),
                                             ],
                                           ),
                                         ),
                                       ),
-
                                     );
                                   },
                                 );
@@ -354,9 +388,13 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                 ),
                                 GestureDetector(
                                   onTap: () async {
-                                    final image = await ImageService.promptPicture(context, true);
-                                    final bytes=await image.readAsBytes();
-                                    final imageData=base64Encode(bytes);
+                                    final image =
+                                        await ImageService.promptPicture(
+                                          context,
+                                          true,
+                                        );
+                                    final bytes = await image.readAsBytes();
+                                    final imageData = base64Encode(bytes);
                                     GroupChatService.saveMessageTo(
                                       groupChatRef: dbRef,
                                       content: imageData,

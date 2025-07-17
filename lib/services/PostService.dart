@@ -16,18 +16,10 @@ class PostService{
     required String breed,
     required GeoPoint? locationCoordinates,
   }) async {
-
-
-    final snapshot=await AuthService.userDocRef.get();
-    final data=snapshot.data();
-
     final postData = {
       "title": title,
       "description": description,
       "owner_uid": uid,
-      "username": data?['username'],
-      "phoneNumber": data?['phoneNumber'],
-      "email": data?['email'],
       "imageData": base64Encode(imageData),
       "locationCoordinates": locationCoordinates,
       "timestamp": DateTime.now().millisecondsSinceEpoch,

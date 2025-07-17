@@ -207,6 +207,7 @@ class _TakePictureState extends State<TakePicture> {
                                             fontSize: 35,
                                             fontFamily: 'Inter',
                                             fontWeight: FontWeight.w500,
+                                            decoration: TextDecoration.none,
                                             height: 1.40,
                                           ),
                                         ),

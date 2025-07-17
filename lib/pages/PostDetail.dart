@@ -33,18 +33,34 @@ class _PostDetailState extends State<PostDetail> {
   void initState() {
     super.initState();
   }
+  Future<List<DocumentSnapshot<Map<String, dynamic>>>> fetchPostAndOwner() async {
+    final postSnapshot = await AuthService.db.collection('posts').doc(widget.id).get();
+    final postData = postSnapshot.data();
+    if (postData == null) throw Exception("Post not found");
+
+    final ownerUid = postData['owner_uid'];
+    final userSnapshot = await AuthService.db.collection('users').doc(ownerUid).get();
+
+    return [postSnapshot, userSnapshot];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        future: AuthService.db.collection('posts').doc(widget.id).get(),
-        builder: (context, snapshot) {
-          final data = snapshot.data?.data();
-          if (data == null) {
+      body: FutureBuilder<List<DocumentSnapshot<Map<String, dynamic>>>>(
+          future: fetchPostAndOwner(),
+        builder: (context, snapshots) {
+          if (!snapshots.hasData) {
             return Center(child: CircularProgressIndicator());
           }
+          final postDoc = snapshots.data![0];
+          final ownerDoc = snapshots.data![1];
+          final postData = postDoc.data();
+          final ownerData = ownerDoc.data();
 
+          if (postData == null || ownerData == null) {
+            return const Center(child: Text("Post or user not found"));
+          }
           return Container(
             width: MediaQuery.sizeOf(context).width,
             height: MediaQuery.sizeOf(context).height,
@@ -101,7 +117,7 @@ class _PostDetailState extends State<PostDetail> {
                               ],
                             ),
                             child: ImageService.tryDisplayImage(
-                              data['imageData'],
+                              postData['imageData']??"",200
                             ),
                           ),
                         ),
@@ -125,7 +141,7 @@ class _PostDetailState extends State<PostDetail> {
                                   FutureBuilder<Widget>(
                                     future: PostAttribute.address(
                                       context,
-                                      data['locationCoordinates'],
+                                      postData['locationCoordinates'],
                                     ),
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
@@ -152,16 +168,16 @@ class _PostDetailState extends State<PostDetail> {
                                   ),
                                   PostAttribute.postOwner(
                                     context,
-                                    data['username'],
-                                    data['owner_uid'],
+                                    ownerData['username'],
+                                    ownerData['uid'],
                                   ),
-                                  PostAttribute.since(data['timestamp']),
+                                  PostAttribute.since(postData['timestamp']),
                                   PostAttribute.phoneNumber(
-                                    data['phoneNumber'],
+                                    ownerData['phoneNumber'],
                                   ),
-                                  PostAttribute.email(data['email']),
+                                  PostAttribute.email(ownerData['email']),
                                   PostAttribute.description(
-                                    data['description'],
+                                    postData['description'],
                                   ),
                                 ],
                               ),
@@ -190,7 +206,7 @@ class _PostDetailState extends State<PostDetail> {
                                 child: StreamBuilder<QuerySnapshot>(
                                   stream: AuthService.db
                                       .collection("posts")
-                                      .doc(data['id'])
+                                      .doc(postData['id'])
                                       .collection("comments")
                                       .orderBy("timestamp", descending: true)
                                       .snapshots(),
@@ -272,35 +288,16 @@ class _PostDetailState extends State<PostDetail> {
                                                     left: 0,
                                                     child:GestureDetector(
                                                       onTap: (){NavigatorService.openPage(UserProfile(viewingUID: commentData['owner_uid']), context, false);},
-                                                      child: Container(
-                                                        width: 40,
-                                                        height: 40,
-                                                        decoration: ShapeDecoration(
-                                                          image:
-                                                          user != null &&
-                                                              user['imageData'] !=
-                                                                  null
-                                                              ? DecorationImage(
-                                                            image: MemoryImage(
-                                                              base64Decode(
-                                                                user['imageData'],
-                                                              ),
-                                                            ),
-                                                            fit: BoxFit
-                                                                .cover,
-                                                          )
-                                                              : null,
-                                                          shape: RoundedRectangleBorder(
-                                                            side: BorderSide(
-                                                              width: 0.10,
-                                                            ),
-                                                            borderRadius:
-                                                            BorderRadius.circular(
-                                                              100,
-                                                            ),
-                                                          ),
+                                                      child:ClipRRect(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        child: Container(
+                                                            width: 40,
+                                                            height: 40,
+                                                            child:ImageService.tryDisplayImage(user?['imageData']??"",40)
+
                                                         ),
-                                                      ),
+                                                      )
+
                                                     )
                                                   ),
 
@@ -418,7 +415,7 @@ class _PostDetailState extends State<PostDetail> {
                                   final userGroupChats =
                                       userData?['activeGroupChats_id'];
                                   final currentPostGroupChatId =
-                                      data['groupChat_id'];
+                                      postData['groupChat_id'];
 
                                   if (currentPostGroupChatId == null ||
                                       currentPostGroupChatId.isEmpty) {
@@ -426,10 +423,10 @@ class _PostDetailState extends State<PostDetail> {
                                       msg:
                                           "Group chat doesn't exist for this post",
                                     );
-                                    if (AuthService.uid == data['owner_uid']) {
+                                    if (AuthService.uid == ownerData['id']) {
                                       await GroupChatService.promptForCreateGroupChat(
                                         context,
-                                        data['id'],
+                                        postData['id'],
                                       );
                                       setState(() {});
                                     }
@@ -442,7 +439,7 @@ class _PostDetailState extends State<PostDetail> {
                                         currentPostGroupChatId,
                                       )) {
                                     NavigatorService.openPage(
-                                      GroupChatRoom(id: data['groupChat_id']),
+                                      GroupChatRoom(id: postData['groupChat_id']),
                                       context,
                                       true,
                                     );
@@ -468,7 +465,7 @@ class _PostDetailState extends State<PostDetail> {
                                             onPressed: () async {
                                               Navigator.pop(context);
                                               final groupChatId =
-                                                  data['groupChat_id'];
+                                                  postData['groupChat_id'];
                                               GroupChatService.joinGroupChat(
                                                 groupChatId,
                                               );
@@ -499,7 +496,7 @@ class _PostDetailState extends State<PostDetail> {
                                     barrierDismissible: true,
                                     builder: (BuildContext context) {
                                       return PostDetailOverlay(
-                                        postId: data['id'],
+                                        postId: postData['id'],
                                       );
                                     },
                                   );
@@ -515,14 +512,14 @@ class _PostDetailState extends State<PostDetail> {
                                       [];
 
                                   bool isPostFavorited = favorites.contains(
-                                    data['id'],
+                                    postData['id'],
                                   );
                                   if (isPostFavorited) {
                                     await PostService.unfavoritePost(
-                                      data['id'],
+                                      postData['id'],
                                     );
                                   } else {
-                                    await PostService.favoritePost(data['id']);
+                                    await PostService.favoritePost(postData['id']);
                                   }
                                 },
                                 child: Icon(Icons.bookmark, size: 30),
@@ -536,16 +533,16 @@ class _PostDetailState extends State<PostDetail> {
                 ),
                 TopBar(
                   isMiddleSearchBar: false,
-                  header: data['title'],
+                  header: postData['title'],
                   leftIcon: Icons.arrow_back,
                   leftIcon_onTap: () {
                     Navigator.pop(context);
                   },
-                  rightIcon: data['owner_uid'] == AuthService.uid
+                  rightIcon: ownerData['id'] == AuthService.uid
                       ? Icons.delete
                       : null,
                   rightIcon_onTap: () async {
-                    await PostService.deletePost(data['id']);
+                    await PostService.deletePost(postData['id']);
                     Navigator.pop(context);
                   },
                 ),

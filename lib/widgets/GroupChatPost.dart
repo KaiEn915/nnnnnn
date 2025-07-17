@@ -8,18 +8,18 @@ import 'package:gan/services/NavigatorService.dart';
 
 class GroupChatPost extends StatelessWidget {
   const GroupChatPost({super.key, required this.data});
-
+  final Map<String, dynamic> data;
   int getMemberCount() {
     final members = data['members_uid'] as List<dynamic>? ?? [];
     return members.length;
   }
 
   Future<bool> isOtherOnline() async {
-    final members = data['members_uid'] as List<dynamic>? ?? [];
+    final members = List<String>.from(data['members_uid'] ?? []);
     members.remove(AuthService.uid);
 
     for (final member in members) {
-      bool isOnline=await AuthService.isOnline(member);
+      bool isOnline = await AuthService.isOnline(member);
       if (isOnline) {
         return true;
       }
@@ -29,18 +29,14 @@ class GroupChatPost extends StatelessWidget {
   }
 
 
-  final Map<String, dynamic> data;
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       width: 370,
       clipBehavior: Clip.antiAlias,
       decoration: ShapeDecoration(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         shadows: [
           BoxShadow(
             color: Color(0x3F000000),
@@ -61,7 +57,7 @@ class GroupChatPost extends StatelessWidget {
         child: Container(
           width: 370,
           height: 120,
-          padding: EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
             color: Colors.white.withAlpha(0),
             image: DecorationImage(
@@ -72,14 +68,17 @@ class GroupChatPost extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                  left: 0,
-                  top: 0,
+                left: 0,
+                top: 0,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
                   child: Container(
                     width: 64,
                     height: 64,
-                    decoration: BoxDecoration(),
-                    child: ImageService.tryDisplayImage(data['imageData'])
-                  )
+                    color: Colors.white.withAlpha(128),
+                    child: ImageService.tryDisplayImage(data['imageData'], 64),
+                  ),
+                ),
               ),
               Positioned(
                 left: 80,
@@ -96,8 +95,42 @@ class GroupChatPost extends StatelessWidget {
                 ),
               ),
               Positioned(
+                left: 0,
+                bottom: 30,
+                child: Row(
+                  spacing: 10,
+                  children: [
+                    FutureBuilder<bool>(
+                      future: isOtherOnline(),
+                      builder: (context, snapshot) {
+                        final online = snapshot.data ?? false;
+                        return Row(
+                          spacing: 10,
+                          children: [
+                            Icon(
+                              Icons.circle_rounded,
+                              size: 10,
+                              color: online ? Colors.green : Colors.red,
+                            ),
+                            Text(
+                              online ? "Some are online" : "No others online",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 12,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
                 bottom: 0,
-                left:0,
+                left: 0,
                 child: Row(
                   spacing: 10,
                   children: [
@@ -106,9 +139,7 @@ class GroupChatPost extends StatelessWidget {
                       height: 30,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
-                            "assets/images/PokemonBall.png",
-                          ),
+                          image: AssetImage("assets/images/PokemonBall.png"),
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -146,36 +177,7 @@ class GroupChatPost extends StatelessWidget {
                   ],
                 ),
               ),
-              Positioned(
-                left: 0,
-                bottom: 35,
-                child: Row(
-                  spacing: 10,
-                  children: [
-                    FutureBuilder<bool>(
-                      future: isOtherOnline(),
-                      builder: (context, snapshot) {
-                        final online = snapshot.data ?? false;
-                        return Row(
-                          spacing: 10,
-                          children: [
-                            Icon(Icons.circle_rounded, size: 10, color: online ? Colors.green : Colors.red),
-                            Text(online? "Some are online":"No others online",  style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w600,
-                            ),)
-                          ],
-                        );
 
-                      },
-                    )
-                    ,
-
-                  ],
-                ),
-              ),
             ],
           ),
         ),

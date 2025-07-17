@@ -89,11 +89,12 @@ class _GroupChatState extends State<GroupChat> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: groupChatDocs.map((doc) {
+                            final groupChatData=doc.data();
                             return doc.exists
                                 ? Padding(
                                     padding: const EdgeInsets.only(bottom: 15),
                                     child: GroupChatPost(
-                                      data: doc.data() as Map<String, dynamic>,
+                                      data: groupChatData as Map<String,dynamic>,
                                     ),
                                   )
                                 : SizedBox();

@@ -303,7 +303,16 @@ class AuthService {
 
     return isOnline;
   }
+  static String convertToE164(String phoneNumber) {
+    phoneNumber = phoneNumber.trim();
+    // Basic validation
+    if (!RegExp(r'^0\d{8,10}$').hasMatch(phoneNumber)) {
+      Fluttertoast.showToast(msg: "Invalid phone number format.");
+      throw FormatException("Invalid phone number format.");
+    }
 
-
+    // Convert to E.164
+    return '+60${phoneNumber.substring(1)}';
+  }
 
 }

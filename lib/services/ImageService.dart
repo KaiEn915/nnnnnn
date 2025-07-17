@@ -48,7 +48,11 @@ class ImageService{
     return result;
   }
 
-  static Widget tryDisplayImage(String imageData){
-    return imageData.isEmpty? Icon(Icons.broken_image):Image.memory(base64Decode(imageData));
+  static Widget tryDisplayImage(String imageData, double iconSize){
+    return imageData.isEmpty ? Icon(
+      Icons.broken_image,
+      color: Colors.grey,
+      size: iconSize,
+    ):Image.memory(base64Decode(imageData));
   }
 }

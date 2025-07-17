@@ -96,7 +96,7 @@ class _CreatePost extends State<CreatePost> {
                                 margin:EdgeInsets.all(10),
                                 child: FittedBox(
                                   child: ImageService.tryDisplayImage(
-                                    base64Encode(currentImageData),
+                                    base64Encode(currentImageData),200
                                   ),
                                 ),
                               ),

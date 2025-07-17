@@ -22,26 +22,36 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingWidgetState extends State<Setting> {
-  Future<void> saveSetting({
-    required String username,
-    required String bio,
-    required GeoPoint? locationCoordinates,
-    required bool enablePostNotifications,
-    required bool enableNearbyMissingPetNotifications,
-    required bool enableGroupChatMessages,
-  }) async {
+  Future<void> saveSetting() async {
+    final userSnapshot=await AuthService.userDocRef.get();
+    final userData=userSnapshot.data();
+
+    // save data
+    GeoPoint? coordinates =
+    await MapService.getCoordinatesFromAddress(
+      locationController.text,
+    );
+
     final settingData = {
-      "username": username,
-      "bio": bio,
-      "locationCoordinates": locationCoordinates,
+      "username": usernameController.text,
+      "phoneNumber":phoneNumberController.text,
+      "bio": bioController.text,
+      "locationCoordinates": coordinates,
       "enablePostNotifications": enablePostNotifications,
       "enableNearbyMissingPetNotifications":
           enableNearbyMissingPetNotifications,
       "enableGroupChatMessages": enableGroupChatMessages,
       "uid": AuthService.uid,
-      "imageData": currentProfileImageData==null?"": base64Encode(currentProfileImageData!)
     };
+    if (currentProfileImageData.isNotEmpty){
+      settingData['imageData'] =currentProfileImageData;
+    }
+    String oldPhoneNumber=userData?['phoneNumber']??"";
+    String newPhoneNumber=AuthService.convertToE164(phoneNumberController.text);
 
+    if (oldPhoneNumber.isNotEmpty && newPhoneNumber.isNotEmpty && oldPhoneNumber!=newPhoneNumber){
+      settingData['phoneNumber']=newPhoneNumber;
+    }
     await AuthService.userDocRef
         .update(settingData);
 
@@ -54,12 +64,13 @@ class _SettingWidgetState extends State<Setting> {
   }
 
   late TextEditingController usernameController = TextEditingController();
+  late TextEditingController phoneNumberController = TextEditingController();
   late TextEditingController bioController = TextEditingController();
   late TextEditingController locationController = TextEditingController();
   bool enablePostNotifications = false;
   bool enableNearbyMissingPetNotifications = false;
   bool enableGroupChatMessages = false;
-  Uint8List? currentProfileImageData;
+  String currentProfileImageData="";
 
   @override
   void initState() {
@@ -79,6 +90,7 @@ class _SettingWidgetState extends State<Setting> {
       usernameController.text = data?['username'] ?? "";
       bioController.text = data?['bio'] ?? "";
       locationController.text = address;
+      phoneNumberController.text=data?['phoneNumber']??"";
       enableGroupChatMessages =
           data?['enableGroupChatMessages'] ?? enableGroupChatMessages;
       enableNearbyMissingPetNotifications =
@@ -86,7 +98,7 @@ class _SettingWidgetState extends State<Setting> {
           enableNearbyMissingPetNotifications;
       enablePostNotifications =
           data?['enablePostNotifications'] ?? enablePostNotifications;
-      currentProfileImageData = base64Decode(data?['imageData']);
+      currentProfileImageData = data?['imageData'] ?? currentProfileImageData;
     });
   }
 
@@ -123,22 +135,7 @@ class _SettingWidgetState extends State<Setting> {
                       text: "Save Changes",
                       backgroundColor: Colors.black,
                       onPressed: () async {
-                        GeoPoint? coordinates =
-                            await MapService.getCoordinatesFromAddress(
-                              locationController.text,
-                            );
-
-                        await saveSetting(
-                          username: usernameController.text,
-                          bio: bioController.text,
-                          locationCoordinates: coordinates,
-                          enablePostNotifications: enablePostNotifications,
-                          enableNearbyMissingPetNotifications:
-                              enableNearbyMissingPetNotifications,
-                          enableGroupChatMessages: enableGroupChatMessages,
-                        );
-
-                        Navigator.pop(context, "updated");
+                        await saveSetting();
                       },
                     ),
                   ],
@@ -181,6 +178,15 @@ class _SettingWidgetState extends State<Setting> {
                     LabeledInputBox(
                       label: "Username",
                       textController: usernameController,
+                      isInputLocation: false,
+                      width: 370,
+                      showCatIcon: false,
+                      showPencilIcon: true,
+                    ),
+                    LabeledInputBox(
+                      label: "Phone Number",
+                      placeholder: "XXX",
+                      textController: phoneNumberController,
                       isInputLocation: false,
                       width: 370,
                       showCatIcon: false,
@@ -358,7 +364,7 @@ class _SettingWidgetState extends State<Setting> {
 
                     final bytes = await File(image.path).readAsBytes();
                     setState(() {
-                      currentProfileImageData = bytes;
+                      currentProfileImageData = base64Encode(bytes);
                     });
 
                   },
@@ -384,17 +390,10 @@ class _SettingWidgetState extends State<Setting> {
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        currentProfileImageData != null
-                            ? Image.memory(
-                          currentProfileImageData!,
+                        Container(
                           width: 100,
                           height: 100,
-                          fit: BoxFit.cover,
-                        )
-                            : const CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.white,
-                          child: Icon(Icons.person),
+                          child:ImageService.tryDisplayImage(currentProfileImageData, 100)
                         ),
                         Positioned(
                           bottom:-10,
@@ -426,4 +425,5 @@ class _SettingWidgetState extends State<Setting> {
       ),
     );
   }
+
 }

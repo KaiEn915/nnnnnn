@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/UserProfile.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/MapService.dart';
+import 'package:gan/services/NavigatorService.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostAttribute extends StatelessWidget {
@@ -42,17 +43,8 @@ class PostAttribute extends StatelessWidget {
       title: "Posted by $username",
       icon: Icon(Icons.account_circle, size: 20),
       onTap: () {
-        if (uid != AuthService.uid) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => UserProfile(viewingUID: uid),
-            ),
-          );
-          Fluttertoast.showToast(msg: "Viewing user: $username");
-        } else {
-          Fluttertoast.showToast(msg: "You are the post user...");
-        }
+        NavigatorService.openPage(UserProfile(viewingUID: uid), context, false);
+
       },
       height: height,
     );

@@ -138,9 +138,14 @@ class _FavoritePostState extends State<FavoritePost> {
                                         child: Column(
                                           spacing: 10,
                                           children: [
-                                            ImageService.tryDisplayImage(
-                                              postData['imageData'],
+                                            Container(
+                                              width:150,
+                                              height:150,
+                                              child: ImageService.tryDisplayImage(
+                                                  postData['imageData']??"",150
+                                              ),
                                             ),
+
                                             FutureBuilder<Widget>(
                                               future: PostAttribute.address(
                                                 context,
@@ -171,18 +176,37 @@ class _FavoritePostState extends State<FavoritePost> {
                                                 }
                                               },
                                             ),
-                                            PostAttribute.postOwner(
-                                              context,
-                                              postData['username'],
-                                              postData['owner_uid'],
-                                            ),
+                                            FutureBuilder<DocumentSnapshot>(
+                                              future: AuthService.db.collection('users').doc(postData['owner_uid']).get(),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  return const SizedBox(
+                                                    height: 20,
+                                                    child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                                                  );
+                                                } else if (snapshot.hasError) {
+                                                  return const Text("Error loading owner");
+                                                } else if (!snapshot.hasData || !snapshot.data!.exists) {
+                                                  return const Text("Owner not found");
+                                                }
+
+                                                final userData = snapshot.data!.data() as Map<String, dynamic>?;
+
+                                                return PostAttribute.postOwner(
+                                                  context,
+                                                  userData?['username'] ?? "Unknown",
+                                                  userData?['uid'] ?? "",
+                                                );
+                                              },
+                                            )
+
                                           ],
                                         ),
                                       ),
                                     ),
                                     Positioned(
-                                      left: 140,
-                                      top: 225,
+                                      right: 0,
+                                      bottom: 0,
                                       child: GestureDetector(
                                         onTap: () {
                                           PostService.unfavoritePost(
