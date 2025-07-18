@@ -32,7 +32,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-/lib/services/noUpload
+/lib/services/noUpload/
 
 # Symbolication related
 app.*.symbols
