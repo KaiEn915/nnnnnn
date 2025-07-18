@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:gan/pages/GroupChatRoom.dart';
 import 'package:gan/services/AuthService.dart';
@@ -50,7 +48,6 @@ class GroupChatPost extends StatelessWidget {
         onTap: () {
           NavigatorService.openPage(
             GroupChatRoom(id: data['id']),
-            context,
             false,
           );
         },

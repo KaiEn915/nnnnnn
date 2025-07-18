@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gan/pages/GroupChat.dart';
-import 'package:gan/pages/GroupChatRoom.dart';
+import 'package:gan/pages/Home.dart';
 import 'package:gan/pages/Login.dart';
 import 'package:gan/services/MapService.dart';
 import 'package:gan/services/NavigatorService.dart';
@@ -22,9 +22,7 @@ class AuthService {
 
   static var uid;
 
-  static Future<UserCredential?> loginOrSignUpWithGoogle(
-    BuildContext context,
-  ) async {
+  static Future<UserCredential?> loginOrSignUpWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
@@ -49,7 +47,7 @@ class AuthService {
       );
 
       if (userCredential.additionalUserInfo?.isNewUser == true) {
-        await createUserData(userCredential, context);
+        await createUserData(userCredential);
       }
 
       Fluttertoast.showToast(
@@ -59,7 +57,7 @@ class AuthService {
         gravity: ToastGravity.CENTER,
       );
 
-      loginSuccess(context,userCredential.user!.uid);
+      await loginSuccess(userCredential.user!.uid);
 
       return userCredential;
     } catch (error) {
@@ -77,7 +75,6 @@ class AuthService {
   static Future<void> loginWithEmailAndPassword(
     String email,
     String password,
-    BuildContext context,
   ) async {
     if (email.isEmpty || password.isEmpty) {
       Fluttertoast.showToast(
@@ -99,7 +96,7 @@ class AuthService {
         gravity: ToastGravity.CENTER,
       );
 
-      loginSuccess(context,_auth.currentUser!.uid);
+      await loginSuccess(_auth.currentUser!.uid);
     } on FirebaseAuthException catch (e) {
       if (e.code == "invalid-credential") {
         Fluttertoast.showToast(
@@ -123,7 +120,6 @@ class AuthService {
     String email,
     String password,
     String confirmPassword,
-    BuildContext context,
   ) async {
     if (password != confirmPassword) {
       Fluttertoast.showToast(
@@ -141,7 +137,7 @@ class AuthService {
         password: password,
       );
 
-      await createUserData(credential, context);
+      await createUserData(credential);
 
       Fluttertoast.showToast(
         msg: "Account created successfully!",
@@ -149,10 +145,7 @@ class AuthService {
         textColor: Colors.white,
         gravity: ToastGravity.CENTER,
       );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Login(email: email)),
-      );
+      NavigatorService.openPage(Login(email: email), true);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         Fluttertoast.showToast(
@@ -182,12 +175,11 @@ class AuthService {
   }
 
   static Future<void> createUserData(
-    UserCredential userCredential,
-    BuildContext context,
+    UserCredential userCredential
   ) async {
     User? user = userCredential.user;
     if (user != null) {
-      String? username = await promptForUsername(context);
+      String? username = await promptForUsername();
       if (username == null || username.trim().isEmpty) {
         print("Username was not provided.");
         return;
@@ -245,10 +237,10 @@ class AuthService {
     }
   }
 
-  static Future<String?> promptForUsername(BuildContext context) async {
+  static Future<String?> promptForUsername() async {
     TextEditingController controller = TextEditingController();
     return showDialog<String>(
-      context: context,
+      context: NavigatorService.navigatorKey.currentState!.context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Enter Username"),
@@ -273,17 +265,23 @@ class AuthService {
     );
   }
 
-  static void loginSuccess(BuildContext context,String withUid){
+  static Future loginSuccess(String withUid)async{
     uid=withUid;
     userDocRef = FirebaseFirestore.instance.collection('users').doc(uid);
-    // keep tracks of user online or offline
+
+    // refresh fcm token for notification
+    String? token=await FirebaseMessaging.instance.getToken();
+    userDocRef.update({"fcmToken":token});
+    
+    
+    // regularly keep tracks of user online or offline
     Timer.periodic(Duration(minutes: 5), (timer) {
       FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
           .update({'lastUpdated': FieldValue.serverTimestamp()});
     });
-    Navigator.pushReplacementNamed(context, '/Home');
+    NavigatorService.openPage(Home(), true);
   }
 
   static Future<bool> isOnline(String uid) async {

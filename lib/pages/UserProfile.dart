@@ -1,7 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:gan/pages/FavoritePost.dart';
+import 'package:gan/pages/Setting.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/NavigatorService.dart';
@@ -256,7 +255,6 @@ class _UserProfileWidgetState extends State<UserProfile> {
                                           onTap: () {
                                             NavigatorService.openPage(
                                               FavoritePost(),
-                                              context,
                                               false,
                                             );
                                           },
@@ -299,7 +297,9 @@ class _UserProfileWidgetState extends State<UserProfile> {
               },
               header: "PROFILE",
               rightIcon: widget.isViewingOther ? null : Icons.settings_outlined,
-              rightIcon_onTap: (){}
+              rightIcon_onTap: (){
+                NavigatorService.openPage(Setting(), false);
+              }
             ),
           ],
         ),

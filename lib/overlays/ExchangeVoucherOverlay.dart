@@ -151,7 +151,7 @@ class ExchangeVoucherOverlay extends StatelessWidget {
                         Fluttertoast.showToast(msg: "Voucher exchanged successfully!");
 
                         Navigator.of(context).pop(); // 先关闭 Dialog
-                        NavigatorService.openPage(Voucher(), context, true);
+                        NavigatorService.openPage(Voucher(), true);
 
                       },
                       child: Stack(

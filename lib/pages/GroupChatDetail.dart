@@ -166,7 +166,6 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                                                 UserProfile(
                                                   viewingUID: user['uid'],
                                                 ),
-                                                context,
                                                 false,
                                               );
                                             },
@@ -269,7 +268,6 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                                 );
                                 NavigatorService.openPage(
                                   Home(),
-                                  context,
                                   true,
                                 );
                               },
@@ -283,7 +281,6 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                                 );
                                 NavigatorService.openPage(
                                   Home(),
-                                  context,
                                   true,
                                 );
                               },

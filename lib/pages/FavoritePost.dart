@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/PostDetail.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
@@ -98,7 +97,6 @@ class _FavoritePostState extends State<FavoritePost> {
                               onTap: () {
                                 NavigatorService.openPage(
                                   PostDetail(id:postData['id']),
-                                  context,
                                   false,
                                 );
                               },

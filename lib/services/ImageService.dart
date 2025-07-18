@@ -1,20 +1,15 @@
 import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/Material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/TakePicture.dart';
+import 'package:gan/services/NavigatorService.dart';
 
 
 import 'package:image_picker/image_picker.dart';
 
 class ImageService{
-  CameraController? _controller;
-  List<CameraDescription>? _cameras;
-  bool _isInitialized = false;
-
   static Future<XFile?> pickImage(ImageSource source) async {
     final ImagePicker picker = ImagePicker();
     try {
@@ -35,9 +30,10 @@ class ImageService{
     Fluttertoast.showToast(msg: "Image not saved, save later!");
   }
 
-  static Future<XFile> promptPicture(BuildContext context,bool doPopAfterDone)async{
+  static Future<XFile> promptPicture(bool doPopAfterDone)async{
+
     final result=await Navigator.push(
-      context,
+      NavigatorService.navigatorKey.currentState!.context,
       MaterialPageRoute(
         builder: (context) => TakePicture(
           doPopAfterDone: doPopAfterDone,

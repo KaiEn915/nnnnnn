@@ -52,6 +52,10 @@ dependencies:
   google_mobile_ads: ^6.0.0
   intl: ^0.20.2
   flutter_map: ^8.1.1
+  firebase_messaging: ^15.2.9
+  http: ^1.5.0-beta.2
+  googleapis: ^14.0.0
+  googleapis_auth: ^2.0.0
 
 
 dev_dependencies:

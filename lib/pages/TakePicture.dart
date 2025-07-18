@@ -192,7 +192,7 @@ class _TakePictureState extends State<TakePicture> {
                                           Navigator.pop(context,_image);
                                         }
                                         else{
-                                          NavigatorService.openPage(PetImageAnalysis(image: _image), context, true);
+                                          NavigatorService.openPage(PetImageAnalysis(image: _image), true);
                                         }
 
                                       },

@@ -287,7 +287,7 @@ class _PostDetailState extends State<PostDetail> {
                                                     top: 0,
                                                     left: 0,
                                                     child:GestureDetector(
-                                                      onTap: (){NavigatorService.openPage(UserProfile(viewingUID: commentData['owner_uid']), context, false);},
+                                                      onTap: (){NavigatorService.openPage(UserProfile(viewingUID: commentData['owner_uid']), false);},
                                                       child:ClipRRect(
                                                         borderRadius: BorderRadius.circular(100),
                                                         child: Container(
@@ -423,9 +423,8 @@ class _PostDetailState extends State<PostDetail> {
                                       msg:
                                           "Group chat doesn't exist for this post",
                                     );
-                                    if (AuthService.uid == ownerData['id']) {
+                                    if (AuthService.uid == ownerData['uid']) {
                                       await GroupChatService.promptForCreateGroupChat(
-                                        context,
                                         postData['id'],
                                       );
                                       setState(() {});
@@ -440,7 +439,6 @@ class _PostDetailState extends State<PostDetail> {
                                       )) {
                                     NavigatorService.openPage(
                                       GroupChatRoom(id: postData['groupChat_id']),
-                                      context,
                                       true,
                                     );
                                     return;
@@ -538,7 +536,7 @@ class _PostDetailState extends State<PostDetail> {
                   leftIcon_onTap: () {
                     Navigator.pop(context);
                   },
-                  rightIcon: ownerData['id'] == AuthService.uid
+                  rightIcon: ownerData['uid'] == AuthService.uid
                       ? Icons.delete
                       : null,
                   rightIcon_onTap: () async {

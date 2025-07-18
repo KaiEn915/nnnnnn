@@ -117,7 +117,6 @@ class _SignUp extends State<SignUp> {
                                 emailController.text,
                                 passwordController.text,
                                 confirmPasswordController.text,
-                                context,
                               );
                             },
                           ),
@@ -168,7 +167,7 @@ class _SignUp extends State<SignUp> {
                                   left: 77.50,
                                   top: 10,
                                   child: GestureDetector(
-                                    onTap: ()=>{AuthService.loginOrSignUpWithGoogle(context)},
+                                    onTap: ()=>{AuthService.loginOrSignUpWithGoogle()},
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment: MainAxisAlignment.start,

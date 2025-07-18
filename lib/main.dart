@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -22,6 +23,9 @@ import 'package:gan/pages/UserProfile.dart';
 import 'package:gan/pages/Voucher.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/MapService.dart';
+import 'package:gan/services/NavigatorService.dart';
+import 'package:gan/services/NotificationService.dart';
+import 'package:gan/services/RecognitionService.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tflite_v2/tflite_v2.dart';
 
@@ -29,25 +33,15 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   await MobileAds.instance.initialize();
-
   await Firebase.initializeApp();
-
   await MapService.getPermission();
-
-  await loadModel();
-
-
-
+  await RecognitionService.loadModel();
+  await NotificationService.setupNotification();
   runApp(const MyApp());
 }
 
-Future<void> loadModel() async{
-  String? res = await Tflite.loadModel(
-    model: "assets/model.tflite",
-    labels: "assets/labels.txt",
-  );
-  print("Model loaded: $res");
-}
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -56,6 +50,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: NavigatorService.navigatorKey,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -69,14 +64,13 @@ class MyApp extends StatelessWidget {
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/SignUp': (context) => const SignUp(),
         '/Home': (context) => const Home(),
-        '/GroupChat':(context) => const GroupChat(),
-        '/UserProfile':(context)=> UserProfile(viewingUID: AuthService.uid),
-        '/Setting':(context)=> const Setting(),
-        '/CreatePost':(context)=> const CreatePost(),
-        '/Voucher':(context)=> const Voucher(),
-        '/ExchangeVoucher':(context)=> const ExchangeVoucher(),
+        '/GroupChat': (context) => const GroupChat(),
+        '/UserProfile': (context) => UserProfile(viewingUID: AuthService.uid),
+        '/Setting': (context) => const Setting(),
+        '/CreatePost': (context) => const CreatePost(),
+        '/Voucher': (context) => const Voucher(),
+        '/ExchangeVoucher': (context) => const ExchangeVoucher(),
       },
     );
   }
 }
-

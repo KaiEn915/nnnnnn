@@ -2,13 +2,11 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/GroupChatService.dart';
 class PostService{
   static Future<void> createPost({
-    required BuildContext context,
     required String title,
     required Uint8List imageData,
     required String description,
@@ -28,7 +26,7 @@ class PostService{
     final postRef = await AuthService.db.collection("posts").add(postData);
     await postRef.update({"id": postRef.id});
 
-    await GroupChatService.promptForCreateGroupChat(context,postRef.id);
+    await GroupChatService.promptForCreateGroupChat(postRef.id);
 
 
   }

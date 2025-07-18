@@ -3,10 +3,12 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/MapService.dart';
+import 'package:gan/services/NotificationService.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
 import 'package:flutter/services.dart';
@@ -22,47 +24,6 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingWidgetState extends State<Setting> {
-  Future<void> saveSetting() async {
-    final userSnapshot=await AuthService.userDocRef.get();
-    final userData=userSnapshot.data();
-
-    // save data
-    GeoPoint? coordinates =
-    await MapService.getCoordinatesFromAddress(
-      locationController.text,
-    );
-
-    final settingData = {
-      "username": usernameController.text,
-      "phoneNumber":phoneNumberController.text,
-      "bio": bioController.text,
-      "locationCoordinates": coordinates,
-      "enablePostNotifications": enablePostNotifications,
-      "enableNearbyMissingPetNotifications":
-          enableNearbyMissingPetNotifications,
-      "enableGroupChatMessages": enableGroupChatMessages,
-      "uid": AuthService.uid,
-    };
-    if (currentProfileImageData.isNotEmpty){
-      settingData['imageData'] =currentProfileImageData;
-    }
-    String oldPhoneNumber=userData?['phoneNumber']??"";
-    String newPhoneNumber=AuthService.convertToE164(phoneNumberController.text);
-
-    if (oldPhoneNumber.isNotEmpty && newPhoneNumber.isNotEmpty && oldPhoneNumber!=newPhoneNumber){
-      settingData['phoneNumber']=newPhoneNumber;
-    }
-    await AuthService.userDocRef
-        .update(settingData);
-
-    Fluttertoast.showToast(
-      msg: "Changes saved successfully!",
-      backgroundColor: Colors.green,
-      textColor: Colors.white,
-      gravity: ToastGravity.CENTER,
-    );
-  }
-
   late TextEditingController usernameController = TextEditingController();
   late TextEditingController phoneNumberController = TextEditingController();
   late TextEditingController bioController = TextEditingController();
@@ -77,6 +38,66 @@ class _SettingWidgetState extends State<Setting> {
     loadUserSettings();
     super.initState();
   }
+
+  Future<void> saveSetting() async {
+    final userSnapshot=await AuthService.userDocRef.get();
+    final userData=userSnapshot.data();
+
+    // data to save
+    GeoPoint? coordinates =
+    await MapService.getCoordinatesFromAddress(
+      locationController.text,
+    );
+
+    final settingData = {
+      "username": usernameController.text,
+      "phoneNumber":phoneNumberController.text,
+      "bio": bioController.text,
+      "locationCoordinates": coordinates,
+      "enablePostNotifications": enablePostNotifications,
+      "enableNearbyMissingPetNotifications":
+      enableNearbyMissingPetNotifications,
+      "enableGroupChatMessages": enableGroupChatMessages,
+      "uid": AuthService.uid,
+    };
+    if (currentProfileImageData.isNotEmpty){
+      settingData['imageData'] =currentProfileImageData;
+    }
+
+    // update phone number
+    String oldPhoneNumber=userData?['phoneNumber']??"";
+    String newPhoneNumber=AuthService.convertToE164(phoneNumberController.text);
+    if (oldPhoneNumber.isNotEmpty && newPhoneNumber.isNotEmpty && oldPhoneNumber!=newPhoneNumber){
+      settingData['phoneNumber']=newPhoneNumber;
+    }
+
+    // update to firebase
+    await AuthService.userDocRef
+        .update(settingData);
+
+    // reflect setting ticks, function-based
+    await updateEnableGroupChatMessage();
+
+    Fluttertoast.showToast(
+      msg: "Changes saved successfully!",
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      gravity: ToastGravity.CENTER,
+    );
+  }
+  Future<void> updateEnableGroupChatMessage() async {
+    final userSnapshot = await AuthService.userDocRef.get();
+    final userData = userSnapshot.data();
+    List<dynamic> userGroupChats_id = userData?['activeGroupChats_id'] ?? [];
+
+    for(String userGroupChat_id in userGroupChats_id){
+      NotificationService.updateTopicSubscription(userGroupChat_id, enableGroupChatMessages);
+    }
+
+    Fluttertoast.showToast(msg: 'Group Chat Notifications are ${enableGroupChatMessages? "enabled":"disabled"}!');
+
+  }
+
 
   Future<void> loadUserSettings() async {
     final snapshot=await AuthService.userDocRef.get();
@@ -360,7 +381,7 @@ class _SettingWidgetState extends State<Setting> {
                 alignment: Alignment.center,
                 child:GestureDetector(
                   onTap: () async{
-                    XFile image= await ImageService.promptPicture(context,true);
+                    XFile image= await ImageService.promptPicture(true);
 
                     final bytes = await File(image.path).readAsBytes();
                     setState(() {

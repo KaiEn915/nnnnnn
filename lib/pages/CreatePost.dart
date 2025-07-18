@@ -109,7 +109,6 @@ class _CreatePost extends State<CreatePost> {
                                 onTap: () async {
                                   XFile? image =
                                       await ImageService.promptPicture(
-                                        context,
                                         true,
                                       );
                                   final bytes = await image.readAsBytes();
@@ -154,7 +153,6 @@ class _CreatePost extends State<CreatePost> {
                         width: 150,
                         onPressed: () async {
                           await PostService.createPost(
-                            context: context,
                             title: titleController.text,
                             imageData: currentImageData,
                             description: descriptionController.text,

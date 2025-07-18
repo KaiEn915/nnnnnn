@@ -119,7 +119,6 @@ class _LoginState extends State<Login> {
                             AuthService.loginWithEmailAndPassword(
                               emailController.text,
                               passwordController.text,
-                              context
                             );
 
                           },
@@ -128,7 +127,7 @@ class _LoginState extends State<Login> {
                           text: "Forgot Password",
                           width: 140,
                           onPressed: () {
-                            NavigatorService.openPage(ForgotPassword(), context, false);
+                            NavigatorService.openPage(ForgotPassword(), false);
 
                           },
                         ),
@@ -191,7 +190,7 @@ class _LoginState extends State<Login> {
                                 left: 77.50,
                                 top: 10,
                                 child: GestureDetector(
-                                  onTap: ()=>{AuthService.loginOrSignUpWithGoogle(context)},
+                                  onTap: ()=>{AuthService.loginOrSignUpWithGoogle()},
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.start,

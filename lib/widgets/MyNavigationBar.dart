@@ -233,32 +233,22 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
               label: 'Home',
               icon: Icons.home,
               onTap: () {
-                NavigatorService.openPage(Home(), context, false);
+                NavigatorService.openPage(Home(), false);
               },
             ),
             NavigationButton(
               label: 'Chats',
               icon: Icons.chat,
               onTap: () {
-                NavigatorService.openPage(GroupChat(), context, false);
+                NavigatorService.openPage(GroupChat(), false);
               },
             ),
-            NavigationButton(
-              label: 'Profile',
-              icon: Icons.account_circle,
-              onTap: () {
-                NavigatorService.openPage(
-                  UserProfile(viewingUID: AuthService.uid),
-                  context,
-                  true,
-                );
-              },
-            ),
+
             NavigationButton(
               label: 'Scan',
               icon: Icons.camera_alt,
               onTap: () {
-                NavigatorService.openPage(TakePicture(doPopAfterDone: false), context, false);
+                NavigatorService.openPage(TakePicture(doPopAfterDone: false), false);
               },
             ),
             NavigationButton(
@@ -282,6 +272,16 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
                       ],
                     );
                   },
+                );
+              },
+            ),
+            NavigationButton(
+              label: 'Profile',
+              icon: Icons.account_circle,
+              onTap: () {
+                NavigatorService.openPage(
+                  UserProfile(viewingUID: AuthService.uid),
+                  true,
                 );
               },
             ),

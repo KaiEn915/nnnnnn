@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/UserProfile.dart';
-import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/MapService.dart';
 import 'package:gan/services/NavigatorService.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -31,7 +29,7 @@ class PostAttribute extends StatelessWidget {
     return PostAttribute(
       title: address,
       icon: Icon(Icons.pin_drop, color: Colors.red, size: 20),
-      onTap: () => MapService.openMap(context, locationCoordinates),
+      onTap: () => MapService.openMap(locationCoordinates),
       height: height,
     );
   }
@@ -43,7 +41,7 @@ class PostAttribute extends StatelessWidget {
       title: "Posted by $username",
       icon: Icon(Icons.account_circle, size: 20),
       onTap: () {
-        NavigatorService.openPage(UserProfile(viewingUID: uid), context, false);
+        NavigatorService.openPage(UserProfile(viewingUID: uid), false);
 
       },
       height: height,

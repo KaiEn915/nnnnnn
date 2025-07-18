@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:gan/pages/MyMap.dart';
+import 'package:gan/services/NavigatorService.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-class MapService{
 
-  static Future<void> getPermission() async{
+class MapService {
+  static Future<void> getPermission() async {
     bool serviceEnabled;
     LocationPermission permission;
     // Test if location services are enabled.
@@ -26,28 +27,32 @@ class MapService{
 
     if (permission == LocationPermission.deniedForever) {
       return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+        'Location permissions are permanently denied, we cannot request permissions.',
+      );
     }
   }
 
   static Future<Position> determinePosition() async {
-
     getPermission();
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition();
   }
+
   static Future<GeoPoint?> getCoordinatesFromAddress(String address) async {
     print("converting address $address to coordinates...");
     List<Location> locations = await locationFromAddress(address);
     if (locations.isNotEmpty) {
       final location = locations.first;
-      GeoPoint coordinates=GeoPoint(location.latitude, location.longitude);
-      print("converted into latitude ${coordinates.latitude}, longitude ${coordinates.longitude}");
+      GeoPoint coordinates = GeoPoint(location.latitude, location.longitude);
+      print(
+        "converted into latitude ${coordinates.latitude}, longitude ${coordinates.longitude}",
+      );
       return coordinates;
     }
     return null;
   }
+
   static Future<String> getAddressFromCoordinates(GeoPoint coor) async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
@@ -57,7 +62,8 @@ class MapService{
 
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks.first;
-        String address='${place.name}, ${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
+        String address =
+            '${place.name}, ${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
         return address;
       } else {
         return "";
@@ -68,20 +74,13 @@ class MapService{
     }
   }
 
-  static Future<void> openMap(BuildContext context,GeoPoint coordinates) async{
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-        builder: (context) => MyMap(
-      isPickingLocation: false,
-      initialCoordinates: LatLng(
-        coordinates.latitude,
-        coordinates.longitude,
+  static Future<void> openMap(GeoPoint coordinates) async {
+    NavigatorService.openPage(
+      MyMap(
+        isPickingLocation: false,
+        initialCoordinates: LatLng(coordinates.latitude, coordinates.longitude),
       ),
-    ),
-    )
+      false,
     );
   }
-
 }
-

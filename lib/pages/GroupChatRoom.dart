@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/pages/GroupChatDetail.dart';
 import 'package:gan/pages/TakePicture.dart';
+import 'package:gan/pages/UserProfile.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/GroupChatService.dart';
 import 'package:gan/services/ImageService.dart';
@@ -92,8 +93,7 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
   void _sendMessage() {
     String message = _chatController.text.trim();
     if (message.isNotEmpty) {
-      GroupChatService.saveMessageTo(groupChatRef: dbRef, content: message);
-      print("发送消息: $message");
+      GroupChatService.saveMessageTo(dbRef, message,false);
       _chatController.clear();
     }
   }
@@ -141,7 +141,7 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                 final doc = messages[index];
                                 final messageId = doc.id;
                                 final data = doc.data() as Map<String, dynamic>;
-
+                                final isMessageOwner=data['owner_uid']==AuthService.uid;
                                 final isImageMessage =
                                     data['isImageMessage'] ?? false;
                                 final message = data['content'] ?? '';
@@ -174,32 +174,36 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                     final username = senderUid == currentUid
                                         ? "You"
                                         : senderData['username'] ?? 'User';
-                                    final imageData = senderData['imageData'];
+                                    final imageData = senderData['imageData']??"";
 
                                     return GestureDetector(
                                       onLongPressStart: (details) async {
-                                        final selected = await showMenu<String>(
-                                          context: context,
-                                          position: RelativeRect.fromLTRB(
-                                            details.globalPosition.dx,
-                                            details.globalPosition.dy,
-                                            details.globalPosition.dx,
-                                            details.globalPosition.dy,
-                                          ),
-                                          items: const [
-                                            PopupMenuItem<String>(
-                                              value: 'delete',
-                                              child: Text('Delete'),
+                                        if (isMessageOwner){
+                                          final selected = await showMenu<String>(
+                                            context: context,
+                                            position: RelativeRect.fromLTRB(
+                                              details.globalPosition.dx,
+                                              details.globalPosition.dy,
+                                              details.globalPosition.dx,
+                                              details.globalPosition.dy,
                                             ),
-                                          ],
-                                        );
-
-                                        if (selected == 'delete') {
-                                          GroupChatService.deleteMessageFrom(
-                                            dbRef,
-                                            messageId,
+                                            items: const [
+                                              PopupMenuItem<String>(
+                                                value: 'delete',
+                                                child: Text('Delete'),
+                                              ),
+                                            ],
                                           );
+                                          if (selected == 'delete') {
+                                            GroupChatService.deleteMessageFrom(
+                                              dbRef,
+                                              messageId,
+                                            );
+                                          }
                                         }
+
+
+
                                       },
                                       onTap: () {
                                         if (isImageMessage) onTapImage(message);
@@ -230,18 +234,22 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                             spacing: 8,
                                             children: [
                                               if (senderUid != currentUid)
-                                                ClipOval(
-                                                  child: Container(
-                                                    width: 40,
-                                                    height: 40,
-                                                    child:
-                                                        ImageService.tryDisplayImage(
-                                                          imageData??null,
-                                                          40,
-                                                        ),
+                                                GestureDetector(
+                                                  onTap:(){
+                                                    NavigatorService.openPage(UserProfile(viewingUID: senderUid), false);
+                                                  },
+                                                  child: ClipOval(
+                                                    child: Container(
+                                                      width: 40,
+                                                      height: 40,
+                                                      child:
+                                                      ImageService.tryDisplayImage(
+                                                        imageData,
+                                                        40,
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
-
                                               // Chat bubble
                                               Flexible(
                                                 child: Container(
@@ -320,12 +328,21 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
 
                                               // Avatar (for self only)
                                               if (senderUid == currentUid)
-                                                ClipOval(
-                                                  child: Container(
-                                                    width: 40,
-                                                    height: 40,
-                                                    child:ImageService.tryDisplayImage(imageData??"", 40)
-                                                  )
+                                                GestureDetector(
+                                                  onTap:(){
+                                                    NavigatorService.openPage(UserProfile(viewingUID: senderUid), false);
+                                                  },
+                                                  child: ClipOval(
+                                                    child: Container(
+                                                      width: 40,
+                                                      height: 40,
+                                                      child:
+                                                      ImageService.tryDisplayImage(
+                                                        imageData,
+                                                        40,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
                                             ],
                                           ),
@@ -389,16 +406,13 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                 GestureDetector(
                                   onTap: () async {
                                     final image =
-                                        await ImageService.promptPicture(
-                                          context,
-                                          true,
-                                        );
+                                        await ImageService.promptPicture(true);
                                     final bytes = await image.readAsBytes();
                                     final imageData = base64Encode(bytes);
                                     GroupChatService.saveMessageTo(
-                                      groupChatRef: dbRef,
-                                      content: imageData,
-                                      isImageMessage: true,
+                                      dbRef,
+                                      imageData,
+                                      true,
                                     );
                                   },
                                   child: Container(

@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/NavigatorService.dart';
+import 'package:gan/services/NotificationService.dart';
 
 class GroupChatService{
 
   static Future<String> createGroupChat(
-      BuildContext context,
       String post_id,
       String title,
       String imageData,
@@ -40,17 +40,20 @@ class GroupChatService{
 
     if (memberCount>=100){
       Fluttertoast.showToast(msg: "Join failed, the group chat is fulled");
-    }
-    else{
-      await AuthService.userDocRef.update({
-        "activeGroupChats_id": FieldValue.arrayUnion([groupChatId]),
-      });
-      await AuthService.db.collection("groupChats").doc(groupChatId).update({
-        "members_uid": FieldValue.arrayUnion([AuthService.uid]),
-      });
-      Fluttertoast.showToast(msg: "You have joined group chat $groupChatId");
+      return;
     }
 
+
+    await AuthService.userDocRef.update({
+      "activeGroupChats_id": FieldValue.arrayUnion([groupChatId]),
+    });
+    await AuthService.db.collection("groupChats").doc(groupChatId).update({
+      "members_uid": FieldValue.arrayUnion([AuthService.uid]),
+    });
+    Fluttertoast.showToast(msg: "You have joined group chat $groupChatId");
+
+    // subscribe to topic for group notification
+    await FirebaseMessaging.instance.subscribeToTopic(groupChatId);
 
   }
   static Future<void> quitGroupChat(String groupChatId) async {
@@ -61,14 +64,16 @@ class GroupChatService{
     await AuthService.userDocRef.update({"activeGroupChats_id": FieldValue.arrayRemove([groupChatId])});
     // remove member uid from group members uid
     groupChatRef.update({"members_uid": FieldValue.arrayRemove([AuthService.uid])});
+
+    // unsubscribe from topic for group notification
+    await FirebaseMessaging.instance.unsubscribeFromTopic(groupChatId);
   }
 
   static Future<void> promptForCreateGroupChat(
-      BuildContext context,
       String forPostId,
       ) async {
     final result = await showDialog<bool>(
-      context: context,
+      context: NavigatorService.navigatorKey.currentState!.context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Group Chat"),
@@ -99,7 +104,6 @@ class GroupChatService{
         Map<String, dynamic>? snapshot = docSnap.data();
         if (snapshot != null) {
           String groupChatId = await createGroupChat(
-            context,
             snapshot['id'], // assuming the post has its own 'id' field
             "${snapshot['title']}'s Group Chat",
             snapshot['imageData'],
@@ -141,11 +145,7 @@ class GroupChatService{
 
     await batch.commit();
   }
-  static Future<void> saveMessageTo({
-    required DocumentReference groupChatRef,
-    required String content,
-    bool isImageMessage = false,
-  }) async {
+  static Future<void> saveMessageTo(DocumentReference groupChatRef, String content, bool isImageMessage)async{
     final postChat = {
       "content": content,
       "timestamp": DateTime.now().millisecondsSinceEpoch,
@@ -154,7 +154,15 @@ class GroupChatService{
     };
 
     await groupChatRef.collection('messages').add(postChat);
+
+    final groupChatSnapshot=await groupChatRef.get();
+    final groupChatData=groupChatSnapshot.data() as Map<String,dynamic>;
+
+    NotificationService.sendTopicNotification(groupChatRef.id, groupChatData['title'], "New group chat message received!");
+
   }
+
+
   static Future<void> deleteMessageFrom(DocumentReference groupChatRef, String messageID) async {
     await groupChatRef
         .collection("messages")
