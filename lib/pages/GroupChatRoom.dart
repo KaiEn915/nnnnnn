@@ -28,6 +28,7 @@ class GroupChatRoom extends StatefulWidget {
 class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
   late final dbRef;
   late TextEditingController _chatController;
+  ScrollController _scrollController = ScrollController();
 
   void onTapImage(String imageData) {
     showDialog(
@@ -81,13 +82,29 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
     super.initState();
     dbRef = AuthService.db.collection("groupChats").doc(widget.id);
     _chatController = TextEditingController();
+    _scrollController = ScrollController();
+    // _scrollToBottom();
   }
 
   @override
   void dispose() {
     _chatController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
+
+  void _scrollToBottom() {
+    Future.delayed(Duration(milliseconds: 100), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
 
   /// 发送消息并清空输入框
   void _sendMessage() {
@@ -125,16 +142,21 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                         child: StreamBuilder<QuerySnapshot>(
                           stream: dbRef
                               .collection('messages')
-                              .orderBy('timestamp', descending: false)
+                              .orderBy('timestamp', descending: true)
                               .snapshots(),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) {
                               return Center(child: CircularProgressIndicator());
                             }
-
                             final messages = snapshot.data!.docs;
 
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _scrollToBottom();
+                            });
+
                             return ListView.builder(
+                              reverse: true,
+                              controller: _scrollController,
                               padding: EdgeInsets.all(10),
                               itemCount: messages.length,
                               itemBuilder: (context, index) {
@@ -148,15 +170,15 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                 final senderUid = data['owner_uid'];
                                 final timestamp = data['timestamp'];
                                 final time =
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                      timestamp,
-                                    );
+                                DateTime.fromMillisecondsSinceEpoch(
+                                  timestamp,
+                                );
                                 final formattedTime =
                                     "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
                                 final currentUid = AuthService.uid;
 
                                 return FutureBuilder<
-                                  DocumentSnapshot<Map<String, dynamic>>
+                                    DocumentSnapshot<Map<String, dynamic>>
                                 >(
                                   future: AuthService.db
                                       .collection('users')
@@ -201,12 +223,10 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                             );
                                           }
                                         }
-
-
-
                                       },
                                       onTap: () {
                                         if (isImageMessage) onTapImage(message);
+                                        _scrollToBottom();
                                       },
                                       child: Align(
                                         alignment: senderUid == currentUid
@@ -219,18 +239,18 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                           ),
                                           constraints: BoxConstraints(
                                             maxWidth:
-                                                MediaQuery.of(
-                                                  context,
-                                                ).size.width *
+                                            MediaQuery.of(
+                                              context,
+                                            ).size.width *
                                                 0.75,
                                           ),
                                           child: Row(
                                             mainAxisAlignment:
-                                                senderUid == currentUid
+                                            senderUid == currentUid
                                                 ? MainAxisAlignment.end
                                                 : MainAxisAlignment.start,
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             spacing: 8,
                                             children: [
                                               if (senderUid != currentUid)
@@ -258,62 +278,62 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                                   ),
                                                   decoration: BoxDecoration(
                                                     color:
-                                                        senderUid == currentUid
+                                                    senderUid == currentUid
                                                         ? Colors.white
-                                                              .withAlpha(220)
+                                                        .withAlpha(220)
                                                         : Colors.blue[100],
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                          12,
-                                                        ),
+                                                    BorderRadius.circular(
+                                                      12,
+                                                    ),
                                                   ),
                                                   child: Column(
                                                     crossAxisAlignment:
-                                                        senderUid == currentUid
+                                                    senderUid == currentUid
                                                         ? CrossAxisAlignment.end
                                                         : CrossAxisAlignment
-                                                              .start,
+                                                        .start,
                                                     children: [
                                                       Text(
                                                         username,
                                                         style: TextStyle(
                                                           fontWeight:
-                                                              FontWeight.bold,
+                                                          FontWeight.bold,
                                                           fontSize: 14,
                                                           color:
-                                                              senderUid ==
-                                                                  currentUid
+                                                          senderUid ==
+                                                              currentUid
                                                               ? Colors
-                                                                    .blueAccent
+                                                              .blueAccent
                                                               : Colors.green,
                                                         ),
                                                       ),
                                                       isImageMessage
                                                           ? ClipRRect(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    8,
-                                                                  ),
-                                                              child:
-                                                                  Image.memory(
-                                                                    base64Decode(
-                                                                      message,
-                                                                    ),
-                                                                    height: 120,
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                  ),
-                                                            )
+                                                        borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
+                                                        child:
+                                                        Image.memory(
+                                                          base64Decode(
+                                                            message,
+                                                          ),
+                                                          height: 120,
+                                                          fit: BoxFit
+                                                              .cover,
+                                                        ),
+                                                      )
                                                           : Text(
-                                                              message,
-                                                              style:
-                                                                  const TextStyle(
-                                                                    fontSize:
-                                                                        15,
-                                                                    color: Colors
-                                                                        .black87,
-                                                                  ),
-                                                            ),
+                                                        message,
+                                                        style:
+                                                        const TextStyle(
+                                                          fontSize:
+                                                          15,
+                                                          color: Colors
+                                                              .black87,
+                                                        ),
+                                                      ),
                                                       Text(
                                                         formattedTime,
                                                         style: const TextStyle(

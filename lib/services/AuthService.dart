@@ -275,7 +275,7 @@ class AuthService {
     
     
     // regularly keep tracks of user online or offline
-    Timer.periodic(Duration(minutes: 5), (timer) {
+    Timer.periodic(Duration(seconds: 5), (timer) {
       FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
@@ -296,21 +296,15 @@ class AuthService {
     final DateTime lastOnline = lastUpdated.toDate();
     final Duration diff = DateTime.now().difference(lastOnline);
 
-    final bool isOnline=diff.inMinutes<=10;
+    final bool isOnline=diff.inMinutes<=1;
     print("User $uid is ${isOnline?"Online":"Offline"}!");
 
     return isOnline;
   }
-  static String convertToE164(String phoneNumber) {
+  static bool isPhoneNumberValid(String phoneNumber) {
     phoneNumber = phoneNumber.trim();
-    // Basic validation
-    if (!RegExp(r'^0\d{8,10}$').hasMatch(phoneNumber)) {
-      Fluttertoast.showToast(msg: "Invalid phone number format.");
-      throw FormatException("Invalid phone number format.");
-    }
 
-    // Convert to E.164
-    return '+60${phoneNumber.substring(1)}';
+    return RegExp(r'^0\d{8,10}$').hasMatch(phoneNumber);
   }
 
 }

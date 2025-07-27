@@ -142,7 +142,8 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                                         spacing: 14,
                                         runSpacing: 10,
                                         alignment: WrapAlignment.center,
-                                        children: membersData.data!.map((user) {
+                                        children: membersData.data!.map<Widget>((user) {
+                                          if(user.isEmpty)return SizedBox();
                                           final name =
                                               user["username"] ?? "Unknown";
                                           Widget imageWidget =
@@ -158,7 +159,7 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                                                     lastUpdated.toDate(),
                                                   )
                                                   .inMinutes <=
-                                              10;
+                                              1;
 
                                           return GestureDetector(
                                             onTap: () {

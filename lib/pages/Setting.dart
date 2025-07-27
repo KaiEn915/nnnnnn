@@ -30,7 +30,7 @@ class _SettingWidgetState extends State<Setting> {
   bool enablePostNotifications = false;
   bool enableNearbyMissingPetNotifications = false;
   bool enableGroupChatMessages = false;
-  String currentProfileImageData="";
+  String currentProfileImageData = "";
 
   @override
   void initState() {
@@ -39,40 +39,39 @@ class _SettingWidgetState extends State<Setting> {
   }
 
   Future<void> saveSetting() async {
-    final userSnapshot=await AuthService.userDocRef.get();
-    final userData=userSnapshot.data();
+    final userSnapshot = await AuthService.userDocRef.get();
+    final userData = userSnapshot.data();
 
     // data to save
-    GeoPoint? coordinates =
-    await MapService.getCoordinatesFromAddress(
+    GeoPoint? coordinates = await MapService.getCoordinatesFromAddress(
       locationController.text,
     );
 
     final settingData = {
       "username": usernameController.text,
-      "phoneNumber":phoneNumberController.text,
+      "phoneNumber": phoneNumberController.text,
       "bio": bioController.text,
       "locationCoordinates": coordinates,
       "enablePostNotifications": enablePostNotifications,
       "enableNearbyMissingPetNotifications":
-      enableNearbyMissingPetNotifications,
+          enableNearbyMissingPetNotifications,
       "enableGroupChatMessages": enableGroupChatMessages,
       "uid": AuthService.uid,
     };
-    if (currentProfileImageData.isNotEmpty){
-      settingData['imageData'] =currentProfileImageData;
+    if (currentProfileImageData.isNotEmpty) {
+      settingData['imageData'] = currentProfileImageData;
     }
 
     // update phone number
-    String oldPhoneNumber=userData?['phoneNumber']??"";
-    String newPhoneNumber=AuthService.convertToE164(phoneNumberController.text);
-    if (oldPhoneNumber.isNotEmpty && newPhoneNumber.isNotEmpty && oldPhoneNumber!=newPhoneNumber){
-      settingData['phoneNumber']=newPhoneNumber;
+    String newPhoneNumber = phoneNumberController.text;
+    if (AuthService.isPhoneNumberValid(newPhoneNumber)) {
+      settingData['phoneNumber'] = newPhoneNumber;
+    } else {
+      Fluttertoast.showToast(msg: "Phone number is invalid");
+      phoneNumberController.clear();
     }
-
     // update to firebase
-    await AuthService.userDocRef
-        .update(settingData);
+    await AuthService.userDocRef.update(settingData);
 
     // reflect setting ticks, function-based
     await updateEnableGroupChatMessage();
@@ -84,22 +83,23 @@ class _SettingWidgetState extends State<Setting> {
       gravity: ToastGravity.CENTER,
     );
   }
+
   Future<void> updateEnableGroupChatMessage() async {
     final userSnapshot = await AuthService.userDocRef.get();
     final userData = userSnapshot.data();
     List<dynamic> userGroupChats_id = userData?['activeGroupChats_id'] ?? [];
 
-    for(String userGroupChat_id in userGroupChats_id){
-      NotificationService.updateTopicSubscription(userGroupChat_id, enableGroupChatMessages);
+    for (String userGroupChat_id in userGroupChats_id) {
+      NotificationService.updateTopicSubscription(
+        userGroupChat_id,
+        enableGroupChatMessages,
+      );
     }
-
-    Fluttertoast.showToast(msg: 'Group Chat Notifications are ${enableGroupChatMessages? "enabled":"disabled"}!');
 
   }
 
-
   Future<void> loadUserSettings() async {
-    final snapshot=await AuthService.userDocRef.get();
+    final snapshot = await AuthService.userDocRef.get();
     Map<String, dynamic>? data = snapshot.data();
 
     String address = await MapService.getAddressFromCoordinates(
@@ -110,7 +110,7 @@ class _SettingWidgetState extends State<Setting> {
       usernameController.text = data?['username'] ?? "";
       bioController.text = data?['bio'] ?? "";
       locationController.text = address;
-      phoneNumberController.text=data?['phoneNumber']??"";
+      phoneNumberController.text = data?['phoneNumber'] ?? "";
       enableGroupChatMessages =
           data?['enableGroupChatMessages'] ?? enableGroupChatMessages;
       enableNearbyMissingPetNotifications =
@@ -378,15 +378,14 @@ class _SettingWidgetState extends State<Setting> {
               right: 0,
               child: Align(
                 alignment: Alignment.center,
-                child:GestureDetector(
-                  onTap: () async{
-                    XFile image= await ImageService.promptPicture(true);
+                child: GestureDetector(
+                  onTap: () async {
+                    XFile image = await ImageService.promptPicture(true);
 
                     final bytes = await File(image.path).readAsBytes();
                     setState(() {
                       currentProfileImageData = base64Encode(bytes);
                     });
-
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -413,23 +412,24 @@ class _SettingWidgetState extends State<Setting> {
                         Container(
                           width: 100,
                           height: 100,
-                          child:ImageService.tryDisplayImage(currentProfileImageData, 100)
+                          child: ImageService.tryDisplayImage(
+                            currentProfileImageData,
+                            100,
+                          ),
                         ),
                         Positioned(
-                          bottom:-10,
-                          right:-10,
+                          bottom: -10,
+                          right: -10,
                           child: Container(
                             width: 16,
                             height: 16,
                             child: Icon(Icons.upload),
                           ),
-                        )
-
+                        ),
                       ],
                     ),
                   ),
                 ),
-
               ),
             ),
             TopBar(
@@ -445,5 +445,4 @@ class _SettingWidgetState extends State<Setting> {
       ),
     );
   }
-
 }

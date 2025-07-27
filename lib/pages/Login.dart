@@ -5,13 +5,13 @@ import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
+import 'package:gan/widgets/OurFont.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class Login extends StatefulWidget {
-  const Login({super.key,this.email});
-  final String? email;
+  const Login({super.key, this.email});
 
+  final String? email;
 
   @override
   State<Login> createState() => _LoginState();
@@ -20,12 +20,12 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     emailController = TextEditingController(text: widget.email ?? '');
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,6 @@ class _LoginState extends State<Login> {
             ),
             child: Stack(
               children: [
-
                 Center(
                   child: Container(
                     height: 700,
@@ -57,40 +56,7 @@ class _LoginState extends State<Login> {
                           width: MediaQuery.sizeOf(context).width,
                           child: Stack(
                             children: [
-                              Align(
-                                child: Text(
-                                  'LOGIN',
-                                  style: GoogleFonts.ibmPlexSans(
-                                    decoration: TextDecoration.none,
-                                    fontSize: 60,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 7,
-                                    foreground: Paint()
-                                      ..style = PaintingStyle.stroke
-                                      ..strokeWidth = 4
-                                      ..color = const Color(0xC0305B7E),
-                                  ),
-                                ),
-                              ),
-                              Align(
-                                child: Text(
-                                  'LOGIN',
-                                  style: GoogleFonts.ibmPlexSans(
-                                    letterSpacing: 7,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.none,
-                                    fontSize: 60,
-                                    color: Colors.white,
-                                    shadows: [
-                                      Shadow(
-                                        offset: Offset(0, 8),
-                                        blurRadius: 16,
-                                        color: Colors.black.withAlpha(64),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              OurFont(text: 'LOGIN', fontSize: 60),
                               // Fill
                             ],
                           ),
@@ -98,11 +64,10 @@ class _LoginState extends State<Login> {
 
                         LabeledInputBox(
                           isInputLocation: false,
-                          label: 'Username or Email',
+                          label: 'Email',
                           placeholder: 'email@domain.com',
                           width: 320,
                           textController: emailController,
-
                         ),
                         LabeledInputBox(
                           isInputLocation: false,
@@ -120,7 +85,6 @@ class _LoginState extends State<Login> {
                               emailController.text,
                               passwordController.text,
                             );
-
                           },
                         ),
                         AppButton(
@@ -128,7 +92,6 @@ class _LoginState extends State<Login> {
                           width: 140,
                           onPressed: () {
                             NavigatorService.openPage(ForgotPassword(), false);
-
                           },
                         ),
                         AppButton(
@@ -190,7 +153,9 @@ class _LoginState extends State<Login> {
                                 left: 77.50,
                                 top: 10,
                                 child: GestureDetector(
-                                  onTap: ()=>{AuthService.loginOrSignUpWithGoogle()},
+                                  onTap: () => {
+                                    AuthService.loginOrSignUpWithGoogle(),
+                                  },
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.start,

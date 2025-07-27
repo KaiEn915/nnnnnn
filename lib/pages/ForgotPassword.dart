@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gan/pages/Login.dart';
+import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';
+import 'package:gan/widgets/OurFont.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -51,46 +54,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Align(
-                        child: Text(
-                          'FORGOT PASSWORD',
-                          style: GoogleFonts.ibmPlexSans(
-                            decoration: TextDecoration.none,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 7,
-                            foreground: Paint()
-                              ..style = PaintingStyle.stroke
-                              ..strokeWidth = 4
-                              ..color = const Color(0xC0305B7E),
-                          ),
-                        ),
-                      ),
-                      Align(
-                        child: Text(
-                          'FORGOT PASSWORD',
-                          style: GoogleFonts.ibmPlexSans(
-                            letterSpacing: 7,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.none,
-                            fontSize: 30,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(
-                                offset: Offset(0, 8),
-                                blurRadius: 16,
-                                color: Colors.black.withAlpha(64),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      OurFont(
+                          text: 'FORGOT PASSWORD',
+                          fontSize: 60,
+                      )
                     ],
                   ),
                 ),
                 LabeledInputBox(
                   isInputLocation: false,
-                  label: 'Username or Email',
+                  label: 'Email',
                   placeholder: 'email@domain.com',
                   textController: _emailController,
                   width: 320,
@@ -101,11 +74,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   onPressed: () async {
                     await sendPasswordResetEmail(); // 假设这是一个 Future 函数
                     // 成功后跳转回登录页
-                    Navigator.of(
-                      context,
-                    ).pop(); // 如果是从 login page push 来的，pop 会回到 login
-                    // 或者使用：
-                    // Navigator.of(context).pushReplacementNamed('/login');
+                    NavigatorService.openPage(Login(email: _emailController.text), true);
                   },
                 ),
               ],
