@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:gan/pages/UserProfile.dart';
 import 'package:gan/services/MapService.dart';
 import 'package:gan/services/NavigatorService.dart';
@@ -32,7 +33,7 @@ class PostAttribute extends StatelessWidget {
       title: address,
       iconData: Icons.pin_drop,
       iconColor: Colors.red,
-      onTap: () => MapService.openMap(locationCoordinates),
+      onTap: () => MapService.openMap(locationCoordinates,false),
       height: height,
     );
   }
@@ -119,17 +120,23 @@ class PostAttribute extends StatelessWidget {
             Flexible(
               child:Align(
                 alignment: Alignment.topLeft,
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 10,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w600,
-                    decoration: TextDecoration.none,
+                child:SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 10,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                      decoration: TextDecoration.none,
+                    ),
                   ),
-                ),
+
+                )
+
               )
+
 
             ),
 

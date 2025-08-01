@@ -187,7 +187,7 @@ class AuthService {
 
       Position? position;
       try {
-        position = await MapService.determinePosition();
+        position = await MapService.determineDevicePosition();
       } catch (e) {
         Fluttertoast.showToast(msg: "Location permission required.");
         return;
@@ -275,7 +275,7 @@ class AuthService {
     
     
     // regularly keep tracks of user online or offline
-    Timer.periodic(Duration(seconds: 5), (timer) {
+    Timer.periodic(Duration(minutes: 1), (timer) {
       FirebaseFirestore.instance
           .collection('users')
           .doc(uid)

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
@@ -23,6 +24,7 @@ class _CreatePost extends State<CreatePost> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
+  GeoPoint? currentLocationCoordinates;
   Uint8List currentImageData = Uint8List(0);
   var breed = "Unknown Breed";
 
@@ -35,8 +37,9 @@ class _CreatePost extends State<CreatePost> {
   void initializePost() async {
     final snapshot = await AuthService.userDocRef.get();
     final data = snapshot.data();
+    currentLocationCoordinates=data?['locationCoordinates'];
     String address = await MapService.getAddressFromCoordinates(
-      data?['locationCoordinates'],
+      currentLocationCoordinates!
     );
 
     setState(() {
@@ -139,6 +142,17 @@ class _CreatePost extends State<CreatePost> {
                         placeholder: "Select missing location",
                         width: 250,
                         textController: locationController,
+                        initialCoordinates: currentLocationCoordinates,
+                        onLocationPicked: (newLocationCoordinates)async
+                        {
+                          final address=await MapService.getAddressFromCoordinates(newLocationCoordinates);
+
+                          setState(() {
+                            locationController.text=address;
+                            currentLocationCoordinates=newLocationCoordinates;
+                          });
+
+                        },
                       ),
                       LabeledInputBox(
                         isInputLocation: false,
@@ -158,10 +172,7 @@ class _CreatePost extends State<CreatePost> {
                             description: descriptionController.text,
                             breed: breed,
                             uid: AuthService.uid,
-                            locationCoordinates:
-                                await MapService.getCoordinatesFromAddress(
-                                  locationController.text,
-                                ),
+                            locationCoordinates:currentLocationCoordinates,
                           );
 
                           Navigator.pop(context, newPostID);

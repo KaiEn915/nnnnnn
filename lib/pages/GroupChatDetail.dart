@@ -152,15 +152,15 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                                                 user['imageData'] ?? "",
                                                 40,
                                               );
-                                          Timestamp lastUpdated =
-                                              user['lastUpdated'];
-                                          final isOnline =
+                                          var lastUpdated =
+                                              user['lastUpdated']??"";
+                                          final isOnline = lastUpdated!=""?
                                               DateTime.now()
                                                   .difference(
                                                     lastUpdated.toDate(),
                                                   )
                                                   .inMinutes <=
-                                              1;
+                                              1:false;
 
                                           return GestureDetector(
                                             onTap: () {

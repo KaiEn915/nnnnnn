@@ -32,7 +32,7 @@ class MapService {
     }
   }
 
-  static Future<Position> determinePosition() async {
+  static Future<Position> determineDevicePosition() async {
     getPermission();
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
@@ -74,10 +74,10 @@ class MapService {
     }
   }
 
-  static Future<void> openMap(GeoPoint coordinates) async {
+  static Future<void> openMap(GeoPoint coordinates, bool isPickingLocation) async {
     NavigatorService.openPage(
       MyMap(
-        isPickingLocation: false,
+        isPickingLocation: isPickingLocation,
         initialCoordinates: LatLng(coordinates.latitude, coordinates.longitude),
       ),
       false,

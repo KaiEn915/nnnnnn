@@ -25,9 +25,7 @@ class ImageService{
 
 
   static Future<void> saveImage(String imageData)async{
-    Fluttertoast.showToast(msg: "Saving images...");
 
-    Fluttertoast.showToast(msg: "Image not saved, save later!");
   }
 
   static Future<XFile> promptPicture(bool doPopAfterDone)async{

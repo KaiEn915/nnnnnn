@@ -11,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class LabeledInputBox extends StatefulWidget {
   final bool isInputLocation;
+  final GeoPoint? initialCoordinates;
   final String label;
   final String placeholder;
   final double width;
@@ -20,10 +21,13 @@ class LabeledInputBox extends StatefulWidget {
   final bool showCatIcon;
   final bool showPencilIcon;
   final int maxLines;
+  final Function(GeoPoint)? onLocationPicked;
 
   const LabeledInputBox({
     super.key,
     required this.isInputLocation,
+    this.initialCoordinates,
+    this.onLocationPicked,
     this.label = "",
     this.placeholder = "No placeholder...",
     required this.width,
@@ -33,6 +37,7 @@ class LabeledInputBox extends StatefulWidget {
     this.showCatIcon = true,
     this.showPencilIcon = false,
     this.maxLines = 1,
+
   });
 
   @override
@@ -105,39 +110,19 @@ class _LabeledInputBox extends State<LabeledInputBox> {
                               Positioned.fill(
                                 child: GestureDetector(
                                   onTap: () async {
-                                    final snapshot=await AuthService.userDocRef.get();
-                                    final data=snapshot.data();
-                                    GeoPoint? coordinates;
-
-                                    if (widget.textController.text.isEmpty){
-                                      widget.textController.text=await MapService.getAddressFromCoordinates(data?['locationCoordinates']);
-                                      coordinates=data?['locationCoordinates'];
-                                      print('coor: $coordinates');
-                                    }
-
-                                    coordinates =
+                                    var newCoordinates =
                                         await Navigator.push<GeoPoint>(
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) => MyMap(
                                               isPickingLocation: true,
                                               initialCoordinates:
-                                                  LatLng(coordinates!.latitude, coordinates.longitude),
+                                                  LatLng(widget.initialCoordinates!.latitude, widget.initialCoordinates!.longitude),
                                             ),
                                           ),
                                         );
-
-                                    // If a location was picked, convert it to a readable address
-                                    if (coordinates != null) {
-                                      widget.textController.text =
-                                          await MapService.getAddressFromCoordinates(
-                                            GeoPoint(coordinates.latitude, coordinates.longitude),
-                                          );
-                                    } else {
-                                      Fluttertoast.showToast(
-                                        msg:
-                                            "No address found for selected location.",
-                                      );
+                                    if (newCoordinates != null) {
+                                      widget.onLocationPicked?.call(newCoordinates);
                                     }
                                   },
                                   behavior: HitTestBehavior.translucent,
