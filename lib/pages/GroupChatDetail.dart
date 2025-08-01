@@ -136,6 +136,7 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                                 builder: (context, membersData) {
                                   if (!membersData.hasData)
                                     return CircularProgressIndicator();
+                                  membersData.data!.removeWhere((x)=>x.isEmpty);
                                   return Scrollbar(
                                     child: SingleChildScrollView(
                                       child: Wrap(
@@ -143,7 +144,7 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                                         runSpacing: 10,
                                         alignment: WrapAlignment.center,
                                         children: membersData.data!.map<Widget>((user) {
-                                          if(user.isEmpty)return SizedBox();
+                                          if(user.isEmpty) return SizedBox();
                                           final name =
                                               user["username"] ?? "Unknown";
                                           Widget imageWidget =

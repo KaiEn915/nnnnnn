@@ -226,7 +226,7 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
                                       },
                                       onTap: () {
                                         if (isImageMessage) onTapImage(message);
-                                        _scrollToBottom();
+
                                       },
                                       child: Align(
                                         alignment: senderUid == currentUid

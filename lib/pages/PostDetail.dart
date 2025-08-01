@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:gan/pages/UserProfile.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,15 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/overlays/PostDetailOverlay.dart';
 import 'package:gan/pages/GroupChatRoom.dart';
-import 'package:gan/pages/Home.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/GroupChatService.dart';
 import 'package:gan/services/ImageService.dart';
-import 'package:gan/services/MapService.dart';
 import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/services/PostService.dart';
 import 'package:gan/utils/OurUI.dart';
-import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/OurFont.dart';
 import 'package:gan/widgets/PostAttribute.dart';
 import 'package:gan/widgets/TopBar.dart';
@@ -148,18 +144,16 @@ class _PostDetailState extends State<PostDetail> {
                                           ConnectionState.waiting) {
                                         return PostAttribute(
                                           title: "Loading address...",
-                                          icon: Icon(
+                                          iconData:
                                             Icons.pin_drop,
-                                            color: Colors.grey,
-                                          ),
+                                            iconColor: Colors.grey,
                                         );
                                       } else if (snapshot.hasError) {
                                         return PostAttribute(
                                           title: "Location unavailable",
-                                          icon: Icon(
+                                          iconData:
                                             Icons.error,
-                                            color: Colors.red,
-                                          ),
+                                            iconColor: Colors.red,
                                         );
                                       } else {
                                         return snapshot.data!;
@@ -534,7 +528,7 @@ class _PostDetailState extends State<PostDetail> {
                   header: postData['title'],
                   leftIcon: Icons.arrow_back,
                   leftIcon_onTap: () {
-                    Navigator.pop(context);
+                    Navigator.pop(context,"pop");
                   },
                   rightIcon: ownerData['uid'] == AuthService.uid
                       ? Icons.delete

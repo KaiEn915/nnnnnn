@@ -7,14 +7,16 @@ import 'package:timeago/timeago.dart' as timeago;
 
 class PostAttribute extends StatelessWidget {
   final String title;
-  final Icon? icon;
+  final IconData? iconData;
+  final Color? iconColor;
   final VoidCallback? onTap;
   final double height;
 
   const PostAttribute({
     super.key,
     required this.title,
-    this.icon,
+    this.iconData,
+    this.iconColor=Colors.black,
     this.onTap,
     this.height = 20,
   });
@@ -28,7 +30,8 @@ class PostAttribute extends StatelessWidget {
     final address = await MapService.getAddressFromCoordinates(locationCoordinates);
     return PostAttribute(
       title: address,
-      icon: Icon(Icons.pin_drop, color: Colors.red, size: 20),
+      iconData: Icons.pin_drop,
+      iconColor: Colors.red,
       onTap: () => MapService.openMap(locationCoordinates),
       height: height,
     );
@@ -39,7 +42,7 @@ class PostAttribute extends StatelessWidget {
       {double height = 20}) {
     return PostAttribute(
       title: "Posted by $username",
-      icon: Icon(Icons.account_circle, size: 20),
+      iconData:Icons.account_circle,
       onTap: () {
         NavigatorService.openPage(UserProfile(viewingUID: uid), false);
 
@@ -52,7 +55,7 @@ class PostAttribute extends StatelessWidget {
   static Widget since(int timestamp, {double height = 20}) {
     return PostAttribute(
       title: "Since ${timeago.format(DateTime.fromMillisecondsSinceEpoch(timestamp))}",
-      icon: Icon(Icons.history, size: 20),
+      iconData: Icons.history,
       height: height,
     );
   }
@@ -61,7 +64,7 @@ class PostAttribute extends StatelessWidget {
   static Widget phoneNumber(String phone, {double height = 20}) {
     return PostAttribute(
       title: phone,
-      icon: Icon(Icons.phone, size: 20),
+      iconData: Icons.phone,
       height: height,
     );
   }
@@ -70,7 +73,7 @@ class PostAttribute extends StatelessWidget {
   static Widget email(String email, {double height = 20}) {
     return PostAttribute(
       title: email,
-      icon: Icon(Icons.email, size: 20),
+      iconData:Icons.email,
       height: height,
     );
   }
@@ -79,16 +82,16 @@ class PostAttribute extends StatelessWidget {
   static Widget postTitle(String title, {double height = 20}) {
     return PostAttribute(
       title: title,
-      icon: Icon(Icons.title, size: 20),
+      iconData: Icons.title,
       height: height,
     );
   }
 
   /// Description
-  static Widget description(String description, {double height = 20}) {
+  static Widget description(String description, {double height = 100}) {
     return PostAttribute(
-      title: "About my pet: $description",
-      icon: Icon(Icons.info, size: 20),
+      title: description.isEmpty? "No description...":description,
+      iconData: Icons.info,
       height: height,
     );
   }
@@ -109,19 +112,28 @@ class PostAttribute extends StatelessWidget {
         child: Row(
           spacing: 5,
           children: [
-            if (icon != null) icon!,
-            Flexible(
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 10,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w600,
-                  decoration: TextDecoration.none,
-                ),
-              ),
+            Align(
+              alignment: Alignment.topLeft,
+              child:Icon(iconData,size:20,color:iconColor),
             ),
+            Flexible(
+              child:Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 10,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w600,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+              )
+
+            ),
+
+
           ],
         ),
       ),

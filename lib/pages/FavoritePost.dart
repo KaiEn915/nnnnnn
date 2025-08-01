@@ -5,6 +5,7 @@ import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/NavigatorService.dart';
 import 'package:gan/services/PostService.dart';
+import 'package:gan/widgets/OurFont.dart';
 import 'package:gan/widgets/PostAttribute.dart';
 import 'package:gan/widgets/TopBar.dart';
 
@@ -32,7 +33,6 @@ class _FavoritePostState extends State<FavoritePost> {
         child: Stack(
           children: [
             Positioned(
-              left: 1,
               top: 100,
               child: Container(
                 width: MediaQuery.sizeOf(context).width,
@@ -41,8 +41,7 @@ class _FavoritePostState extends State<FavoritePost> {
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(),
                 child: FutureBuilder(
-                  future: AuthService.userDocRef
-                      .get(),
+                  future: AuthService.userDocRef.get(),
                   builder: (context, userSnapshot) {
                     if (userSnapshot.connectionState ==
                         ConnectionState.waiting) {
@@ -51,7 +50,7 @@ class _FavoritePostState extends State<FavoritePost> {
 
                     if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
                       return const Center(
-                        child: Text("No favorite posts found."),
+                        child: OurFont(text: "No favorite posts found."),
                       );
                     }
                     final data =
@@ -62,7 +61,9 @@ class _FavoritePostState extends State<FavoritePost> {
                     );
 
                     if (favoriteIds.isEmpty) {
-                      return const Center(child: Text("No favorite posts."));
+                      return const Center(
+                        child: OurFont(text: "No favorite posts found."),
+                      );
                     }
 
                     return FutureBuilder(
@@ -86,6 +87,11 @@ class _FavoritePostState extends State<FavoritePost> {
 
                         final posts = postSnapshot.data!.docs;
 
+                        if (posts.isEmpty) {
+                          return const Center(
+                            child: OurFont(text: "No favorite posts found."),
+                          );
+                        }
                         return Wrap(
                           alignment: WrapAlignment.center,
                           spacing: 10,
@@ -94,11 +100,14 @@ class _FavoritePostState extends State<FavoritePost> {
                             final postData = doc.data();
 
                             return GestureDetector(
-                              onTap: () {
-                                NavigatorService.openPage(
-                                  PostDetail(id:postData['id']),
+                              onTap: () async {
+                                final result = await NavigatorService.openPage(
+                                  PostDetail(id: postData['id']),
                                   false,
                                 );
+                                if (result == "pop") {
+                                  setState(() {});
+                                }
                               },
                               child: Container(
                                 width: 180,
@@ -137,11 +146,13 @@ class _FavoritePostState extends State<FavoritePost> {
                                           spacing: 10,
                                           children: [
                                             Container(
-                                              width:150,
-                                              height:150,
-                                              child: ImageService.tryDisplayImage(
-                                                  postData['imageData']??"",150
-                                              ),
+                                              width: 150,
+                                              height: 150,
+                                              child:
+                                                  ImageService.tryDisplayImage(
+                                                    postData['imageData'] ?? "",
+                                                    150,
+                                                  ),
                                             ),
 
                                             FutureBuilder<Widget>(
@@ -175,29 +186,48 @@ class _FavoritePostState extends State<FavoritePost> {
                                               },
                                             ),
                                             FutureBuilder<DocumentSnapshot>(
-                                              future: AuthService.db.collection('users').doc(postData['owner_uid']).get(),
+                                              future: AuthService.db
+                                                  .collection('users')
+                                                  .doc(postData['owner_uid'])
+                                                  .get(),
                                               builder: (context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
                                                   return const SizedBox(
                                                     height: 20,
-                                                    child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                                                    child: Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                            strokeWidth: 2,
+                                                          ),
+                                                    ),
                                                   );
                                                 } else if (snapshot.hasError) {
-                                                  return const Text("Error loading owner");
-                                                } else if (!snapshot.hasData || !snapshot.data!.exists) {
-                                                  return const Text("Owner not found");
+                                                  return const Text(
+                                                    "Error loading owner",
+                                                  );
+                                                } else if (!snapshot.hasData ||
+                                                    !snapshot.data!.exists) {
+                                                  return const Text(
+                                                    "Owner not found",
+                                                  );
                                                 }
 
-                                                final userData = snapshot.data!.data() as Map<String, dynamic>?;
+                                                final userData =
+                                                    snapshot.data!.data()
+                                                        as Map<
+                                                          String,
+                                                          dynamic
+                                                        >?;
 
                                                 return PostAttribute.postOwner(
                                                   context,
-                                                  userData?['username'] ?? "Unknown",
+                                                  userData?['username'] ??
+                                                      "Unknown",
                                                   userData?['uid'] ?? "",
                                                 );
                                               },
-                                            )
-
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -210,9 +240,7 @@ class _FavoritePostState extends State<FavoritePost> {
                                           PostService.unfavoritePost(
                                             postData['id'],
                                           );
-                                          setState(() {
-
-                                          });
+                                          setState(() {});
                                         },
                                         child: Icon(Icons.delete, size: 25),
                                       ),

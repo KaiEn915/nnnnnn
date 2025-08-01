@@ -152,7 +152,7 @@ class _CreatePost extends State<CreatePost> {
                         text: "Post",
                         width: 150,
                         onPressed: () async {
-                          await PostService.createPost(
+                          final newPostID=await PostService.createPost(
                             title: titleController.text,
                             imageData: currentImageData,
                             description: descriptionController.text,
@@ -164,7 +164,7 @@ class _CreatePost extends State<CreatePost> {
                                 ),
                           );
 
-                          Navigator.pop(context, "postCreated");
+                          Navigator.pop(context, newPostID);
                         },
                       ),
                     ],

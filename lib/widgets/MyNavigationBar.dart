@@ -209,7 +209,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Positioned(

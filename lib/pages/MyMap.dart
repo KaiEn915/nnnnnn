@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -54,7 +55,7 @@ class _MyMapState extends State<MyMap> {
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.example.app',
+                userAgentPackageName: 'com.example.myfluttermap',
               ),
               if (widget.isPickingLocation && selectedLocation != null)
                 MarkerLayer(
@@ -121,7 +122,7 @@ class _MyMapState extends State<MyMap> {
                   child: ElevatedButton(
                     onPressed: selectedLocation == null
                         ? null
-                        : () => Navigator.of(context).pop(selectedLocation),
+                        : () => Navigator.of(context).pop(GeoPoint(selectedLocation!.latitude, selectedLocation!.longitude)),
                     child: const Text('Confirm Location'),
                   ),
                 ),

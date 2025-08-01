@@ -1,13 +1,13 @@
 import 'dart:async';
-import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/utils/OurUI.dart';
 import 'package:gan/widgets/HomePost.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
 import 'package:gan/widgets/OurFont.dart';
 import 'package:gan/widgets/TopBar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -17,56 +17,64 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  List<String> preparedPostIDs = [];
+  List<String> _loadedPostIds = [];
+  List<Widget> postWidgets = [];
   final ScrollController _scrollController = ScrollController();
   final TextEditingController searchBarController = TextEditingController();
-  List<String> _loadedPostIds = [];
+
   Timer? _debounce;
 
   @override
   void initState() {
-    loadPosts();
+    preparePosts();
+
     super.initState();
     searchBarController.addListener(_onSearchChanged);
     _scrollController.addListener(() async {
       if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent-10) {
-        await loadPosts();
+          _scrollController.position.maxScrollExtent - 100) {
+        await loadNewPosts();
       }
     });
   }
 
-  Future<void> loadPosts() async {
-    try {
-      final snapshot = await AuthService.db.collection("posts").get();
+  Future<void> loadCreatedPostAtTop(String newPostID) async{
+    _loadedPostIds.insert(0, newPostID);
+    postWidgets.insert(0, HomePost(id: newPostID));
+  }
+  Future<void> preparePosts() async {
+    final snapshot = await AuthService.db.collection("posts").get();
+    preparedPostIDs = snapshot.docs
+        .map((post) => post['id'])
+        .cast<String>()
+        .toList();
+    preparedPostIDs.shuffle();
+    loadNewPosts();
+  }
 
-      if (snapshot.docs.isEmpty) {
+  Future<void> loadNewPosts() async {
+    try {
+      if (preparedPostIDs.isEmpty) {
         return;
       }
 
-      final postIds = snapshot.docs.map((post) => post['id']).cast<String>().toList();
-      final shuffledIds = postIds..shuffle();
-      final ids =
-          shuffledIds.where((id) => !_loadedPostIds.contains(id)).take(5);
+      final ids = preparedPostIDs
+          .where((id) => !_loadedPostIds.contains(id))
+          .take(3);
 
-      setState(() {
-        _loadedPostIds=ids.toList();
-      });
+      for (var id in ids) {
+        loadPost(id);
+      }
+      setState(() {});
     } catch (e) {
       print("Error loading posts: $e");
     }
   }
 
-  Future<List<HomePost>> getHomePostWidgets() async {
-    final widgets = <HomePost>[];
-
-    for (final id in _loadedPostIds) {
-      final doc = await AuthService.db.collection("posts").doc(id).get();
-      if (doc.exists) {
-        widgets.add(HomePost(postData: doc.data()!));
-      }
-    }
-
-    return widgets;
+  void loadPost(String postID){
+    _loadedPostIds.add(postID);
+    postWidgets.add(HomePost(id: postID));
   }
 
   void _onSearchChanged() {
@@ -81,7 +89,7 @@ class _HomeState extends State<Home> {
     String query = searchBarController.text.trim().toLowerCase();
 
     if (query.isEmpty) {
-      loadPosts();
+      loadNewPosts();
       return;
     }
 
@@ -90,17 +98,18 @@ class _HomeState extends State<Home> {
     try {
       final snapshot = await ref.get();
 
-      final postIds =
-          snapshot.docs.where((postData) {
-                final title = (postData['title'] ?? '').toString().toLowerCase();
-                final content = (postData['description'] ?? '')
-                    .toString()
-                    .toLowerCase();
-                return title.contains(query) || content.contains(query);
-              }).map<String>((postData)=>postData.id);
+      final postIds = snapshot.docs
+          .where((postData) {
+            final title = (postData['title'] ?? '').toString().toLowerCase();
+            final content = (postData['description'] ?? '')
+                .toString()
+                .toLowerCase();
+            return title.contains(query) || content.contains(query);
+          })
+          .map<String>((postData) => postData.id);
 
       setState(() {
-        _loadedPostIds=postIds.toList();
+        _loadedPostIds = postIds.toList();
       });
     } catch (e) {
       print("Error during search: $e");
@@ -122,40 +131,16 @@ class _HomeState extends State<Home> {
         child: Stack(
           children: [
             Container(
-              margin:EdgeInsets.only(top:100,bottom: 60),
-              child:    Scrollbar(
+              margin: EdgeInsets.only(top: 100, bottom: 60),
+              height:MediaQuery.sizeOf(context).height,
+              child: Scrollbar(
                 child: SingleChildScrollView(
                   controller: _scrollController,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 15,
-                  ),
-                  child: FutureBuilder(
-                    future: getHomePostWidgets(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text("Error: ${snapshot.error}"));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(
-                            child: Container(
-                                margin: EdgeInsets.symmetric(horizontal: 30),
-                                decoration: OurUI.shapeDecoration(color:Colors.black.withAlpha(64),hasShadow: false),
-                                child:Container(
-                                  padding:EdgeInsets.all(10),
-                                  child: OurFont(text: "No posts found..."),
-                                )
-
-                            )
-
-                        );
-                      } else {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: snapshot.data!,
-                        );
-                      }
-                    },
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 10,
+                    children: postWidgets,
                   ),
                 ),
               ),
@@ -167,12 +152,12 @@ class _HomeState extends State<Home> {
               searchBarController: searchBarController,
               rightIcon: Icons.post_add,
               rightIcon_onTap: () async {
-                final result = await Navigator.pushNamed(
+                final newPostID = await Navigator.pushNamed(
                   context,
                   "/CreatePost",
                 );
-                if (result == 'postCreated') {
-                  loadPosts();
+                if (newPostID!="") {
+                  loadCreatedPostAtTop(newPostID as String);
                 }
               },
             ),

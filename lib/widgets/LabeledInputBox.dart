@@ -107,25 +107,31 @@ class _LabeledInputBox extends State<LabeledInputBox> {
                                   onTap: () async {
                                     final snapshot=await AuthService.userDocRef.get();
                                     final data=snapshot.data();
-                                    GeoPoint coordinates = data?['locationCoordinates'];
+                                    GeoPoint? coordinates;
 
-                                    final LatLng? selectedLocation =
-                                        await Navigator.push<LatLng>(
+                                    if (widget.textController.text.isEmpty){
+                                      widget.textController.text=await MapService.getAddressFromCoordinates(data?['locationCoordinates']);
+                                      coordinates=data?['locationCoordinates'];
+                                      print('coor: $coordinates');
+                                    }
+
+                                    coordinates =
+                                        await Navigator.push<GeoPoint>(
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) => MyMap(
                                               isPickingLocation: true,
                                               initialCoordinates:
-                                                  LatLng(coordinates.latitude, coordinates.longitude),
+                                                  LatLng(coordinates!.latitude, coordinates.longitude),
                                             ),
                                           ),
                                         );
 
                                     // If a location was picked, convert it to a readable address
-                                    if (selectedLocation != null) {
+                                    if (coordinates != null) {
                                       widget.textController.text =
                                           await MapService.getAddressFromCoordinates(
-                                            GeoPoint(selectedLocation.latitude, selectedLocation.longitude),
+                                            GeoPoint(coordinates.latitude, coordinates.longitude),
                                           );
                                     } else {
                                       Fluttertoast.showToast(
