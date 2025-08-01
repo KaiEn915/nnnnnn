@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/noUpload/NotificationService.dart';
 
 class PostDetailOverlay extends StatefulWidget {
   final String postId;
@@ -23,6 +24,23 @@ class _PostComment extends State<PostDetailOverlay> {
       "owner_uid": AuthService.uid,
     };
       await dbRef.collection('comments').add(postComment);
+
+    final postDoc = await dbRef.get();
+    final ownerUid = postDoc['owner_uid'];
+    if (ownerUid == AuthService.uid) return;
+
+    // 4. 获取owner用户文档，取fcmToken
+    final ownerDoc = await AuthService.db.collection('users').doc(ownerUid).get();
+    final ownerToken = ownerDoc.data()?['fcmToken'] as String?;
+
+    if (ownerToken != null && ownerToken.isNotEmpty) {
+      // 5. 发送推送通知
+      await NotificationService.sendPushNotification(
+        ownerToken,
+        "New Comment on Your Post",
+        content,
+      );
+    }
   }
 
   @override
