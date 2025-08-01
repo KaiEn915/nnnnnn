@@ -275,7 +275,7 @@ class AuthService {
     
     
     // regularly keep tracks of user online or offline
-    Timer.periodic(Duration(minutes: 1), (timer) {
+    Timer.periodic(Duration(seconds: 5), (timer) {
       FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
