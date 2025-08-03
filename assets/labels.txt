@@ -1,2 +1,120 @@
-吉娃娃
-腊肠犬
+Chihuahua 吉娃娃犬
+Japanese Spaniel 日本狮子犬
+Maltese Dog 马尔济斯犬
+Pekinese 北京犬
+Shih-Tzu 西施犬
+Blenheim Spaniel 布列尼姆猎犬
+Papillon 蝴蝶犬
+Toy Terrier 玩具梗犬
+Rhodesian Ridgeback 罗得西亚脊背犬
+Afghan Hound 阿富汗猎犬
+Basset 巴塞特猎犬
+Beagle 比格猎犬
+Bloodhound 血猎犬
+Bluetick 蓝色斑点猎犬
+Black-And-Tan Coonhound 黑褐浣熊猎犬
+Walker Hound 沃克猎犬
+English Foxhound 英国猎狐犬
+Redbone 红骨猎犬
+Borzoi 俄罗斯猎狼犬
+Irish Wolfhound 爱尔兰猎狼犬
+Italian Greyhound 意大利灵缇
+Whippet 威皮特犬
+Ibizan Hound 伊比沙猎犬
+Norwegian Elkhound 挪威猎麋犬
+Otterhound 水獭猎犬
+Saluki 沙鲁基猎犬
+Scottish Deerhound 苏格兰猎鹿犬
+Weimaraner 威玛犬
+Staffordshire Bullterrier 斯塔福郡斗牛梗
+American Staffordshire Terrier 美系斯塔福郡梗
+Bedlington Terrier 贝德灵顿梗
+Border Terrier 边境梗
+Kerry Blue Terrier 凯里蓝梗
+Irish Terrier 爱尔兰梗
+Norfolk Terrier 诺福克梗
+Norwich Terrier 诺里奇梗
+Yorkshire Terrier 约克夏梗
+Wire-Haired Fox Terrier 刚毛猎狐梗
+Lakeland Terrier 湖区梗
+Sealyham Terrier 西里罕梗
+Airedale 艾尔戴尔梗
+Cairn 凯恩梗
+Australian Terrier 澳大利亚梗
+Dandie Dinmont 丹迪丁蒙梗
+Boston Bull 波士顿梗
+Miniature Schnauzer 迷你雪纳瑞
+Giant Schnauzer 巨型雪纳瑞
+Standard Schnauzer 标准雪纳瑞
+Scotch Terrier 苏格兰梗
+Tibetan Terrier 西藏梗
+Silky Terrier 丝毛梗
+Soft-Coated Wheaten Terrier 软毛小麦梗
+West Highland White Terrier 西高地白梗
+Lhasa 拉萨犬
+Flat-Coated Retriever 平毛寻回犬
+Curly-Coated Retriever 卷毛寻回犬
+Golden Retriever 金毛寻回犬
+Labrador Retriever 拉布拉多寻回犬
+Chesapeake Bay Retriever 切萨皮克湾寻回犬
+German Short-Haired Pointer 德国短毛指示犬
+Vizsla 维兹拉犬
+English Setter 英国赛特犬
+Irish Setter 爱尔兰赛特犬
+Gordon Setter 戈登赛特犬
+Brittany Spaniel 布列塔尼猎犬
+Clumber 克伦伯猎犬
+English Springer 英国跳猎犬
+Welsh Springer Spaniel 威尔士跳猎犬
+Cocker Spaniel 可卡犬
+Sussex Spaniel 萨塞克斯猎犬
+Irish Water Spaniel 爱尔兰水猎犬
+Kuvasz 库瓦兹犬
+Schipperke 斯奇派克犬
+Groenendael 格罗安达尔犬
+Malinois 马利诺斯犬
+Briard 布里亚德犬
+Kelpie 凯尔皮犬
+Komondor 科蒙多犬
+Old English Sheepdog 英国古代牧羊犬
+Shetland Sheepdog 谢德兰牧羊犬
+Collie 柯利牧羊犬
+Border Collie 边境牧羊犬
+Bouvier Des Flandres 弗兰德斯牧牛犬
+Rottweiler 罗威纳犬
+German Shepherd 德国牧羊犬
+Doberman 杜宾犬
+Miniature Pinscher 迷你品犬
+Greater Swiss Mountain Dog 大瑞士山地犬
+Bernese Mountain Dog 伯恩山犬
+Appenzeller 阿彭策尔犬
+EntleBucher 恩特尔布赫犬
+Boxer 拳师犬
+Bull Mastiff 牛头獒犬
+Tibetan Mastiff 藏獒
+French Bulldog 法国斗牛犬
+Great Dane 大丹犬
+Saint Bernard 圣伯纳犬
+Eskimo Dog 爱斯基摩犬
+Malamute 阿拉斯加雪橇犬
+Siberian Husky 西伯利亚雪橇犬
+Affenpinscher 猴面犬
+Basenji 巴仙吉犬
+Pug 巴哥犬
+Leonberg 莱昂贝格犬
+Newfoundland 纽芬兰犬
+Great Pyrenees 比利牛斯山犬
+Samoyed 萨摩耶犬
+Pomeranian 博美犬
+Chow 狮子狗
+Keeshond 凯斯霍德犬
+Brabancon Griffon 布拉班顿格里芬犬
+Pembroke 彭布鲁克柯基犬
+Cardigan 卡迪根柯基犬
+Toy Poodle 玩具贵宾犬
+Miniature Poodle 迷你贵宾犬
+Standard Poodle 标准贵宾犬
+Mexican Hairless 墨西哥无毛犬
+Dingo 丁狗
+Dhole 印度野狗
+African Hunting Dog 非洲野犬

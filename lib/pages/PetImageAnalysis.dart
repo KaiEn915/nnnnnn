@@ -23,15 +23,14 @@ class PetImageAnalysis extends StatefulWidget {
 
 class _PetImageAnalysisState extends State<PetImageAnalysis> {
   List<dynamic>? _recognitions;
-  String breed="Unknown";
-  List<SimilarPetPost> _postWidgets=[];
+  String breed = "Unknown";
+  List<SimilarPetPost> _postWidgets = [];
 
   @override
   void initState() {
     super.initState();
 
     initRecognition();
-
   }
 
   @override
@@ -39,16 +38,17 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
     super.dispose();
   }
 
-  Future<void> initRecognition() async{
-    _recognitions=await RecognitionService.recognizeImage(widget.image.path);
-    breed=_recognitions?[0]['label'];
-    print(breed);
+  Future<void> initRecognition() async {
+    _recognitions = await RecognitionService.recognizeImage(widget.image.path);
+    breed = _recognitions?[0]['label'];
     setState(() {
-      breed=breed;
-
+      breed = breed;
     });
     try {
-      final snapshot = await AuthService.db.collection("posts").where('breed', isEqualTo: breed).get();
+      final snapshot = await AuthService.db
+          .collection("posts")
+          .where('breed', isEqualTo: breed)
+          .get();
 
       if (snapshot.docs.isEmpty) {
         Fluttertoast.showToast(msg: "No similar missing pet posts...");
@@ -56,16 +56,14 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
       }
 
       final posts = snapshot.docs.map((doc) => doc.data()).take(5).toList();
-      setState(){
-        _postWidgets.addAll(posts.map((p) => SimilarPetPost(postData: p)));
-      }
 
+      setState(() {
+        _postWidgets.addAll(posts.map((p) => SimilarPetPost(postData: p)));
+      });
     } catch (e) {
       Fluttertoast.showToast(msg: "Error: $e");
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -164,11 +162,17 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
                                 ),
                                 Container(
                                   height: 55,
-                                  child: OurFont(
-                                    text: breed,
-                                    filledColor: true,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: OurFont(
+                                          text: breed,
+                                          filledColor: true,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
+                                )
                               ],
                             ),
                           ),
@@ -242,9 +246,7 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
                                   borderRadius: BorderRadius.circular(25),
                                 ),
                               ),
-                              child: Column(
-                                children: _postWidgets
-                              ),
+                              child: Column(children: _postWidgets),
                             ),
                           ),
                         ),
@@ -257,7 +259,7 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
           ),
           TopBar(
             isMiddleSearchBar: false,
-            header: "卧槽",
+            header: "PET IMAGE ANALYSIS",
             leftIcon: Icons.arrow_back,
             leftIcon_onTap: () => {Navigator.pop(context)},
           ),

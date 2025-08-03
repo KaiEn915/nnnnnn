@@ -1,3 +1,6 @@
+import 'package:gan/pages/PostDetail.dart';
+import 'package:gan/services/ImageService.dart';
+import 'package:gan/services/NavigatorService.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -36,22 +39,10 @@ class _SimilarPetPostState extends State<SimilarPetPost> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(5),
-      decoration: ShapeDecoration(
-        color: Colors.white.withAlpha(128),
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            width: 0.50,
-            color: const Color(0xFF008082),
-          ),
-          borderRadius: BorderRadius.circular(15),
-        ),
-      ),
+    return GestureDetector(
+      onTap: ()=>NavigatorService.openPage(PostDetail(id: widget.postData['id']),false),
       child: Container(
-        height: 170,
-        clipBehavior: Clip.none,
-        margin: EdgeInsets.all(15),
+        margin: EdgeInsets.all(5),
         decoration: ShapeDecoration(
           color: Colors.white.withAlpha(128),
           shape: RoundedRectangleBorder(
@@ -59,134 +50,144 @@ class _SimilarPetPostState extends State<SimilarPetPost> {
               width: 0.50,
               color: const Color(0xFF008082),
             ),
-            borderRadius: BorderRadius.circular(
-              15,
-            ),
+            borderRadius: BorderRadius.circular(15),
           ),
         ),
-        child: Stack(
+        child: Container(
+          height: 170,
           clipBehavior: Clip.none,
-          children: [
-            Container(
-              margin: EdgeInsets.all(
-                5,
+          margin: EdgeInsets.all(15),
+          decoration: ShapeDecoration(
+            color: Colors.white.withAlpha(128),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 0.50,
+                color: const Color(0xFF008082),
               ),
-              child: Column(
-                children: [
-                  Container(
-                    height: 20,
-                    child: Row(
-                      mainAxisSize:
-                      MainAxisSize.min,
-                      spacing: 4,
-                      children: [
-                        Icon(
-                          Icons.location_on,
-                          size: 12,
-                          color: Colors.red,
-                        ),
-                        Flexible(child:
-                        Text(
-                          "Near $address",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 8,
-                            fontFamily: 'Inter',
-                            fontWeight:
-                            FontWeight.w600,
-                            decoration:
-                            TextDecoration
-                                .none,
+              borderRadius: BorderRadius.circular(
+                15,
+              ),
+            ),
+          ),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+
+              Container(
+
+                margin: EdgeInsets.all(
+                  5,
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 20,
+                      child: Row(
+                        mainAxisSize:
+                        MainAxisSize.min,
+                        spacing: 4,
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            size: 12,
+                            color: Colors.red,
                           ),
-                        ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 110,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                          "assets/images/cat.png",
-                        ),
-                        fit: BoxFit.contain,
+                          Flexible(child:
+                          Text(
+                            "Near $address",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 8,
+                              fontFamily: 'Inter',
+                              fontWeight:
+                              FontWeight.w600,
+                              decoration:
+                              TextDecoration
+                                  .none,
+                            ),
+                          ),
+                          )
+                        ],
                       ),
                     ),
-                  ),
-                  Container(
-                    height: 20,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(),
-                    child: Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment
-                          .spaceBetween,
-                      children: [
-                        Row(
-                          spacing: 5,
-                          children: [
-                            Icon(
-                              Icons
-                                  .account_circle,
-                            ),
-                            Text(
-                              'Posted by ${widget.postData['username']??'Unknown'}',
-                              style: TextStyle(
-                                color:
-                                Colors.black,
-                                fontSize: 8,
-                                fontFamily:
-                                'Inter',
-                                fontWeight:
-                                FontWeight
-                                    .w600,
-                                decoration:
-                                TextDecoration
-                                    .none,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          spacing: 5,
-                          children: [
-                            Icon(Icons.history),
-                            Text(
-                              "Since ${timeago.format(DateTime.fromMillisecondsSinceEpoch(widget.postData['timestamp']))}",
-                              style: TextStyle(
-                                color:
-                                Colors.black,
-                                fontSize: 8,
-                                fontFamily:
-                                'Inter',
-                                fontWeight:
-                                FontWeight
-                                    .w600,
-                                height: 0,
-                                decoration:
-                                TextDecoration
-                                    .none,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    Container(
+                      height: 110,
+                      child:ImageService.tryDisplayImage(widget.postData['imageData'],20),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              top:-20,
-              right:-20,
-              child: Image(
-                image: AssetImage(
-                  "assets/images/redPin.png",
+                    Container(
+                      height: 20,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(),
+                      child: Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment
+                            .spaceBetween,
+                        children: [
+                          Row(
+                            spacing: 5,
+                            children: [
+                              Icon(
+                                Icons
+                                    .account_circle,
+                              ),
+                              Text(
+                                'Posted by ${widget.postData['username']??'Unknown'}',
+                                style: TextStyle(
+                                  color:
+                                  Colors.black,
+                                  fontSize: 8,
+                                  fontFamily:
+                                  'Inter',
+                                  fontWeight:
+                                  FontWeight
+                                      .w600,
+                                  decoration:
+                                  TextDecoration
+                                      .none,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            spacing: 5,
+                            children: [
+                              Icon(Icons.history),
+                              Text(
+                                "Since ${timeago.format(DateTime.fromMillisecondsSinceEpoch(widget.postData['timestamp']))}",
+                                style: TextStyle(
+                                  color:
+                                  Colors.black,
+                                  fontSize: 8,
+                                  fontFamily:
+                                  'Inter',
+                                  fontWeight:
+                                  FontWeight
+                                      .w600,
+                                  height: 0,
+                                  decoration:
+                                  TextDecoration
+                                      .none,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+              Positioned(
+                top:-20,
+                right:-20,
+                child: Image(
+                  image: AssetImage(
+                    "assets/images/redPin.png",
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

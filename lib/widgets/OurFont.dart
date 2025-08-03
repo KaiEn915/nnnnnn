@@ -16,11 +16,13 @@ class OurFont extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        if (!filledColor)
-          Align(
-            child: Text(
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.center,
+      child: Stack(
+        children: [
+          if (!filledColor)
+            Text(
               text,
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -35,9 +37,7 @@ class OurFont extends StatelessWidget {
                   ..color = const Color(0xC0305B7E),
               ),
             ),
-          ),
-        Align(
-          child: Text(
+          Text(
             text,
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -56,8 +56,9 @@ class OurFont extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
+
 }
