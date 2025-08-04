@@ -23,7 +23,7 @@ class _PostComment extends State<PostDetailOverlay> {
       "timestamp": DateTime.now(),
       "owner_uid": AuthService.uid,
     };
-    await dbRef.collection('posts').doc(widget.postId).collection('comments').add(postComment);
+    await dbRef.collection('comments').add(postComment);
 
     final postDoc = await dbRef.collection('posts').doc(widget.postId).get();
     final ownerUid = postDoc.data()?['owner_uid'];
