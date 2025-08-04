@@ -55,6 +55,7 @@ class _LoginState extends State<Login> {
                           margin: EdgeInsetsGeometry.directional(top: 50),
                           width: MediaQuery.sizeOf(context).width,
                           child: Stack(
+                            alignment: Alignment.center,
                             children: [
                               OurFont(text: 'LOGIN', fontSize: 60),
                               // Fill
