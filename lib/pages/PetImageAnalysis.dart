@@ -54,7 +54,8 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
 
       possibleBreeds.clear(); // Reset before adding new ones
 
-      for (int i = 0; i < _recognitions!.length && possibleBreeds.length < 3; i++) {
+      // for displaying message
+      for (int i = 0; i < _recognitions!.length; i++) {
         final label = _recognitions![i]['label'];
         if (label is String && label.trim().isNotEmpty) {
           final trimmed = label.trim();
@@ -72,7 +73,7 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
 
       final snapshot = await AuthService.db
           .collection("posts")
-          .where('breed', whereIn: possibleBreeds)
+          .where('breeds', arrayContainsAny: possibleBreeds)
           .get();
 
       if (snapshot.docs.isEmpty) {
@@ -97,6 +98,11 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
 
   void setSimilarBreeds() {
     String result = "";
+    if (possibleBreeds.isEmpty){
+      result="None";
+    }
+
+
     for (int i = 0; i < possibleBreeds.length; i++) {
       result += "${i+1}. ${possibleBreeds[i]}\n\n";
     }

@@ -13,7 +13,7 @@ class PostService{
     required Uint8List imageData,
     required String description,
     required String uid,
-    required String breed,
+    required List<String> breeds,
     required GeoPoint? locationCoordinates,
   }) async {
     final postData = {
@@ -23,7 +23,7 @@ class PostService{
       "imageData": base64Encode(imageData),
       "locationCoordinates": locationCoordinates,
       "timestamp": DateTime.now().millisecondsSinceEpoch,
-      "breed": breed,
+      "breeds": breeds,
     };
 
     final postRef = await AuthService.db.collection("posts").add(postData);

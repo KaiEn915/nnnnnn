@@ -28,18 +28,18 @@ class _CreatePost extends State<CreatePost> {
   final TextEditingController locationController = TextEditingController();
   GeoPoint? currentLocationCoordinates;
   Uint8List currentImageData = Uint8List(0);
-  var breed = "Unknown Breed";
+  List<String> breeds = [];
 
   @override
   void initState() {
+
     super.initState();
     initializePost();
   }
 
   void initializePost() async {
-    final snapshot = await AuthService.userDocRef.get();
-    final data = snapshot.data();
-    currentLocationCoordinates=data?['locationCoordinates'];
+    var position=await MapService.determineDevicePosition();
+    currentLocationCoordinates=GeoPoint(position.latitude, position.longitude);
     String address = await MapService.getAddressFromCoordinates(
       currentLocationCoordinates!
     );
@@ -47,6 +47,7 @@ class _CreatePost extends State<CreatePost> {
     setState(() {
       locationController.text = address;
     });
+
   }
 
   @override
@@ -118,11 +119,17 @@ class _CreatePost extends State<CreatePost> {
                                       );
                                   final bytes = await image.readAsBytes();
 
+                                  breeds.clear();
+                                  await RecognitionService.promptPetType();
                                   Fluttertoast.showToast(msg: "Detecting breed....");
                                   final recognitionResults=await RecognitionService.recognizeImage(image.path);
                                   if (recognitionResults!.isNotEmpty){
-                                    Fluttertoast.showToast(msg: "Detected breed: ${recognitionResults[0]['label']}");
-                                    breed=recognitionResults[0]['label'];
+                                    String message="Detected breed: ";
+                                    for (var breed in recognitionResults){
+                                      breeds.add(breed['label']);
+                                      message+="${breed['label']} ";
+                                    }
+                                    Fluttertoast.showToast(msg: message);
                                   }
                                   else{
                                     Fluttertoast.showToast(msg: "No breed detected...");
@@ -185,7 +192,7 @@ class _CreatePost extends State<CreatePost> {
                             title: titleController.text,
                             imageData: currentImageData,
                             description: descriptionController.text,
-                            breed: breed,
+                            breeds: breeds,
                             uid: AuthService.uid,
                             locationCoordinates:currentLocationCoordinates,
                           );

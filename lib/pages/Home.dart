@@ -28,7 +28,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    emptyPosts();
     preparePosts();
 
     super.initState();
