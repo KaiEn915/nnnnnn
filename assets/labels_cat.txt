@@ -1,0 +1,65 @@
+Abyssinian 阿比西尼亚猫
+American Bobtail 美国短尾猫
+American Curl 美国反耳猫
+American Shorthair 美国短毛猫
+American Wirehair 美国硬毛猫
+Applehead Siamese 传统暹罗猫
+Balinese 巴厘猫
+Bengal 孟加拉猫
+Birman 伯曼猫
+Bombay 孟买猫
+British Shorthair 英国短毛猫
+Burmese 缅甸猫
+Burmilla 波米拉猫
+Calico 三色猫
+Canadian Hairless 斯芬克斯猫
+Chartreux 沙特尔猫
+Chausie 狮子猫
+Chinchilla 金吉拉
+Cornish Rex 柯尼斯卷毛猫
+Cymric 威尔士猫
+Devon Rex 德文帝王猫
+Dilute Calico 淡色三花猫
+Dilute Tortoiseshell 淡色玳瑁猫
+Domestic Long Hair 混种长毛猫
+Domestic Medium Hair 混种中长毛猫
+Domestic Short Hair (Moggy) 混种短毛猫
+Egyptian Mau 埃及猫
+Exotic Shorthair 异国短毛猫
+Hemingway Polydactyl 多趾猫
+Havana 哈瓦那棕猫
+Himalayan 喜马拉雅猫
+Japanese Bobtail 日本短尾猫
+Javanese 爪哇猫
+Korat 科拉特猫
+LaPerm 拉邦猫
+Maine Coon 缅因猫
+Manx 马恩岛猫
+Munchkin 曼切堪猫
+Nebelung 尼比龙猫
+Norwegian Forest Cat 挪威森林猫
+Ocicat 欧西猫
+Oriental Long Hair 东方长毛猫
+Oriental Short Hair 东方短毛猫
+Persian 波斯猫
+Pixiebob 北美洲短毛猫
+Ragamuffin 褴褛猫
+Ragdoll 布偶猫
+Russian Blue 俄罗斯蓝猫
+Scottish Fold 苏格兰折耳猫
+Selkirk Rex 塞尔凯克卷毛猫
+Siamese 暹罗猫
+Siberian 西伯利亚猫
+Singapura 新加坡猫
+Snowshoe 雪鞋猫
+Somali 索马里猫
+Sphynx 斯芬克斯猫
+Tabby 虎斑猫
+Tiger (Oncilla) 小斑虎猫
+Tonkinese 东奇尼猫
+Torbie 三色猫
+Tortoiseshell 玳瑁猫
+Turkish Angora 土耳其安哥拉猫
+Turkish Van 凡貓
+Tuxedo 双色猫
+York Chocolate 约克巧克力猫

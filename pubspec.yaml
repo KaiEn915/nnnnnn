@@ -86,8 +86,10 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/images/
-    - assets/labels.txt
-    - assets/model.tflite
+    - assets/labels_dog.txt
+    - assets/model_dog.tflite
+    - assets/labels_cat.txt
+    - assets/model_cat.tflite
     - assets/serviceAccount.json
 
   # An image asset can refer to one or more resolution-specific "variants", see

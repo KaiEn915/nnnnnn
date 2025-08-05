@@ -35,7 +35,6 @@ Future<void> main() async {
   await MobileAds.instance.initialize();
   await Firebase.initializeApp();
   await MapService.getPermission();
-  await RecognitionService.loadModel();
   await NotificationService.setupNotification();
   runApp(const MyApp());
 }

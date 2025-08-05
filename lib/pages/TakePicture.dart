@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/pages/PetImageAnalysis.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/NavigatorService.dart';
+import 'package:gan/services/RecognitionService.dart';
 import 'package:gan/widgets/TopBar.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -40,7 +41,9 @@ class _TakePictureState extends State<TakePicture> {
 
       if (widget.doPopAfterDone) {
         Navigator.pop(context, image);
-      } else {
+      } else { // for pet image analysis
+        await RecognitionService.promptPetType();
+
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(
