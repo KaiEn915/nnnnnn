@@ -144,280 +144,283 @@ class _SettingWidgetState extends State<Setting> {
               child: Container(
                 decoration: BoxDecoration(),
                 padding: EdgeInsets.symmetric(vertical: 10,horizontal: 5),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  spacing: 10,
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: GestureDetector(
-                        onTap: () async {
-                          XFile image = await ImageService.promptPicture(true);
+                child:SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    spacing: 10,
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: GestureDetector(
+                          onTap: () async {
+                            XFile image = await ImageService.promptPicture(true);
 
-                          final bytes = await File(image.path).readAsBytes();
-                          setState(() {
-                            currentProfileImageData = base64Encode(bytes);
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 7,
-                            vertical: 13,
-                          ),
-                          decoration: ShapeDecoration(
-                            color: const Color(0xFFE6FCFF),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                            final bytes = await File(image.path).readAsBytes();
+                            setState(() {
+                              currentProfileImageData = base64Encode(bytes);
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 7,
+                              vertical: 13,
                             ),
-                            shadows: [
-                              BoxShadow(
-                                color: Color(0x3F000000),
-                                blurRadius: 4,
-                                offset: Offset(0, 4),
-                                spreadRadius: 0,
+                            decoration: ShapeDecoration(
+                              color: const Color(0xFFE6FCFF),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
                               ),
-                            ],
-                          ),
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              Container(
-                                width: 100,
-                                height: 100,
-                                child: ImageService.tryDisplayImage(
-                                  currentProfileImageData,
-                                  100,
+                              shadows: [
+                                BoxShadow(
+                                  color: Color(0x3F000000),
+                                  blurRadius: 4,
+                                  offset: Offset(0, 4),
+                                  spreadRadius: 0,
                                 ),
-                              ),
-                              Positioned(
-                                bottom: -10,
-                                right: -10,
-                                child: Container(
-                                  width: 16,
-                                  height: 16,
-                                  child: Icon(Icons.upload),
+                              ],
+                            ),
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Container(
+                                  width: 100,
+                                  height: 100,
+                                  child: ImageService.tryDisplayImage(
+                                    currentProfileImageData,
+                                    100,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  bottom: -10,
+                                  right: -10,
+                                  child: Container(
+                                    width: 16,
+                                    height: 16,
+                                    child: Icon(Icons.upload),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    LabeledInputBox(
-                      label: "Username",
-                      textController: usernameController,
-                      isInputLocation: false,
-                      width: 370,
-                      showCatIcon: false,
-                      showPencilIcon: true,
-                    ),
-                    LabeledInputBox(
-                      label: "Phone Number",
-                      placeholder: "XXX",
-                      textController: phoneNumberController,
-                      isInputLocation: false,
-                      width: 370,
-                      showCatIcon: false,
-                      showPencilIcon: true,
-                    ),
-                    LabeledInputBox(
-                      label: "Bio",
-                      placeholder:
-                      "Add a short bio to let others know who you are",
-                      textController: bioController,
-                      isInputLocation: false,
-                      width: 370,
-                      height: 80,
-                      showCatIcon: false,
-                      showPencilIcon: true,
-                      maxLines: 2,
-                    ),
-                    LabeledInputBox(
-                      label: "Location",
-                      textController: locationController,
-                      placeholder: "Your Location",
-                      isInputLocation: true,
-                      width: 370,
-                      showCatIcon: false,
-                      initialCoordinates:currentLocationCoordinates,
-                      onLocationPicked:(newLocationAddress)async{
-                        final address=await MapService.getAddressFromCoordinates(currentLocationCoordinates!);
-                        setState(() {
-                          currentLocationCoordinates=newLocationAddress;
-                          locationController.text=address;
-                        });
-                      },
-                    ),
-                    Container(
-                      width: 400,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 9,
-                        children: [
-                          SizedBox(
-                            width: 250,
-                            child: Text(
-                              'Enable post notifications',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w400,
-                                height: 1.40,
+                      LabeledInputBox(
+                        label: "Username",
+                        textController: usernameController,
+                        isInputLocation: false,
+                        width: 370,
+                        showCatIcon: false,
+                        showPencilIcon: true,
+                      ),
+                      LabeledInputBox(
+                        label: "Phone Number",
+                        placeholder: "XXX",
+                        textController: phoneNumberController,
+                        isInputLocation: false,
+                        width: 370,
+                        showCatIcon: false,
+                        showPencilIcon: true,
+                      ),
+                      LabeledInputBox(
+                        label: "Bio",
+                        placeholder:
+                        "Add a short bio to let others know who you are",
+                        textController: bioController,
+                        isInputLocation: false,
+                        width: 370,
+                        height: 80,
+                        showCatIcon: false,
+                        showPencilIcon: true,
+                        maxLines: 2,
+                      ),
+                      LabeledInputBox(
+                        label: "Location",
+                        textController: locationController,
+                        placeholder: "Your Location",
+                        isInputLocation: true,
+                        width: 370,
+                        showCatIcon: false,
+                        initialCoordinates:currentLocationCoordinates,
+                        onLocationPicked:(newLocationAddress)async{
+                          final address=await MapService.getAddressFromCoordinates(currentLocationCoordinates!);
+                          setState(() {
+                            currentLocationCoordinates=newLocationAddress;
+                            locationController.text=address;
+                          });
+                        },
+                      ),
+                      Container(
+                        width: 400,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 9,
+                          children: [
+                            SizedBox(
+                              width: 250,
+                              child: Text(
+                                'Enable post notifications',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.40,
+                                ),
                               ),
                             ),
-                          ),
-                          CheckboxTheme(
-                            data: CheckboxThemeData(
-                              visualDensity: VisualDensity(
-                                horizontal: -2,
-                                vertical: -2,
-                              ), // 控制内部密度
-                              materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Checkbox(
-                              value: enablePostNotifications,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  enablePostNotifications = value ?? false;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 400,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 9,
-                        children: [
-                          SizedBox(
-                            width: 266,
-                            child: Text(
-                              'Enable nearby missing pet notifications',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w400,
-                                height: 1.40,
+                            CheckboxTheme(
+                              data: CheckboxThemeData(
+                                visualDensity: VisualDensity(
+                                  horizontal: -2,
+                                  vertical: -2,
+                                ), // 控制内部密度
+                                materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Checkbox(
+                                value: enablePostNotifications,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    enablePostNotifications = value ?? false;
+                                  });
+                                },
                               ),
                             ),
-                          ),
-                          CheckboxTheme(
-                            data: CheckboxThemeData(
-                              visualDensity: VisualDensity(
-                                horizontal: -2,
-                                vertical: -2,
-                              ), // 控制内部密度
-                              materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Checkbox(
-                              value: enableNearbyMissingPetNotifications,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  enableNearbyMissingPetNotifications =
-                                      value ?? false;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      width: 400,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 9,
-                        children: [
-                          SizedBox(
-                            width: 266,
-                            child: Text(
-                              'Enable group chat messages',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w400,
-                                height: 1.40,
+                      Container(
+                        width: 400,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 9,
+                          children: [
+                            SizedBox(
+                              width: 266,
+                              child: Text(
+                                'Enable nearby missing pet notifications',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.40,
+                                ),
                               ),
                             ),
-                          ),
-                          CheckboxTheme(
-                            data: CheckboxThemeData(
-                              visualDensity: VisualDensity(
-                                horizontal: -2,
-                                vertical: -2,
-                              ), // 控制内部密度
-                              materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
+                            CheckboxTheme(
+                              data: CheckboxThemeData(
+                                visualDensity: VisualDensity(
+                                  horizontal: -2,
+                                  vertical: -2,
+                                ), // 控制内部密度
+                                materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Checkbox(
+                                value: enableNearbyMissingPetNotifications,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    enableNearbyMissingPetNotifications =
+                                        value ?? false;
+                                  });
+                                },
+                              ),
                             ),
-                            child: Checkbox(
-                              value: enableGroupChatMessages,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  enableGroupChatMessages = value ?? false;
-                                });
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: 400,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 9,
+                          children: [
+                            SizedBox(
+                              width: 266,
+                              child: Text(
+                                'Enable group chat messages',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.40,
+                                ),
+                              ),
+                            ),
+                            CheckboxTheme(
+                              data: CheckboxThemeData(
+                                visualDensity: VisualDensity(
+                                  horizontal: -2,
+                                  vertical: -2,
+                                ), // 控制内部密度
+                                materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Checkbox(
+                                value: enableGroupChatMessages,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    enableGroupChatMessages = value ?? false;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.sizeOf(context).width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AppButton(
+                              text: "Save Changes",
+                              backgroundColor: Colors.black,
+                              onPressed: () async {
+                                await saveSetting();
                               },
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      width: MediaQuery.sizeOf(context).width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          AppButton(
-                            text: "Save Changes",
-                            backgroundColor: Colors.black,
-                            onPressed: () async {
-                              await saveSetting();
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.sizeOf(context).width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          AppButton(
-                            text: "Logout",
-                            backgroundColor: Colors.red,
-                            onPressed: () async {
-                              await FirebaseAuth.instance.signOut();
-                              Navigator.pushReplacementNamed(context, "/Login");
-                            },
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                      Container(
+                        width: MediaQuery.sizeOf(context).width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AppButton(
+                              text: "Logout",
+                              backgroundColor: Colors.red,
+                              onPressed: () async {
+                                await FirebaseAuth.instance.signOut();
+                                Navigator.pushReplacementNamed(context, "/Login");
+                              },
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                )
+
               ),
             ),
 

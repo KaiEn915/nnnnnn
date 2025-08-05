@@ -8,28 +8,28 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapService {
-  static Future<void> getPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  static Future<bool> getPermission() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+      // You can open settings or show a message here
+      return false;
     }
 
-    permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        return false;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.',
-      );
+      // You might want to direct the user to app settings:
+      await Geolocator.openAppSettings();
+      return false;
     }
+
+    return true; // Permission granted
   }
 
   static Future<Position> determineDevicePosition() async {

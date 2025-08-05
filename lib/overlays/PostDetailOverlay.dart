@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/noUpload/NotificationService.dart';
@@ -11,7 +12,7 @@ class PostDetailOverlay extends StatefulWidget {
 }
 
 class _PostComment extends State<PostDetailOverlay> {
-  late final dbRef;
+  late DocumentReference<Map<String,dynamic>> postRef;
   late TextEditingController _commentController;
 
   Future<void> saveComment({
@@ -23,15 +24,16 @@ class _PostComment extends State<PostDetailOverlay> {
       "timestamp": DateTime.now(),
       "owner_uid": AuthService.uid,
     };
-    await dbRef.collection('comments').add(postComment);
+    await postRef.collection('comments').add(postComment);
 
-    final postDoc = await dbRef.collection('posts').doc(widget.postId).get();
-    final ownerUid = postDoc.data()?['owner_uid'];
-    if (ownerUid == AuthService.uid) return;
+    final postSnapshot=await postRef.get();
+    final postData=postSnapshot.data();
+    final postOwnerUid = postData?['owner_uid'];
+    if (postOwnerUid == AuthService.uid) return;
 
-    // 4. 获取owner用户文档，取fcmToken
-    final ownerDoc = await AuthService.db.collection('users').doc(ownerUid).get();
-    final ownerToken = ownerDoc.data()?['fcmToken'] as String?;
+    final postOwnerSnapshot = await AuthService.db.collection('users').doc(postOwnerUid).get();
+    final postOwnerData=postOwnerSnapshot.data();
+    final ownerToken = postOwnerData?['fcmToken'];
 
     if (ownerToken != null && ownerToken.isNotEmpty) {
       // 5. 发送推送通知
@@ -47,7 +49,7 @@ class _PostComment extends State<PostDetailOverlay> {
   void initState() {
     super.initState();
     _commentController = TextEditingController();
-    dbRef = AuthService.db.collection("posts").doc(widget.postId);
+    postRef = AuthService.db.collection("posts").doc(widget.postId);
   }
 
   @override

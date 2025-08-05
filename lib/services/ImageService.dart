@@ -44,7 +44,7 @@ class ImageService{
 
   static Widget tryDisplayImage(String imageData, double iconSize){
     return imageData.isEmpty ? Icon(
-      Icons.broken_image,
+      Icons.image,
       color: Colors.grey,
       size: iconSize,
     ):Image.memory(base64Decode(imageData));

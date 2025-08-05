@@ -158,10 +158,10 @@ class _UserProfileWidgetState extends State<UserProfile> {
                 : widget.isViewingOther
                 ? SizedBox()
                 : Positioned(
-                    left: 21,
-                    top: 600,
+                    left: 0,
+                    right:0,
+                    bottom: 100,
                     child: Container(
-                      width: 370,
                       height: 150,
                       decoration: ShapeDecoration(
                         color: const Color(0xBFECFFFA),

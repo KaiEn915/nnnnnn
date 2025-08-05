@@ -10,7 +10,8 @@ import 'package:gan/widgets/TopBar.dart';
 import 'package:image_picker/image_picker.dart';
 
 class TakePicture extends StatefulWidget {
-  const TakePicture({super.key,required this.doPopAfterDone});
+  const TakePicture({super.key, required this.doPopAfterDone});
+
   final bool doPopAfterDone;
 
   @override
@@ -37,27 +38,24 @@ class _TakePictureState extends State<TakePicture> {
     if (_controller != null && _controller!.value.isInitialized) {
       final image = await _controller!.takePicture();
 
-      if (widget.doPopAfterDone){
-        Navigator.pop(context,image);
-      }
-      else{
+      if (widget.doPopAfterDone) {
+        Navigator.pop(context, image);
+      } else {
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
                 PetImageAnalysis(image: image),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
             transitionDuration: Duration(milliseconds: 500),
           ),
         );
       }
-
     }
   }
-
-
 
   @override
   void initState() {
@@ -81,7 +79,8 @@ class _TakePictureState extends State<TakePicture> {
       child: Stack(
         children: [
           Positioned(
-            left: 10,
+            left: 0,
+            right: 0,
             top: 133,
             child: Container(
               //里面透明的
@@ -130,15 +129,19 @@ class _TakePictureState extends State<TakePicture> {
             ),
           ),
           Positioned(
-            left: 165,
             top: 100,
-            child: Container(
-              width: 70,
-              height: 75,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/love.png"),
-                  fit: BoxFit.cover,
+            left: 0,
+            right: 0,
+            child: Align(
+              alignment: Alignment.center,
+              child: Container(
+                width: 70,
+                height: 75,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/love.png"),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
@@ -186,15 +189,19 @@ class _TakePictureState extends State<TakePicture> {
                                     top: 5,
                                     child: GestureDetector(
                                       onTap: () async {
-                                        XFile? _image=await ImageService.pickImage(ImageSource.gallery);
-                                        if (_image==null) return;
-                                        if (widget.doPopAfterDone){
-                                          Navigator.pop(context,_image);
+                                        XFile? _image =
+                                            await ImageService.pickImage(
+                                              ImageSource.gallery,
+                                            );
+                                        if (_image == null) return;
+                                        if (widget.doPopAfterDone) {
+                                          Navigator.pop(context, _image);
+                                        } else {
+                                          NavigatorService.openPage(
+                                            PetImageAnalysis(image: _image),
+                                            true,
+                                          );
                                         }
-                                        else{
-                                          NavigatorService.openPage(PetImageAnalysis(image: _image), true);
-                                        }
-
                                       },
                                       child: SizedBox(
                                         width: 170,
@@ -228,23 +235,32 @@ class _TakePictureState extends State<TakePicture> {
           ),
 
           Positioned(
-            left: 60,
-            top: 620,
-            child: Container(
-              width: 300,
-              height: 100,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
+            bottom: 125,
+            left: 0,
+            right: 0,
+            child: Align(
+              alignment: Alignment.center,
               child: GestureDetector(
                 onTap: _takePicture,
                 child: Positioned(
-                  left: 105,
-                  top: 12,
-                  child: Icon(Icons.camera_alt_outlined, size: 80),
+                  child: Container(
+                    width: 300,
+                    height: 100,
+                    decoration: ShapeDecoration(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Icon(Icons.camera_alt_outlined, size: 80),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
