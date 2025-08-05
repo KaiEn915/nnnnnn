@@ -46,9 +46,9 @@ class _UserProfileWidgetState extends State<UserProfile> {
                   .doc(widget.viewingUID)
                   .get(),
               builder: (context, snapshot) {
-
-                if (!snapshot.hasData) return Center(child:CircularProgressIndicator());
-                final userData=snapshot.data!.data();
+                if (!snapshot.hasData)
+                  return Center(child: CircularProgressIndicator());
+                final userData = snapshot.data!.data();
 
                 return Positioned(
                   left: 0,
@@ -93,7 +93,7 @@ class _UserProfileWidgetState extends State<UserProfile> {
                                     ),
                                   ),
                                   child: ImageService.tryDisplayImage(
-                                    userData?['imageData']??"",
+                                    userData?['imageData'] ?? "",
                                     117,
                                   ),
                                 ),
@@ -158,48 +158,45 @@ class _UserProfileWidgetState extends State<UserProfile> {
                 : widget.isViewingOther
                 ? SizedBox()
                 : Positioned(
-                    left: 0,
-                    right:0,
+                    left: 25,
+                    right: 25,
                     bottom: 100,
-                    child: Container(
-                      height: 150,
-                      decoration: ShapeDecoration(
-                        color: const Color(0xBFECFFFA),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 10,
-                            top: 17,
-                            child: Container(
-                              width: 350,
-                              height: 115,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
+                    child:Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          height: 150,
+                          width: 800,
+                          decoration: ShapeDecoration(
+                            color: const Color(0xBFECFFFA),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                          ),
+
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 15,
+                            ),
+                            decoration: ShapeDecoration(
+                              color: const Color(0xC0FFFFFF),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
                               ),
-                              clipBehavior: Clip.antiAlias,
-                              decoration: ShapeDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                    "assets/images/PutButton.png",
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                spacing: 80,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(5),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              spacing: 50,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/Voucher');
+                                  },
+                                  child: Container(
+                                    width: 70,
+                                    height: 70,
                                     clipBehavior: Clip.antiAlias,
                                     decoration: ShapeDecoration(
                                       color: Colors.white,
@@ -207,41 +204,40 @@ class _UserProfileWidgetState extends State<UserProfile> {
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                     ),
-                                    child: Row(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.pushNamed(
-                                              context,
-                                              '/Voucher',
-                                            );
-                                          },
-                                          child: Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: AssetImage(
-                                                  "assets/images/ticket.png",
-                                                ),
-                                                fit: BoxFit.contain,
-                                              ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Color(0xBFFFFFFF),
-                                                  blurRadius: 4,
-                                                  offset: Offset(0, 4),
-                                                  spreadRadius: 0,
-                                                ),
-                                              ],
+                                    child: Container(
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.black.withAlpha(64),
+                                            // 🖤 Black border
+                                            width: 1.5, // Border thickness
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ), // Optional rounded corners
+                                        ),
+                                        child:FittedBox(
+                                          child: Image(
+                                            image: AssetImage(
+                                              'assets/images/ticket.png',
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        )
+
                                     ),
                                   ),
-                                  Container(
-                                    padding: const EdgeInsets.all(5),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    NavigatorService.openPage(
+                                      FavoritePost(),
+                                      false,
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 70,
+                                    height: 70,
+
                                     clipBehavior: Clip.antiAlias,
                                     decoration: ShapeDecoration(
                                       color: Colors.white,
@@ -249,45 +245,53 @@ class _UserProfileWidgetState extends State<UserProfile> {
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                     ),
-                                    child: Row(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            NavigatorService.openPage(
-                                              FavoritePost(),
-                                              false,
-                                            );
-                                          },
-                                          child: Icon(Icons.bookmark, size: 40),
+                                    child: Container(
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.black.withAlpha(64),
+                                            // 🖤 Black border
+                                            width: 1.5, // Border thickness
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ), // Optional rounded corners
                                         ),
-                                      ],
+                                        child:FittedBox(
+                                          child: Image(
+                                            image: AssetImage(
+                                              "assets/images/bookmark.png",
+                                            ),
+                                            width: 60,
+                                            height: 60,
+                                          ),
+                                        )
                                     ),
                                   ),
-                                ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: -25,
+                          left:0,
+                          right:0,
+                          child: Container(
+                            width: 58,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage("assets/images/cat2.png"),
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-            widget.viewingUID.isEmpty
-                ? Center(child: CircularProgressIndicator())
-                : widget.isViewingOther
-                ? SizedBox()
-                : Positioned(
-                    left: 175,
-                    top: 574,
-                    child: Container(
-                      width: 58,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/images/cat2.png"),
-                          fit: BoxFit.contain,
                         ),
-                      ),
-                    ),
+
+                      ],
+                    )
+
                   ),
             TopBar(
               isMiddleSearchBar: false,
@@ -297,9 +301,9 @@ class _UserProfileWidgetState extends State<UserProfile> {
               },
               header: "PROFILE",
               rightIcon: widget.isViewingOther ? null : Icons.settings_outlined,
-              rightIcon_onTap: (){
+              rightIcon_onTap: () {
                 NavigatorService.openPage(Setting(), false);
-              }
+              },
             ),
           ],
         ),

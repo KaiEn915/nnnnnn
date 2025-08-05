@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/NavigatorService.dart';
-import 'package:gan/services/noUpload/NotificationService.dart';
+import 'package:gan/services/NotificationService.dart';
 
 class GroupChatService{
 

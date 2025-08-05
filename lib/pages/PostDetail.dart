@@ -40,6 +40,18 @@ class _PostDetailState extends State<PostDetail> {
     return [postSnapshot, userSnapshot];
   }
 
+  Future<bool> isPostFavorited() async{
+    final snapshot = await AuthService.userDocRef
+        .get();
+    final favorites =
+        snapshot.data()?['favoritePosts_id'] ??
+            [];
+
+    return favorites.contains(
+      widget.id,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -190,11 +202,7 @@ class _PostDetailState extends State<PostDetail> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             spacing: 5,
                             children: [
-                              SizedBox(
-                                width: 302,
-                                height: 32,
-                                child: OurFont(text: "COMMENTS"),
-                              ),
+                              OurFont(text: "COMMENTS"),
                               Container(
                                 height: 150,
                                 child: StreamBuilder<QuerySnapshot>(
@@ -495,27 +503,39 @@ class _PostDetailState extends State<PostDetail> {
                                 },
                                 child: Icon(Icons.add_comment, size: 30),
                               ),
-                              GestureDetector(
-                                onTap: () async {
-                                  final snapshot = await AuthService.userDocRef
-                                      .get();
-                                  final favorites =
-                                      snapshot.data()?['favoritePosts_id'] ??
-                                      [];
-
-                                  bool isPostFavorited = favorites.contains(
-                                    postData['id'],
-                                  );
-                                  if (isPostFavorited) {
-                                    await PostService.unfavoritePost(
-                                      postData['id'],
-                                    );
-                                  } else {
-                                    await PostService.favoritePost(postData['id']);
+                              FutureBuilder<bool>(
+                                future: isPostFavorited(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return Icon(Icons.bookmark_remove,size:30,color: Colors.black.withAlpha(0));
                                   }
+
+                                  if (snapshot.hasError || !snapshot.hasData) {
+                                    return Icon(Icons.error, size: 30);
+                                  }
+                                  bool isFavorited = snapshot.data!;
+
+
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      if (isFavorited) {
+                                        await PostService.unfavoritePost(postData['id']);
+                                      } else {
+                                        await PostService.favoritePost(postData['id']);
+                                      }
+
+                                      setState(() {
+
+                                      });
+                                    },
+                                    child: Icon(
+                                      isFavorited ? Icons.bookmark : Icons.bookmark_border,
+                                      size: 30,
+                                    ),
+                                  );
                                 },
-                                child: Icon(Icons.bookmark, size: 30),
-                              ),
+                              )
+
                             ],
                           ),
                         ),

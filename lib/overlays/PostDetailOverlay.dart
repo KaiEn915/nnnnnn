@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gan/services/AuthService.dart';
-import 'package:gan/services/noUpload/NotificationService.dart';
+import 'package:gan/services/NotificationService.dart';
 
 class PostDetailOverlay extends StatefulWidget {
   final String postId;
@@ -33,10 +33,10 @@ class _PostComment extends State<PostDetailOverlay> {
 
     final postOwnerSnapshot = await AuthService.db.collection('users').doc(postOwnerUid).get();
     final postOwnerData=postOwnerSnapshot.data();
+    final doPostOwnerEnabledPostNotifications=postOwnerData?["enablePostNotifications"]??false;
     final ownerToken = postOwnerData?['fcmToken'];
 
-    if (ownerToken != null && ownerToken.isNotEmpty) {
-      // 5. 发送推送通知
+    if (ownerToken != null && ownerToken.isNotEmpty && doPostOwnerEnabledPostNotifications) {
       await NotificationService.sendPushNotification(
         ownerToken,
         "New Comment on Your Post",

@@ -66,11 +66,12 @@ class _addVoucher extends State<Voucher> {
                         return Center(
                             child: Container(
                                 margin: EdgeInsets.symmetric(horizontal: 30),
+                                height:80,
                                 decoration: OurUI.shapeDecoration(),
                                 child: Container(
                                   padding: EdgeInsets.all(10),
                                   child: OurFont(
-                                      text: "You don't have any vouchers... go exchange one!"),
+                                      text: "You don't have any vouchers... go exchange one!")
                                 )
 
                             )

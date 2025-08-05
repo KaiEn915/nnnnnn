@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/services/ImageService.dart';
 import 'package:gan/services/MapService.dart';
-import 'package:gan/services/noUpload/NotificationService.dart';
+import 'package:gan/services/NotificationService.dart';
 import 'package:gan/utils/OurUI.dart';
 import 'package:gan/widgets/AppButton.dart';
 import 'package:gan/widgets/LabeledInputBox.dart';

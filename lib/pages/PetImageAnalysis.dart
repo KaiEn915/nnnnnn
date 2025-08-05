@@ -23,8 +23,9 @@ class PetImageAnalysis extends StatefulWidget {
 
 class _PetImageAnalysisState extends State<PetImageAnalysis> {
   List<dynamic>? _recognitions;
-  String breed = "Unknown";
-  List<SimilarPetPost> _postWidgets = [];
+  List<String> possibleBreeds = [];
+  List<Widget> _postWidgets = [];
+  String similarPetBreedText = "";
 
   @override
   void initState() {
@@ -38,31 +39,73 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
     super.dispose();
   }
 
+         // Display string for breeds
+
   Future<void> initRecognition() async {
-    _recognitions = await RecognitionService.recognizeImage(widget.image.path);
-    breed = _recognitions?[0]['label'];
-    setState(() {
-      breed = breed;
-    });
+    print("Initializing recognition");
+
     try {
+      _recognitions = await RecognitionService.recognizeImage(widget.image.path);
+
+      if (_recognitions == null || _recognitions!.isEmpty) {
+        Fluttertoast.showToast(msg: "No recognitions found.");
+        return;
+      }
+
+      possibleBreeds.clear(); // Reset before adding new ones
+
+      for (int i = 0; i < _recognitions!.length && possibleBreeds.length < 3; i++) {
+        final label = _recognitions![i]['label'];
+        if (label is String && label.trim().isNotEmpty) {
+          final trimmed = label.trim();
+          if (!possibleBreeds.contains(trimmed)) {
+            possibleBreeds.add(trimmed);
+            print("Possible breed ${possibleBreeds.length}: $trimmed");
+          }
+        }
+      }
+
+      if (possibleBreeds.isEmpty) {
+        Fluttertoast.showToast(msg: "No valid breeds found.");
+        return;
+      }
+
       final snapshot = await AuthService.db
           .collection("posts")
-          .where('breed', isEqualTo: breed)
+          .where('breed', whereIn: possibleBreeds)
           .get();
 
       if (snapshot.docs.isEmpty) {
         Fluttertoast.showToast(msg: "No similar missing pet posts...");
-        return;
+      } else {
+        final posts = snapshot.docs.map((doc) => doc.data()).take(5).toList();
+        _postWidgets.clear(); // Optional: clear previous results
+        _postWidgets.addAll(posts.map((p) => SimilarPetPost(postData: p)));
       }
 
-      final posts = snapshot.docs.map((doc) => doc.data()).take(5).toList();
+      print("Initialization done!");
 
-      setState(() {
-        _postWidgets.addAll(posts.map((p) => SimilarPetPost(postData: p)));
-      });
     } catch (e) {
       Fluttertoast.showToast(msg: "Error: $e");
+      print("Error in recognition: $e");
     }
+
+    setSimilarBreeds();
+
+    setState(() {}); // Ensure UI is updated
+  }
+
+  void setSimilarBreeds() {
+    String result = "";
+    for (int i = 0; i < possibleBreeds.length; i++) {
+      result += "${i+1}. ${possibleBreeds[i]}\n\n";
+    }
+
+    print("Result: $result");
+
+    setState(() {
+      similarPetBreedText = result;
+    });
   }
 
   @override
@@ -158,21 +201,20 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
                               children: [
                                 Container(
                                   height: 50,
-                                  child: OurFont(text: "POSSIBLE BREED"),
+                                  child: OurFont(text: "POSSIBLE BREEDS"),
                                 ),
                                 Container(
                                   height: 55,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: OurFont(
-                                          text: breed,
-                                          filledColor: true,
-                                        ),
-                                      ),
-                                    ],
+                                  width:150,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: OurFont(
+                                      text: similarPetBreedText,
+                                      filledColor: true,
+                                    ),
                                   ),
                                 )
+
                               ],
                             ),
                           ),
@@ -221,7 +263,10 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
                               SizedBox(
                                 width: 192,
                                 height: 72,
-                                child: OurFont(text: "SIMILAR PETS"),
+                                child:FittedBox(
+                                  child: OurFont(text: "SIMILAR PETS"),
+                                )
+
                               ),
                               Container(
                                 width: 32,

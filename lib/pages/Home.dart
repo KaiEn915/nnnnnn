@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/services/AuthService.dart';
+import 'package:gan/services/MapService.dart';
 import 'package:gan/utils/OurUI.dart';
 import 'package:gan/widgets/HomePost.dart';
 import 'package:gan/widgets/MyNavigationBar.dart';
@@ -27,6 +28,7 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    emptyPosts();
     preparePosts();
 
     super.initState();
@@ -77,6 +79,11 @@ class _HomeState extends State<Home> {
     postWidgets.add(HomePost(id: postID));
   }
 
+  void emptyPosts(){
+    _loadedPostIds.clear();
+    postWidgets.clear();
+  }
+
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
@@ -93,6 +100,7 @@ class _HomeState extends State<Home> {
       return;
     }
 
+    print("searching for post: $query");
     final ref = AuthService.db.collection("posts");
 
     try {
@@ -100,16 +108,22 @@ class _HomeState extends State<Home> {
 
       final postIds = snapshot.docs
           .where((postData) {
+
             final title = (postData['title'] ?? '').toString().toLowerCase();
-            final content = (postData['description'] ?? '')
+            final dsecription = (postData['description'] ?? '')
                 .toString()
                 .toLowerCase();
-            return title.contains(query) || content.contains(query);
+            final location=(MapService.getAddressFromCoordinates(postData['locationCoordinates'])??'').toString().toLowerCase();
+            return title.contains(query) || dsecription.contains(query) || location.contains(query);
           })
           .map<String>((postData) => postData.id);
 
+      emptyPosts();
+      for(var id in postIds){
+        loadPost(id);
+      }
       setState(() {
-        _loadedPostIds = postIds.toList();
+
       });
     } catch (e) {
       print("Error during search: $e");

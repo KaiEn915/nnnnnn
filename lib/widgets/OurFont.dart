@@ -16,27 +16,9 @@ class OurFont extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: Alignment.center,
-      child: Stack(
-        children: [
-          if (!filledColor)
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                decoration: TextDecoration.none,
-                fontFamily: "IBM Plex Sans",
-                fontSize: fontSize,
-                fontWeight: FontWeight.bold,
-                letterSpacing: letterSpacing,
-                foreground: Paint()
-                  ..style = PaintingStyle.stroke
-                  ..strokeWidth = 2
-                  ..color = const Color(0xC0305B7E),
-              ),
-            ),
+    return Stack(
+      children: [
+        if (!filledColor)
           Text(
             text,
             textAlign: TextAlign.center,
@@ -46,18 +28,39 @@ class OurFont extends StatelessWidget {
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
               letterSpacing: letterSpacing,
-              color: filledColor ? const Color(0xC0305B7E) : Colors.white,
-              shadows: [
-                Shadow(
-                  offset: Offset(0, 8),
-                  blurRadius: 16,
-                  color: Colors.black.withAlpha(64),
-                ),
-              ],
+              foreground: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 2
+                ..color = const Color(0xC0305B7E),
             ),
+            softWrap: true,
+            overflow: TextOverflow.visible,
+            maxLines: null,
           ),
-        ],
-      ),
+        Text(
+          text,
+          textAlign: TextAlign.center,
+          softWrap: true,
+          overflow: TextOverflow.visible,
+          maxLines: null,
+          style: TextStyle(
+            decoration: TextDecoration.none,
+            fontFamily: "IBM Plex Sans",
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            letterSpacing: letterSpacing,
+            color: filledColor ? const Color(0xC0305B7E) : Colors.white,
+            shadows: [
+              Shadow(
+                offset: Offset(0, 8),
+                blurRadius: 16,
+                color: Colors.black.withAlpha(64),
+              ),
+            ],
+
+          ),
+        ),
+      ],
     );
   }
 

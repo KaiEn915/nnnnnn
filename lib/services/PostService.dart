@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gan/services/AuthService.dart';
 import 'package:gan/services/GroupChatService.dart';
+import 'package:gan/services/MapService.dart';
+import 'package:gan/services/NotificationService.dart';
 class PostService{
   static Future<String> createPost({
     required String title,
@@ -23,15 +25,16 @@ class PostService{
       "timestamp": DateTime.now().millisecondsSinceEpoch,
       "breed": breed,
     };
+
     final postRef = await AuthService.db.collection("posts").add(postData);
     await postRef.update({"id": postRef.id});
 
     await GroupChatService.promptForCreateGroupChat(postRef.id);
 
-    // notify nearby users
+    //notify nearby users (10km)
+    await notifyNearbyUser(locationCoordinates!, 10);
 
 
-    //
     return postRef.id;
   }
   static Future<void> deletePost(String id) async {
@@ -50,7 +53,27 @@ class PostService{
 
 
   }
+  static Future<void> notifyNearbyUser(GeoPoint fromLocation, double rangeKm) async{
+    // not really efficient but ok lah
+    print('notifying user...');
+    final allUserSnapshot=await AuthService.db.collection('users').get();
+    final allUserDocs=allUserSnapshot.docs;
+    for (var userDoc in allUserDocs) {
+      final userData=userDoc.data();
+      if (userData['locationCoordinates'] == null || userData['locationCoordinates'] is! GeoPoint) continue;
+      if (!(userData['enableNearbyMissingPetNotifications'] ?? false)) continue;
 
+      GeoPoint userCoors=userDoc['locationCoordinates'];
+      final distanceKm = MapService.calculateDistanceKm(userCoors.latitude, userCoors.longitude,fromLocation.latitude,fromLocation.latitude);
+
+      if (distanceKm <= rangeKm) {
+        final token=userDoc['fcmToken'];
+        final nearLocation=await MapService.getAddressFromCoordinates(fromLocation);
+        NotificationService.sendPushNotification(token, "New nearby pet post!", "Located near $nearLocation");
+      }
+    }
+    print('notifying user done!');
+  }
 
   static Future<void> favoritePost(String id)async{
     await AuthService.db.collection("users").doc(AuthService.uid).update({"favoritePosts_id":FieldValue.arrayUnion([id])});
