@@ -285,22 +285,22 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
                             ],
                           ),
                         ),
-                        Scrollbar(
-                          child: SingleChildScrollView(
-                            child: Container(
-                              margin: EdgeInsets.symmetric(horizontal: 5),
-                              height: 500,
-                              clipBehavior: Clip.none,
-                              decoration: ShapeDecoration(
-                                color: Colors.white.withAlpha(128),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                ),
-                              ),
-                              child: Column(children: _postWidgets),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          height: 500,
+                          decoration: ShapeDecoration(
+                            color: Colors.white.withAlpha(128),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
                             ),
                           ),
+                          child:  SingleChildScrollView(
+                            padding: EdgeInsets.all(5),
+                            child: Column(children: _postWidgets),
+                          ),
+
                         ),
+
                       ],
                     ),
                   ),

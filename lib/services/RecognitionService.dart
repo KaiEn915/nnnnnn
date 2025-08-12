@@ -19,14 +19,15 @@ class RecognitionService{
     print("Dog model loaded: $res");
   }
   static Future<List?> recognizeImage(String imagePath) async {
-    Fluttertoast.showToast(msg: "Recognizing...");
     var recognitions = await Tflite.runModelOnImage(
       path: imagePath,
       numResults: 5,
       threshold: 0,
-      asynch: true,
+      imageMean: 0,
+      imageStd: 125,
+      asynch: true
     );
-    Fluttertoast.showToast(msg: "Recognition done!");
+
     return recognitions;
   }
 

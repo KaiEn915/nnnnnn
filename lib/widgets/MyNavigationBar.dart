@@ -208,7 +208,70 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
       },
     );
   }
+  Future<void> showUsers() async {
+    final ref = FirebaseFirestore.instance.collection('users');
 
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Manage Users'),
+              content: FutureBuilder<QuerySnapshot>(
+                future: ref.get(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return SizedBox(height: 100, child: Center(child: CircularProgressIndicator()));
+                  }
+
+                  if (snapshot.hasError) {
+                    return Text('Error loading users');
+                  }
+
+                  final docs = snapshot.data?.docs ?? [];
+
+                  if (docs.isEmpty) {
+                    return Text('No users found.');
+                  }
+
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: docs.map((doc) {
+                        final data = doc.data() as Map<String, dynamic>;
+                        final expiry = Timestamp.fromMillisecondsSinceEpoch(DateTime.parse(data['createdAt']).millisecondsSinceEpoch).toDate();
+                        final formattedDate = DateFormat('yyyy-MM-dd').format(expiry);
+
+                        return ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(data['username'] ?? 'No Name'),
+                          subtitle: Text('Created at: $formattedDate'),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              await ref.doc(doc.id).delete();
+                              setState(() {}); // Refresh UI
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  );
+                },
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Close'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -242,7 +305,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
                 NavigatorService.openPage(GroupChat(), false);
               },
             ),
-
             NavigationButton(
               label: 'Scan',
               icon: Icons.camera_alt,
@@ -250,24 +312,31 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
                 NavigatorService.openPage(TakePicture(doPopAfterDone: false), false);
               },
             ),
+
+            if (AuthService.isAdmin)
             NavigationButton(
-              label: 'Test',
+              label: 'Admin',
               icon: Icons.new_releases,
               onTap: () {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text('Test functions'),
+                      title: Text('Admin Functions'),
                       actions: [
                         ElevatedButton(
+                          onPressed: ()async{await showUsers();},
+                          child: Text('Manage Users'),
+                        ),
+                        ElevatedButton(
                           onPressed: ()async{await showCreateVoucherDialog();},
-                          child: Text('Create vouchers'),
+                          child: Text('Create Vouchers'),
                         ),
                         ElevatedButton(
                           onPressed: ()async{await showVouchers();},
-                          child: Text('Manage vouchers'),
+                          child: Text('Manage Vouchers'),
                         ),
+
                       ],
                     );
                   },

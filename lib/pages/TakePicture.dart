@@ -270,7 +270,7 @@ class _TakePictureState extends State<TakePicture> {
           ),
           Positioned(
             left: 280,
-            top: 460,
+            top: 500,
             child: Container(
               width: 140,
               height: 300,
@@ -284,7 +284,7 @@ class _TakePictureState extends State<TakePicture> {
           ),
           Positioned(
             left: 0,
-            top: 560,
+            top: 650,
             child: Container(
               width: 150,
               height: 300,

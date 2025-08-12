@@ -105,12 +105,11 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
     });
   }
 
-
   /// 发送消息并清空输入框
   void _sendMessage() {
     String message = _chatController.text.trim();
     if (message.isNotEmpty) {
-      GroupChatService.saveMessageTo(dbRef, message,false);
+      GroupChatService.saveMessageTo(dbRef, message, false);
       _chatController.clear();
     }
   }
@@ -119,359 +118,354 @@ class _GroupChatRoomWidgetState extends State<GroupChatRoom> {
   Widget build(BuildContext context) {
     return dbRef == null
         ? CircularProgressIndicator()
-        : Material(
-            child: Column(
-              children: [
-                Container(
-                  width: MediaQuery.sizeOf(context).width,
-                  height: MediaQuery.sizeOf(context).height,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/background2.png"),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: 80,
-                        left: 0,
-                        right: 0,
-                        bottom: 80,
-                        child: StreamBuilder<QuerySnapshot>(
-                          stream: dbRef
-                              .collection('messages')
-                              .orderBy('timestamp', descending: true)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return Center(child: CircularProgressIndicator());
-                            }
-                            final messages = snapshot.data!.docs;
+        : Scaffold(
+      resizeToAvoidBottomInset: true,
+            body: Container(
+              width: MediaQuery.sizeOf(context).width,
+              height: MediaQuery.sizeOf(context).height,
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/background2.png"),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 80,
+                    left: 0,
+                    right: 0,
+                    bottom: 80,
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: dbRef
+                          .collection('messages')
+                          .orderBy('timestamp', descending: true)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        final messages = snapshot.data!.docs;
 
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              _scrollToBottom();
-                            });
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          _scrollToBottom();
+                        });
 
-                            return ListView.builder(
-                              reverse: true,
-                              controller: _scrollController,
-                              padding: EdgeInsets.all(10),
-                              itemCount: messages.length,
-                              itemBuilder: (context, index) {
-                                final doc = messages[index];
-                                final messageId = doc.id;
-                                final data = doc.data() as Map<String, dynamic>;
-                                final isMessageOwner=data['owner_uid']==AuthService.uid;
-                                final isImageMessage =
-                                    data['isImageMessage'] ?? false;
-                                final message = data['content'] ?? '';
-                                final senderUid = data['owner_uid'];
-                                final timestamp = data['timestamp'];
-                                final time =
-                                DateTime.fromMillisecondsSinceEpoch(
-                                  timestamp,
-                                );
-                                final formattedTime =
-                                    "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
-                                final currentUid = AuthService.uid;
+                        return ListView.builder(
+                          reverse: true,
+                          controller: _scrollController,
+                          padding: EdgeInsets.all(10),
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            final doc = messages[index];
+                            final messageId = doc.id;
+                            final data = doc.data() as Map<String, dynamic>;
+                            final isMessageOwner =
+                                data['owner_uid'] == AuthService.uid;
+                            final isImageMessage =
+                                data['isImageMessage'] ?? false;
+                            final message = data['content'] ?? '';
+                            final senderUid = data['owner_uid'];
+                            final timestamp = data['timestamp'];
+                            final time = DateTime.fromMillisecondsSinceEpoch(
+                              timestamp,
+                            );
+                            final formattedTime =
+                                "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
+                            final currentUid = AuthService.uid;
 
-                                return FutureBuilder<
-                                    DocumentSnapshot<Map<String, dynamic>>
-                                >(
-                                  future: AuthService.db
-                                      .collection('users')
-                                      .doc(senderUid)
-                                      .get(),
-                                  builder: (context, senderSnapshot) {
-                                    if (!senderSnapshot.hasData) {
-                                      return SizedBox(); // return empty space to avoid layout shift
+                            return FutureBuilder<
+                              DocumentSnapshot<Map<String, dynamic>>
+                            >(
+                              future: AuthService.db
+                                  .collection('users')
+                                  .doc(senderUid)
+                                  .get(),
+                              builder: (context, senderSnapshot) {
+                                if (!senderSnapshot.hasData) {
+                                  return SizedBox(); // return empty space to avoid layout shift
+                                }
+
+                                final senderData = senderSnapshot.data!.data();
+                                if (senderData == null) return SizedBox();
+
+                                final username = senderUid == currentUid
+                                    ? "You"
+                                    : senderData['username'] ?? 'User';
+                                final imageData = senderData['imageData'] ?? "";
+
+                                return GestureDetector(
+                                  onLongPressStart: (details) async {
+                                    if (isMessageOwner) {
+                                      final selected = await showMenu<String>(
+                                        context: context,
+                                        position: RelativeRect.fromLTRB(
+                                          details.globalPosition.dx,
+                                          details.globalPosition.dy,
+                                          details.globalPosition.dx,
+                                          details.globalPosition.dy,
+                                        ),
+                                        items: const [
+                                          PopupMenuItem<String>(
+                                            value: 'delete',
+                                            child: Text('Delete'),
+                                          ),
+                                        ],
+                                      );
+                                      if (selected == 'delete') {
+                                        GroupChatService.deleteMessageFrom(
+                                          dbRef,
+                                          messageId,
+                                        );
+                                      }
                                     }
-
-                                    final senderData = senderSnapshot.data!
-                                        .data();
-                                    if (senderData == null) return SizedBox();
-
-                                    final username = senderUid == currentUid
-                                        ? "You"
-                                        : senderData['username'] ?? 'User';
-                                    final imageData = senderData['imageData']??"";
-
-                                    return GestureDetector(
-                                      onLongPressStart: (details) async {
-                                        if (isMessageOwner){
-                                          final selected = await showMenu<String>(
-                                            context: context,
-                                            position: RelativeRect.fromLTRB(
-                                              details.globalPosition.dx,
-                                              details.globalPosition.dy,
-                                              details.globalPosition.dx,
-                                              details.globalPosition.dy,
-                                            ),
-                                            items: const [
-                                              PopupMenuItem<String>(
-                                                value: 'delete',
-                                                child: Text('Delete'),
-                                              ),
-                                            ],
-                                          );
-                                          if (selected == 'delete') {
-                                            GroupChatService.deleteMessageFrom(
-                                              dbRef,
-                                              messageId,
-                                            );
-                                          }
-                                        }
-                                      },
-                                      onTap: () {
-                                        if (isImageMessage) onTapImage(message);
-
-                                      },
-                                      child: Align(
-                                        alignment: senderUid == currentUid
-                                            ? Alignment.centerRight
-                                            : Alignment.centerLeft,
-                                        child: Container(
-                                          margin: const EdgeInsets.symmetric(
-                                            vertical: 6,
-                                            horizontal: 6,
-                                          ),
-                                          constraints: BoxConstraints(
-                                            maxWidth:
-                                            MediaQuery.of(
-                                              context,
-                                            ).size.width *
-                                                0.75,
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
+                                  },
+                                  onTap: () {
+                                    if (isImageMessage) onTapImage(message);
+                                  },
+                                  child: Align(
+                                    alignment: senderUid == currentUid
+                                        ? Alignment.centerRight
+                                        : Alignment.centerLeft,
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        vertical: 6,
+                                        horizontal: 6,
+                                      ),
+                                      constraints: BoxConstraints(
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width *
+                                            0.75,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
                                             senderUid == currentUid
-                                                ? MainAxisAlignment.end
-                                                : MainAxisAlignment.start,
-                                            crossAxisAlignment:
+                                            ? MainAxisAlignment.end
+                                            : MainAxisAlignment.start,
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            spacing: 8,
-                                            children: [
-                                              if (senderUid != currentUid)
-                                                GestureDetector(
-                                                  onTap:(){
-                                                    NavigatorService.openPage(UserProfile(viewingUID: senderUid), false);
-                                                  },
-                                                  child: ClipOval(
-                                                    child: Container(
-                                                      width: 40,
-                                                      height: 40,
-                                                      child:
+                                        spacing: 8,
+                                        children: [
+                                          if (senderUid != currentUid)
+                                            GestureDetector(
+                                              onTap: () {
+                                                NavigatorService.openPage(
+                                                  UserProfile(
+                                                    viewingUID: senderUid,
+                                                  ),
+                                                  false,
+                                                );
+                                              },
+                                              child: ClipOval(
+                                                child: Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  child:
                                                       ImageService.tryDisplayImage(
                                                         imageData,
                                                         40,
                                                       ),
-                                                    ),
-                                                  ),
                                                 ),
-                                              // Chat bubble
-                                              Flexible(
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(
-                                                    10,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color:
+                                              ),
+                                            ),
+                                          // Chat bubble
+                                          Flexible(
+                                            child: Container(
+                                              padding: const EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                color: senderUid == currentUid
+                                                    ? Colors.white.withAlpha(
+                                                        220,
+                                                      )
+                                                    : Colors.blue[100],
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment:
                                                     senderUid == currentUid
-                                                        ? Colors.white
-                                                        .withAlpha(220)
-                                                        : Colors.blue[100],
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                      12,
-                                                    ),
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                    senderUid == currentUid
-                                                        ? CrossAxisAlignment.end
-                                                        : CrossAxisAlignment
-                                                        .start,
-                                                    children: [
-                                                      Text(
-                                                        username,
-                                                        style: TextStyle(
-                                                          fontWeight:
+                                                    ? CrossAxisAlignment.end
+                                                    : CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    username,
+                                                    style: TextStyle(
+                                                      fontWeight:
                                                           FontWeight.bold,
-                                                          fontSize: 14,
-                                                          color:
+                                                      fontSize: 14,
+                                                      color:
                                                           senderUid ==
                                                               currentUid
-                                                              ? Colors
-                                                              .blueAccent
-                                                              : Colors.green,
-                                                        ),
-                                                      ),
-                                                      isImageMessage
-                                                          ? ClipRRect(
-                                                        borderRadius:
-                                                        BorderRadius.circular(
-                                                          8,
-                                                        ),
-                                                        child:
-                                                        Image.memory(
-                                                          base64Decode(
-                                                            message,
-                                                          ),
-                                                          height: 120,
-                                                          fit: BoxFit
-                                                              .cover,
-                                                        ),
-                                                      )
-                                                          : Text(
-                                                        message,
-                                                        style:
-                                                        const TextStyle(
-                                                          fontSize:
-                                                          15,
-                                                          color: Colors
-                                                              .black87,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        formattedTime,
-                                                        style: const TextStyle(
-                                                          fontSize: 11,
-                                                          color: Colors.grey,
-                                                        ),
-                                                      ),
-                                                    ],
+                                                          ? Colors.blueAccent
+                                                          : Colors.green,
+                                                    ),
                                                   ),
-                                                ),
+                                                  isImageMessage
+                                                      ? ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                8,
+                                                              ),
+                                                          child: Image.memory(
+                                                            base64Decode(
+                                                              message,
+                                                            ),
+                                                            height: 120,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        )
+                                                      : Text(
+                                                          message,
+                                                          style:
+                                                              const TextStyle(
+                                                                fontSize: 15,
+                                                                color: Colors
+                                                                    .black87,
+                                                              ),
+                                                        ),
+                                                  Text(
+                                                    formattedTime,
+                                                    style: const TextStyle(
+                                                      fontSize: 11,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
+                                            ),
+                                          ),
 
-                                              // Avatar (for self only)
-                                              if (senderUid == currentUid)
-                                                GestureDetector(
-                                                  onTap:(){
-                                                    NavigatorService.openPage(UserProfile(viewingUID: senderUid), false);
-                                                  },
-                                                  child: ClipOval(
-                                                    child: Container(
-                                                      width: 40,
-                                                      height: 40,
-                                                      child:
+                                          // Avatar (for self only)
+                                          if (senderUid == currentUid)
+                                            GestureDetector(
+                                              onTap: () {
+                                                NavigatorService.openPage(
+                                                  UserProfile(
+                                                    viewingUID: senderUid,
+                                                  ),
+                                                  false,
+                                                );
+                                              },
+                                              child: ClipOval(
+                                                child: Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  child:
                                                       ImageService.tryDisplayImage(
                                                         imageData,
                                                         40,
                                                       ),
-                                                    ),
-                                                  ),
                                                 ),
-                                            ],
-                                          ),
-                                        ),
+                                              ),
+                                            ),
+                                        ],
                                       ),
-                                    );
-                                  },
+                                    ),
+                                  ),
                                 );
                               },
                             );
                           },
+                        );
+                      },
+                    ),
+                  ),
+
+                  Positioned(
+                    bottom: 0,
+                    child: Container(
+                      width: MediaQuery.sizeOf(context).width,
+                      height: 67,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: ShapeDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/blue.png"),
+                          fit: BoxFit.cover,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-
-                      Positioned(
-                        bottom: 0,
-                        child: Container(
-                          width: MediaQuery.sizeOf(context).width,
-                          height: 67,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("assets/images/blue.png"),
-                              fit: BoxFit.cover,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                      child: Container(
+                        width: MediaQuery.sizeOf(context).width,
+                        margin: EdgeInsets.only(
+                          left: 10,
+                          right: 10,
+                          top: 5,
+                          bottom: 5,
+                        ),
+                        height: 60,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: ShapeDecoration(
+                          //里面的蓝色
+                          color: const Color(0xBFE9FBFF),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                          child: Container(
-                            width: MediaQuery.sizeOf(context).width,
-                            margin: EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                              top: 5,
-                              bottom: 5,
-                            ),
-                            height: 60,
-                            clipBehavior: Clip.antiAlias,
-                            decoration: ShapeDecoration(
-                              //里面的蓝色
-                              color: const Color(0xBFE9FBFF),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          spacing: 0,
+                          children: [
+                            Container(
+                              width: 265,
+                              child: TextField(
+                                controller: _chatController,
+                                decoration: InputDecoration(
+                                  hintText: "Your Text",
+                                  border: OutlineInputBorder(),
+                                ),
                               ),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              spacing: 0,
-                              children: [
-                                Container(
-                                  width: 265,
-                                  child: TextField(
-                                    controller: _chatController,
-                                    decoration: InputDecoration(
-                                      hintText: "Your Text",
-                                      border: OutlineInputBorder(),
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () async {
-                                    final image =
-                                        await ImageService.promptPicture(true);
-                                    final bytes = await image.readAsBytes();
-                                    final imageData = base64Encode(bytes);
-                                    GroupChatService.saveMessageTo(
-                                      dbRef,
-                                      imageData,
-                                      true,
-                                    );
-                                  },
-                                  child: Container(
-                                    width: 35,
-                                    height: 35,
-                                    child: Icon(Icons.camera_alt),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.send, size: 30),
-                                  onPressed: _sendMessage,
-                                ),
-                              ],
+                            GestureDetector(
+                              onTap: () async {
+                                final image = await ImageService.promptPicture(
+                                  true,
+                                );
+                                final bytes = await image.readAsBytes();
+                                final imageData = base64Encode(bytes);
+                                GroupChatService.saveMessageTo(
+                                  dbRef,
+                                  imageData,
+                                  true,
+                                );
+                              },
+                              child: Container(
+                                width: 35,
+                                height: 35,
+                                child: Icon(Icons.camera_alt),
+                              ),
                             ),
-                          ),
+                            IconButton(
+                              icon: Icon(Icons.send, size: 30),
+                              onPressed: _sendMessage,
+                            ),
+                          ],
                         ),
                       ),
-                      TopBar(
-                        isMiddleSearchBar: false,
-                        header: "GROUP CHAT",
-                        leftIcon: Icons.arrow_back,
-                        leftIcon_onTap: () => {
-                          Navigator.pushNamed(context, "/GroupChat"),
-                        },
-                        rightIcon: Icons.error_outline,
-                        rightIcon_onTap: () => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  GroupChatDetail(groupChatId: widget.id),
-                            ),
-                          ),
-                        },
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                  TopBar(
+                    isMiddleSearchBar: false,
+                    header: "GROUP CHAT",
+                    leftIcon: Icons.arrow_back,
+                    leftIcon_onTap: () => {
+                      Navigator.pushNamed(context, "/GroupChat"),
+                    },
+                    rightIcon: Icons.error_outline,
+                    rightIcon_onTap: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              GroupChatDetail(groupChatId: widget.id),
+                        ),
+                      ),
+                    },
+                  ),
+                ],
+              ),
             ),
           );
   }

@@ -90,6 +90,8 @@ flutter:
     - assets/model_dog.tflite
     - assets/labels_cat.txt
     - assets/model_cat.tflite
+    - assets/labels_test.txt
+    - assets/model_test.tflite
     - assets/serviceAccount.json
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -8,8 +8,7 @@ import 'package:gan/services/GroupChatService.dart';
 import 'package:gan/services/MapService.dart';
 import 'package:gan/services/NotificationService.dart';
 class PostService{
-  static Future<String> createPost({
-    required String title,
+  static Future<String> createPost({required String title,
     required Uint8List imageData,
     required String description,
     required String uid,
@@ -30,13 +29,11 @@ class PostService{
     await postRef.update({"id": postRef.id});
 
     await GroupChatService.promptForCreateGroupChat(postRef.id);
-
-    //notify nearby users (10km)
     await notifyNearbyUser(locationCoordinates!, 10);
-
 
     return postRef.id;
   }
+
   static Future<void> deletePost(String id) async {
     final ref=AuthService.db.collection("posts").doc(id);
     final snapshot=await ref.get();

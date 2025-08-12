@@ -20,6 +20,7 @@ class AuthService {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
   static DocumentReference<Map<String,dynamic>> userDocRef = FirebaseFirestore.instance.collection('users').doc(uid);
 
+  static bool isAdmin=false;
   static var uid;
 
   static Future<UserCredential?> loginOrSignUpWithGoogle() async {
@@ -206,6 +207,7 @@ class AuthService {
         "locationCoordinates": locationCoordinates,
         "uid":user.uid,
         "rewardPoints":0,
+        "isAdmin":false,
       };
 
       try {
@@ -268,7 +270,9 @@ class AuthService {
   static Future loginSuccess(String withUid)async{
     uid=withUid;
     userDocRef = FirebaseFirestore.instance.collection('users').doc(uid);
-
+    final snapshot=await userDocRef.get();
+    final data=snapshot.data();
+    isAdmin=data?['isAdmin'];
     // refresh fcm token for notification
     String? token=await FirebaseMessaging.instance.getToken();
     userDocRef.update({"fcmToken":token});
