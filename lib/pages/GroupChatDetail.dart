@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gan/pages/GroupChat.dart';
 import 'package:gan/pages/Home.dart';
 import 'package:gan/pages/UserProfile.dart';
 import 'package:gan/services/AuthService.dart';
@@ -282,7 +283,7 @@ class _GroupChatDetailWidgetState extends State<GroupChatDetail> {
                                   widget.groupChatId,
                                 );
                                 NavigatorService.openPage(
-                                  Home(),
+                                  GroupChat(),
                                   true,
                                 );
                               },

@@ -288,6 +288,7 @@ class _PetImageAnalysisState extends State<PetImageAnalysis> {
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 5),
                           height: 500,
+                          width: 300,
                           decoration: ShapeDecoration(
                             color: Colors.white.withAlpha(128),
                             shape: RoundedRectangleBorder(

@@ -1,3 +1,4 @@
+import 'package:gan/pages/Home.dart';
 import 'package:gan/pages/UserProfile.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -555,7 +556,7 @@ class _PostDetailState extends State<PostDetail> {
                       : null,
                   rightIcon_onTap: () async {
                     await PostService.deletePost(postData['id']);
-                    Navigator.pop(context);
+                    NavigatorService.openPage(Home(), true);
                   },
                 ),
               ],

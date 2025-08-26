@@ -43,6 +43,9 @@ class _HomeState extends State<Home> {
   Future<void> loadCreatedPostAtTop(String newPostID) async{
     _loadedPostIds.insert(0, newPostID);
     postWidgets.insert(0, HomePost(id: newPostID));
+    setState(() {
+
+    });
   }
   Future<void> preparePosts() async {
     final snapshot = await AuthService.db.collection("posts").get();
@@ -172,6 +175,7 @@ class _HomeState extends State<Home> {
                 if (newPostID!="") {
                   loadCreatedPostAtTop(newPostID as String);
                 }
+
               },
             ),
           ],
