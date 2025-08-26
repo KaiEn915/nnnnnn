@@ -40,8 +40,12 @@ class PostService{
     final data=snapshot.data();
 
     // delete linked group chat
-    await GroupChatService.deleteGroupChat(data?['groupChat_id']);
-    Fluttertoast.showToast(msg: "Deleted linked group chat");
+    if(data?['groupChat_id']!=null){
+      await GroupChatService.deleteGroupChat(data?['groupChat_id']);
+      Fluttertoast.showToast(msg: "Deleted linked group chat");
+    }
+
+
 
     // delete post doc
     ref.delete();
