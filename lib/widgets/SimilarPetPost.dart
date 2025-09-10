@@ -123,31 +123,7 @@ class _SimilarPetPostState extends State<SimilarPetPost> {
                         MainAxisAlignment
                             .spaceBetween,
                         children: [
-                          Row(
-                            spacing: 5,
-                            children: [
-                              Icon(
-                                Icons
-                                    .account_circle,
-                              ),
-                              Text(
-                                'Posted by ${widget.postData['username']??'Unknown'}',
-                                style: TextStyle(
-                                  color:
-                                  Colors.black,
-                                  fontSize: 8,
-                                  fontFamily:
-                                  'Inter',
-                                  fontWeight:
-                                  FontWeight
-                                      .w600,
-                                  decoration:
-                                  TextDecoration
-                                      .none,
-                                ),
-                              ),
-                            ],
-                          ),
+
                           Row(
                             spacing: 5,
                             children: [

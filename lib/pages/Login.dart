@@ -62,7 +62,6 @@ class _LoginState extends State<Login> {
                             ],
                           ),
                         ),
-
                         LabeledInputBox(
                           isInputLocation: false,
                           label: 'Email',

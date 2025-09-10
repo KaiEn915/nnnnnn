@@ -197,6 +197,7 @@ class _TakePictureState extends State<TakePicture> {
                                               ImageSource.gallery,
                                             );
                                         if (_image == null) return;
+                                        await RecognitionService.promptPetType();
                                         if (widget.doPopAfterDone) {
                                           Navigator.pop(context, _image);
                                         } else {
